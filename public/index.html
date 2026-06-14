@@ -810,20 +810,19 @@ function dlPDF(){
     : (S.locs[0]?.value||'viaje');
   const filename = ref ? `TKT${ref}.pdf` : `voucher-${conf}.pdf`;
   const el = document.getElementById('voucher');
-  const sidebar = document.querySelector('.sidebar');
-  const preview = document.querySelector('.preview');
 
-  sidebar.style.display = 'none';
-  preview.style.padding = '0';
-  el.style.maxWidth = '100%';
-  el.style.width = '100%';
-  el.style.borderRadius = '0';
-  el.style.boxShadow = 'none';
+  // Clone voucher into a fullscreen overlay to avoid flex layout issues
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;z-index:99999;background:#fff';
+  const clone = el.cloneNode(true);
+  clone.style.cssText = 'width:100%;max-width:100%;border-radius:0;box-shadow:none';
+  overlay.appendChild(clone);
+  document.body.appendChild(overlay);
 
-  // Wait for images to load before generating PDF
-  const imgs = el.querySelectorAll('img');
+  // Wait for images
+  const imgs = clone.querySelectorAll('img');
   const imagePromises = Array.from(imgs).map(img => {
-    if (img.complete) return Promise.resolve();
+    if (img.complete && img.naturalHeight > 0) return Promise.resolve();
     return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
   });
 
@@ -834,15 +833,10 @@ function dlPDF(){
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-      }).from(el).save().then(() => {
-        sidebar.style.display = '';
-        preview.style.padding = '';
-        el.style.maxWidth = '';
-        el.style.width = '';
-        el.style.borderRadius = '';
-        el.style.boxShadow = '';
+      }).from(clone).save().then(() => {
+        document.body.removeChild(overlay);
       });
-    }, 200);
+    }, 300);
   });
 }
 
