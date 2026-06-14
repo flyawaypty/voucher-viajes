@@ -8,14 +8,15 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #1a2b3c; display: flex; min-height: 100vh; }
-.sidebar { width: 340px; min-width: 300px; background: #1a2b3c; color: #e8f0f7; padding: 20px 16px; overflow-y: auto; flex-shrink: 0; min-height: 100vh; }
+.sidebar { width: 360px; min-width: 320px; background: #1a2b3c; color: #e8f0f7; padding: 20px 16px; overflow-y: auto; flex-shrink: 0; min-height: 100vh; }
 .sidebar h1 { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 3px; }
 .sidebar .sub { font-size: 11px; color: #7fa8c8; margin-bottom: 16px; }
 .sec { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7fa8c8; margin: 14px 0 6px; }
 label { font-size: 11px; color: #b0cde6; display: block; margin-bottom: 2px; margin-top: 6px; }
-input, select { width: 100%; padding: 6px 9px; border-radius: 5px; border: 1px solid #2d4a62; background: #243d52; color: #e8f0f7; font-size: 12px; outline: none; }
-input:focus, select:focus { border-color: #4a9fd4; }
+input, select, textarea { width: 100%; padding: 6px 9px; border-radius: 5px; border: 1px solid #2d4a62; background: #243d52; color: #e8f0f7; font-size: 12px; outline: none; }
+input:focus, select:focus, textarea:focus { border-color: #4a9fd4; }
 select option { background: #1a2b3c; }
+textarea { resize: vertical; line-height: 1.5; }
 .btn-add { display: block; width: 100%; margin-top: 8px; padding: 7px; background: #243d52; border: 1px dashed #4a9fd4; color: #4a9fd4; border-radius: 5px; font-size: 11px; cursor: pointer; }
 .btn-add:hover { background: #2d5470; }
 .tabs { display: flex; gap: 3px; margin-bottom: 14px; }
@@ -25,20 +26,15 @@ select option { background: #1a2b3c; }
 .fc-head { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 600; color: #4a9fd4; margin-bottom: 8px; }
 .btn-rm { background: none; border: none; color: #e05c5c; font-size: 12px; cursor: pointer; padding: 0 4px; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-.btn-lookup { width: 100%; margin-top: 8px; padding: 7px; border-radius: 5px; background: linear-gradient(135deg, #1a6fa8, #4a9fd4); color: #fff; font-size: 12px; font-weight: 600; border: none; cursor: pointer; }
-.btn-lookup:disabled { opacity: .45; cursor: not-allowed; }
+.btn-parse { width: 100%; margin-top: 8px; padding: 9px; border-radius: 5px; background: linear-gradient(135deg, #1a6fa8, #4a9fd4); color: #fff; font-size: 12px; font-weight: 700; border: none; cursor: pointer; }
+.btn-parse:disabled { opacity: .45; cursor: not-allowed; }
+.btn-add-manual { display: block; width: 100%; margin-top: 6px; padding: 7px; background: #243d52; border: 1px dashed #7fa8c8; color: #7fa8c8; border-radius: 5px; font-size: 11px; cursor: pointer; }
 .status { font-size: 11px; margin-top: 6px; padding: 5px 8px; border-radius: 5px; display: none; }
 .status.loading { display: block; background: #1a3a50; color: #7dc9f5; }
 .status.ok { display: block; background: #0d3320; color: #5be0a0; }
 .status.err { display: block; background: #3a1a1a; color: #e07070; }
-.found { margin-top: 8px; padding: 8px; background: #152a3a; border-radius: 5px; display: none; font-size: 11px; border: 1px solid #2d5c40; }
-.found.show { display: block; }
-.dr { display: flex; justify-content: space-between; padding: 2px 0; }
-.dr span:first-child { color: #7dc9f5; }
-.dr span:last-child { color: #e8f0f7; font-weight: 600; }
-.manual-dur { margin-top: 8px; padding: 6px 8px; background: #1a2f44; border-radius: 5px; border: 1px solid #2d4a62; }
-.manual-dur label { color: #f0c060; margin-top: 0; }
+.edit-block { margin-top:8px; padding:8px; background:#0f2030; border-radius:6px; border:1px solid #2d6090; }
+.edit-block .elabel { font-size:10px; color:#4a9fd4; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; display:block; }
 .btn-gen { width: 100%; margin-top: 16px; padding: 11px; border-radius: 7px; background: linear-gradient(135deg, #1a6fa8, #4a9fd4); color: #fff; font-size: 13px; font-weight: 700; border: none; cursor: pointer; }
 .type-selector { display: flex; gap: 4px; margin-bottom: 12px; }
 .type-btn { flex: 1; padding: 7px 4px; text-align: center; font-size: 10px; font-weight: 600; border-radius: 5px; cursor: pointer; border: 1px solid #2d4a62; background: #243d52; color: #7fa8c8; }
@@ -47,8 +43,6 @@ select option { background: #1a2b3c; }
 .toolbar { width: 100%; max-width: 740px; display: flex; justify-content: flex-end; margin-bottom: 10px; }
 .btn-dl { padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: #1a6fa8; color: #fff; }
 .btn-dl:hover { opacity: .85; }
-
-/* VOUCHER */
 #voucher { background: #fff; width: 100%; max-width: 740px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,.1); overflow: hidden; }
 .vh { background: linear-gradient(135deg, #0a3d62, #1a6fa8); padding: 24px 30px; display: flex; justify-content: space-between; align-items: flex-start; }
 .vh-logo { font-size: 20px; font-weight: 800; color: #fff; }
@@ -61,14 +55,10 @@ select option { background: #1a2b3c; }
 .vsec { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7fa8c8; margin: 16px 0 10px; display: flex; align-items: center; gap: 8px; }
 .vsec::after { content: ''; flex: 1; height: 1px; background: #e0ecf7; }
 .vsec-total { font-size: 10px; color: #1a6fa8; font-weight: 700; background: #e8f4ff; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
-
-/* PASAJEROS — uno debajo del otro */
 .v-paxes { display: flex; flex-direction: column; gap: 8px; }
 .v-pax { background: #f0f7ff; border-left: 4px solid #1a6fa8; padding: 10px 16px; border-radius: 0 6px 6px 0; display: flex; flex-wrap: wrap; gap: 0 24px; }
 .v-pax .pn { font-size: 13px; font-weight: 700; color: #0a3d62; width: 100%; margin-bottom: 4px; }
 .v-pax .pt { font-size: 11px; color: #5a7fa0; margin-right: 16px; }
-
-/* SEGMENTOS — altura fija para alinear */
 .vseg { display: grid; grid-template-columns: 100px 1fr 100px; align-items: center; padding: 14px 0; border-bottom: 1px solid #f0f4f8; gap: 8px; }
 .vseg:last-of-type { border-bottom: none; }
 .vtb { text-align: center; }
@@ -83,13 +73,11 @@ select option { background: #1a2b3c; }
 .vline::before { content: '✈'; position: absolute; top: -9px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #1a6fa8; }
 .vdur { font-size: 10px; color: #7fa8c0; margin-top: 5px; }
 .val { font-size: 10px; color: #7fa8c0; margin-top: 2px; }
-.vcab { font-size: 10px; color: #7fa8c0; margin-top: 3px; background: #f0f7ff; padding: 1px 8px; border-radius: 10px; }
-
-/* ESCALA */
+.vcab { font-size: 10px; color: #7fa8c0; margin-top: 2px; background: #f0f7ff; padding: 1px 8px; border-radius: 10px; }
+.vavion { font-size: 10px; color: #8aa0b0; margin-top: 2px; }
 .vescala { display: flex; align-items: center; justify-content: center; padding: 7px 16px; background: #fff8e8; border-left: 3px solid #e8a820; border-right: 3px solid #e8a820; gap: 8px; }
 .vescala-text { font-size: 11px; color: #8a6010; }
 .vescala-text strong { color: #5a3e00; }
-
 .vfoot { background: #f7fafd; border-top: 2px solid #e0ecf7; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; }
 .vfoot-note { font-size: 11px; color: #7fa8c0; }
 .vfoot-logo { font-size: 12px; font-weight: 700; color: #1a6fa8; }
@@ -99,7 +87,7 @@ select option { background: #1a2b3c; }
 <body>
 <div class="sidebar">
   <h1>✈ Voucher de Viaje</h1>
-  <p class="sub">Ingresa el vuelo y la fecha — buscamos los detalles automáticamente.</p>
+  <p class="sub">Pega el itinerario y el sistema extrae todos los vuelos automáticamente.</p>
   <div class="tabs">
     <div class="tab on" onclick="switchTab('general',this)">General</div>
     <div class="tab" onclick="switchTab('vuelos',this)">Vuelos</div>
@@ -124,15 +112,20 @@ select option { background: #1a2b3c; }
   </div>
 
   <div id="tab-vuelos" style="display:none">
-    <div id="vuelos-ida-section">
-      <div class="sec" id="label-ida">Vuelos de Ida</div>
+    <div class="sec">Pegar itinerario</div>
+    <textarea id="itinerario" rows="6" placeholder="Pega aquí el texto del itinerario de la aerolínea, GDS (Amadeus, Sabre) o confirmación de reserva..."></textarea>
+    <button class="btn-parse" id="btn-parse" onclick="parseItinerary()">✨ Extraer vuelos automáticamente</button>
+    <div class="status" id="parse-status"></div>
+
+    <div id="vuelos-ida-section" style="margin-top:14px">
+      <div class="sec" id="label-ida">Vuelos de Ida <span style="color:#2d4a62;font-weight:400;text-transform:none;letter-spacing:0">— edita si es necesario</span></div>
       <div id="list-ida"></div>
-      <button class="btn-add" onclick="addFlight('ida')">+ Agregar tramo de ida</button>
+      <button class="btn-add-manual" onclick="addFlight('ida')">+ Agregar tramo de ida manualmente</button>
     </div>
-    <div id="vuelos-vuelta-section" style="display:none">
+    <div id="vuelos-vuelta-section" style="display:none;margin-top:10px">
       <div class="sec">Vuelos de Vuelta</div>
       <div id="list-vuelta"></div>
-      <button class="btn-add" onclick="addFlight('vuelta')">+ Agregar tramo de vuelta</button>
+      <button class="btn-add-manual" onclick="addFlight('vuelta')">+ Agregar tramo de vuelta manualmente</button>
     </div>
   </div>
 
@@ -160,8 +153,9 @@ const S = {
 };
 
 function ef() {
-  return { num:'', fecha:'', fechaInput:'', origen:'', destino:'', aorig:'', adest:'',
-           sh:'', lh:'', lf:'', al:'', cab:'Economy', duracion_min:0, found:false, editing:false };
+  return { num:'', fecha:'', origen:'', destino:'', aorig:'', adest:'',
+           sh:'', lh:'', lf:'', al:'', cab:'Economy', duracion_min:0,
+           layover_override:0, avion:'', found:false };
 }
 
 function fmt12(t) {
@@ -171,53 +165,81 @@ function fmt12(t) {
   h = h % 12 || 12;
   return { h: `${h}:${String(m).padStart(2,'0')}`, ampm };
 }
-
 function fmtDur(mins) {
   if (!mins || mins <= 0) return '';
-  const h = Math.floor(mins / 60);
-  const m = mins % 60;
+  const h = Math.floor(mins / 60), m = mins % 60;
   return h > 0 ? `${h}h${m > 0 ? ' ' + m + 'min' : ''}` : `${m}min`;
 }
-
 function toMins(t) {
   if (!t || !t.includes(':')) return null;
   const [h, m] = t.split(':').map(Number);
   return h * 60 + m;
 }
-
 function calcLayover(flights, i) {
   if (i >= flights.length - 1) return null;
-  const arrMins = toMins(flights[i].lh);
-  const depMins = toMins(flights[i+1].sh);
-  if (arrMins === null || depMins === null) return null;
-  let diff = depMins - arrMins;
+  if (flights[i].layover_override > 0) return flights[i].layover_override;
+  const a = toMins(flights[i].lh), d = toMins(flights[i+1].sh);
+  if (a === null || d === null) return null;
+  let diff = d - a;
   if (diff < 0) diff += 24 * 60;
   return diff > 0 ? diff : null;
 }
-
 function calcTotal(flights) {
-  let total = 0;
+  let t = 0;
   for (let i = 0; i < flights.length; i++) {
-    total += flights[i].duracion_min || 0;
-    if (i < flights.length - 1) {
-      const lay = calcLayover(flights, i);
-      if (lay) total += lay;
-    }
+    t += flights[i].duracion_min || 0;
+    if (i < flights.length - 1) { const l = calcLayover(flights, i); if (l) t += l; }
   }
-  return total;
+  return t;
+}
+function parseDurInput(v) {
+  if (!v) return 0;
+  v = v.trim().toLowerCase();
+  const hm = v.match(/(\d+)h\s*(\d+)?/);
+  if (hm) return parseInt(hm[1]) * 60 + parseInt(hm[2] || 0);
+  const col = v.match(/^(\d+):(\d+)$/);
+  if (col) return parseInt(col[1]) * 60 + parseInt(col[2]);
+  const n = parseInt(v);
+  return isNaN(n) ? 0 : n;
 }
 
-function parseDurInput(val) {
-  // Accept formats: "4h47min", "4h 47min", "4:47", "287" (minutes)
-  if (!val) return 0;
-  val = val.trim().toLowerCase();
-  const hm = val.match(/(\d+)h\s*(\d+)?/);
-  if (hm) return parseInt(hm[1]) * 60 + parseInt(hm[2] || 0);
-  const colon = val.match(/^(\d+):(\d+)$/);
-  if (colon) return parseInt(colon[1]) * 60 + parseInt(colon[2]);
-  const mins = parseInt(val);
-  if (!isNaN(mins)) return mins;
-  return 0;
+// ── PARSE ITINERARY ──────────────────────────────────
+async function parseItinerary() {
+  const texto = document.getElementById('itinerario').value.trim();
+  if (!texto) { alert('Pega el texto del itinerario primero.'); return; }
+  const sEl = document.getElementById('parse-status');
+  const btn = document.getElementById('btn-parse');
+  sEl.className = 'status loading';
+  sEl.textContent = '✨ Extrayendo información de los vuelos...';
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/buscar-vuelo', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ texto })
+    });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error);
+
+    const flights = json.flights;
+    if (!flights || !flights.length) throw new Error('No se encontraron vuelos en el texto');
+
+    // If ida/vuelta mode, split by index; otherwise all go to ida
+    if (S.tipo === 'idavuelta') {
+      // User can move flights manually — for now put all in ida
+      S.flightsIda = flights.map(f => ({ ...ef(), ...f, found: true }));
+      S.flightsVuelta = [];
+    } else {
+      S.flightsIda = flights.map(f => ({ ...ef(), ...f, found: true }));
+    }
+
+    buildList('ida'); buildList('vuelta');
+    sEl.className = 'status ok';
+    sEl.textContent = `✓ ${flights.length} vuelo${flights.length>1?'s':''} extraído${flights.length>1?'s':''}. Revisa y corrige si es necesario.`;
+    render();
+  } catch(err) {
+    sEl.className = 'status err';
+    sEl.textContent = '✗ ' + (err.message || 'No se pudo procesar el itinerario');
+  } finally { btn.disabled = false; }
 }
 
 // ── TIPO ─────────────────────────────────────────────
@@ -227,9 +249,9 @@ function setType(t, el) {
   el.classList.add('on');
   const vs = document.getElementById('vuelos-vuelta-section');
   const li = document.getElementById('label-ida');
-  if (t === 'ida') { vs.style.display='none'; li.textContent='Vuelos de Ida'; }
-  else if (t === 'idavuelta') { vs.style.display='block'; li.textContent='Vuelos de Ida'; }
-  else { vs.style.display='none'; li.textContent='Tramos'; }
+  if (t === 'ida') { vs.style.display='none'; li.innerHTML='Vuelos de Ida <span style="color:#2d4a62;font-weight:400;text-transform:none;letter-spacing:0">— edita si es necesario</span>'; }
+  else if (t === 'idavuelta') { vs.style.display='block'; li.innerHTML='Vuelos de Ida <span style="color:#2d4a62;font-weight:400;text-transform:none;letter-spacing:0">— edita si es necesario</span>'; }
+  else { vs.style.display='none'; li.innerHTML='Tramos <span style="color:#2d4a62;font-weight:400;text-transform:none;letter-spacing:0">— edita si es necesario</span>'; }
   render();
 }
 
@@ -244,98 +266,44 @@ function buildLocs() {
         <div><label>Etiqueta</label><input value="${l.label}" oninput="S.locs[${i}].label=this.value;render()"></div>
         <div><label>Número</label><input value="${l.value}" oninput="S.locs[${i}].value=this.value;render()"></div>
       </div>
-      ${S.locs.length>1?`<button class="btn-rm" style="font-size:11px;background:none;border:none;cursor:pointer;color:#e05c5c" onclick="removeLoc(${i})">✕ Quitar</button>`:''}
+      ${S.locs.length>1?`<button style="font-size:11px;background:none;border:none;cursor:pointer;color:#e05c5c" onclick="removeLoc(${i})">✕ Quitar</button>`:''}
     </div>`;
   });
-}
-
-// ── FLIGHT LOOKUP ────────────────────────────────────
-async function lookup(dir, idx) {
-  const list = dir==='ida' ? S.flightsIda : S.flightsVuelta;
-  const f = list[idx];
-  if (!f.num || !f.fecha) { alert('Ingresa el número de vuelo y la fecha primero.'); return; }
-  const id = `${dir}-${idx}`;
-  const sEl = document.getElementById('s-'+id);
-  const dEl = document.getElementById('d-'+id);
-  const btn = document.getElementById('b-'+id);
-  sEl.className = 'status loading'; sEl.textContent = '🔍 Buscando información del vuelo...';
-  btn.disabled = true;
-  try {
-    const res = await fetch('/api/buscar-vuelo', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ numero: f.num, fecha: f.fecha })
-    });
-    const json = await res.json();
-    if (!json.ok) throw new Error(json.error);
-    const info = json.data;
-    f.origen=info.origen||''; f.destino=info.destino||'';
-    f.aorig=info.aorig||''; f.adest=info.adest||'';
-    f.sh=info.sh||''; f.lh=info.lh||'';
-    f.lf=info.lf||f.fecha; f.al=info.al||'';
-    f.cab=info.cab||'Economy';
-    f.duracion_min = parseInt(info.duracion_min) || 0;
-    f.found=true;
-    f.editing=false;
-    buildList(dir);
-    const dur = fmtDur(f.duracion_min);
-    dEl.className='found show';
-    dEl.innerHTML=`
-      <div class="dr"><span>Ruta</span><span>${f.origen} → ${f.destino}</span></div>
-      <div class="dr"><span>Salida</span><span>${fmt12(f.sh).h} ${fmt12(f.sh).ampm} · ${f.fecha}</span></div>
-      <div class="dr"><span>Llegada</span><span>${fmt12(f.lh).h} ${fmt12(f.lh).ampm} · ${f.lf}</span></div>
-      <div class="dr"><span>Aerolínea</span><span>${f.al}</span></div>
-      ${dur?`<div class="dr"><span>Duración</span><span>${dur}</span></div>`:''}`;
-    // Update duration input
-    const durInput = document.getElementById('dur-'+id);
-    if (durInput && f.duracion_min > 0) durInput.value = fmtDur(f.duracion_min);
-    sEl.className='status ok'; sEl.textContent='✓ Detalles encontrados. Verifica la duración abajo.';
-    render();
-  } catch(err) {
-    sEl.className='status err'; sEl.textContent='✗ ' + (err.message||'No se pudo obtener información');
-  } finally { btn.disabled=false; }
 }
 
 // ── FLIGHT UI ────────────────────────────────────────
 function addFlight(dir) { (dir==='ida'?S.flightsIda:S.flightsVuelta).push(ef()); buildList(dir); render(); }
 function removeFlight(dir,i) { (dir==='ida'?S.flightsIda:S.flightsVuelta).splice(i,1); buildList(dir); render(); }
-function handleDate(dir,i,v) {
-  const f=(dir==='ida'?S.flightsIda:S.flightsVuelta)[i];
-  f.fechaInput=v;
-  if(v){const[y,m,d]=v.split('-');f.fecha=`${d}/${m}/${y}`;f.lf=f.fecha;}
-  buildList(dir);
-}
-function setNum(dir,i,v){(dir==='ida'?S.flightsIda:S.flightsVuelta)[i].num=v;}
-function setCab(dir,i,v){(dir==='ida'?S.flightsIda:S.flightsVuelta)[i].cab=v;render();}
-function setDur(dir,i,v){
-  (dir==='ida'?S.flightsIda:S.flightsVuelta)[i].duracion_min = parseDurInput(v);
-  render();
-}
-
-function toggleEdit(dir, i) {
-  const list = dir==='ida' ? S.flightsIda : S.flightsVuelta;
-  list[i].editing = !list[i].editing;
-  buildList(dir);
-}
-
-function setField(dir, i, key, val) {
-  const list = dir==='ida' ? S.flightsIda : S.flightsVuelta;
-  list[i][key] = val;
-  if (key === 'duracion_min') list[i][key] = parseDurInput(val);
+function setField(dir,i,key,val) {
+  const list = dir==='ida'?S.flightsIda:S.flightsVuelta;
+  list[i][key] = (key==='duracion_min'||key==='layover_override') ? parseDurInput(val) : val;
   render();
 }
 
 function buildList(dir) {
-  const list=dir==='ida'?S.flightsIda:S.flightsVuelta;
-  const cont=document.getElementById('list-'+dir);
-  cont.innerHTML='';
+  const list = dir==='ida'?S.flightsIda:S.flightsVuelta;
+  const cont = document.getElementById('list-'+dir);
+  cont.innerHTML = '';
   const label = S.tipo==='multi' ? 'Tramo' : (dir==='ida'?'Tramo ida':'Tramo vuelta');
-  list.forEach((f,i)=>{
-    const id=`${dir}-${i}`;
-    const div=document.createElement('div');
-    div.className='fc';
-    const editFields = f.editing ? `
-      <div style="margin-top:8px;padding:8px;background:#0f2030;border-radius:6px;border:1px solid #2d6090">
-        <div style="font-size:10px;color:#4a9fd4;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Edición manual</div>
+  list.forEach((f,i) => {
+    const id = `${dir}-${i}`;
+    const div = document.createElement('div');
+    div.className = 'fc';
+    div.innerHTML = `
+      <div class="fc-head"><span>${label} ${i+1}${f.found?' ✓':''}</span><button class="btn-rm" onclick="removeFlight('${dir}',${i})">✕</button></div>
+      <div class="edit-block">
+        <span class="elabel">Información del vuelo</span>
+        <div class="row2">
+          <div><label>N° vuelo</label><input value="${f.num}" placeholder="CM444" oninput="setField('${dir}',${i},'num',this.value)"></div>
+          <div><label>Clase</label>
+            <select onchange="setField('${dir}',${i},'cab',this.value)">
+              <option value="Economy" ${f.cab==='Economy'?'selected':''}>Economy</option>
+              <option value="Premium" ${f.cab==='Premium'?'selected':''}>Premium</option>
+              <option value="Business" ${f.cab==='Business'?'selected':''}>Business</option>
+              <option value="First" ${f.cab==='First'?'selected':''}>First</option>
+            </select>
+          </div>
+        </div>
         <div class="row2">
           <div><label>Código origen</label><input value="${f.origen}" placeholder="PTY" oninput="setField('${dir}',${i},'origen',this.value)"></div>
           <div><label>Código destino</label><input value="${f.destino}" placeholder="MAD" oninput="setField('${dir}',${i},'destino',this.value)"></div>
@@ -345,45 +313,23 @@ function buildList(dir) {
         <label>Aeropuerto destino</label>
         <input value="${f.adest}" placeholder="Barajas Airport" oninput="setField('${dir}',${i},'adest',this.value)">
         <div class="row2">
-          <div><label>Hora salida (HH:MM)</label><input value="${f.sh}" placeholder="21:05" oninput="setField('${dir}',${i},'sh',this.value)"></div>
+          <div><label>Salida (HH:MM)</label><input value="${f.sh}" placeholder="21:05" oninput="setField('${dir}',${i},'sh',this.value)"></div>
           <div><label>Fecha salida</label><input value="${f.fecha}" placeholder="10/08/2026" oninput="setField('${dir}',${i},'fecha',this.value)"></div>
         </div>
         <div class="row2">
-          <div><label>Hora llegada (HH:MM)</label><input value="${f.lh}" placeholder="14:10" oninput="setField('${dir}',${i},'lh',this.value)"></div>
+          <div><label>Llegada (HH:MM)</label><input value="${f.lh}" placeholder="14:10" oninput="setField('${dir}',${i},'lh',this.value)"></div>
           <div><label>Fecha llegada</label><input value="${f.lf}" placeholder="11/08/2026" oninput="setField('${dir}',${i},'lf',this.value)"></div>
         </div>
         <label>Aerolínea</label>
         <input value="${f.al}" placeholder="Copa Airlines" oninput="setField('${dir}',${i},'al',this.value)">
-        <label>Duración del vuelo</label>
-        <input value="${fmtDur(f.duracion_min)||''}" placeholder="Ej: 4h47min" onchange="setField('${dir}',${i},'duracion_min',this.value)">
-      </div>` : (f.found ? `
-      <div class="found show" style="margin-top:6px">
-        <div class="dr"><span>Ruta</span><span>${f.origen} → ${f.destino}</span></div>
-        <div class="dr"><span>Salida</span><span>${fmt12(f.sh).h} ${fmt12(f.sh).ampm} · ${f.fecha}</span></div>
-        <div class="dr"><span>Llegada</span><span>${fmt12(f.lh).h} ${fmt12(f.lh).ampm} · ${f.lf}</span></div>
-        <div class="dr"><span>Aerolínea</span><span>${f.al}</span></div>
-        <div class="dr"><span>Duración</span><span>${fmtDur(f.duracion_min)||'—'}</span></div>
-      </div>` : '');
-
-    div.innerHTML=`
-      <div class="fc-head"><span>${label} ${i+1}${f.found?' ✓':''}</span><button class="btn-rm" onclick="removeFlight('${dir}',${i})">✕</button></div>
-      <div class="row2">
-        <div><label>N° de vuelo</label><input type="text" value="${f.num}" placeholder="CM444" oninput="setNum('${dir}',${i},this.value)"></div>
-        <div><label>Fecha salida</label><input type="date" value="${f.fechaInput||''}" onchange="handleDate('${dir}',${i},this.value)"></div>
-      </div>
-      <label>Clase</label>
-      <select onchange="setCab('${dir}',${i},this.value)">
-        <option value="Economy" ${f.cab==='Economy'?'selected':''}>Economy</option>
-        <option value="Premium" ${f.cab==='Premium'?'selected':''}>Premium</option>
-        <option value="Business" ${f.cab==='Business'?'selected':''}>Business</option>
-        <option value="First" ${f.cab==='First'?'selected':''}>First</option>
-      </select>
-      <button class="btn-lookup" id="b-${id}" onclick="lookup('${dir}',${i})">🔎 Buscar detalles del vuelo</button>
-      <div class="status" id="s-${id}"></div>
-      ${editFields}
-      <button onclick="toggleEdit('${dir}',${i})" style="width:100%;margin-top:8px;padding:6px;border-radius:5px;background:none;border:1px solid #2d4a62;color:#7fa8c8;font-size:11px;cursor:pointer">
-        ${f.editing ? '✓ Cerrar edición' : '✏️ Editar información manualmente'}
-      </button>`;
+        <div class="row2">
+          <div><label>Duración vuelo</label><input value="${fmtDur(f.duracion_min)||''}" placeholder="4h47min" onchange="setField('${dir}',${i},'duracion_min',this.value)"></div>
+          <div><label>Modelo avión</label><input value="${f.avion||''}" placeholder="Boeing 737-800" oninput="setField('${dir}',${i},'avion',this.value)"></div>
+        </div>
+        ${i < list.length - 1 ? `
+        <label>Tiempo de escala después de este vuelo</label>
+        <input value="${fmtDur(f.layover_override)||''}" placeholder="Automático (deja vacío)" onchange="setField('${dir}',${i},'layover_override',this.value)">` : ''}
+      </div>`;
     cont.appendChild(div);
   });
 }
@@ -441,13 +387,11 @@ function renderSegments(flights) {
   let html = '';
   for (let i = 0; i < flights.length; i++) {
     const f = flights[i];
-    const t1 = fmt12(f.sh);
-    const t2 = fmt12(f.lh);
+    const t1 = fmt12(f.sh), t2 = fmt12(f.lh);
     const dur = fmtDur(f.duracion_min);
     html += `<div class="vseg">
       <div class="vtb">
-        <div class="vtime">${t1.h}</div>
-        <div class="vampm">${t1.ampm}</div>
+        <div class="vtime">${t1.h}</div><div class="vampm">${t1.ampm}</div>
         <div class="vdate">${f.fecha||''}</div>
         <div class="vap">${f.origen||'---'}</div>
         <div class="vapn">${f.aorig||''}</div>
@@ -458,23 +402,18 @@ function renderSegments(flights) {
         ${dur?`<div class="vdur">${dur}</div>`:''}
         <div class="val">${f.al||''}</div>
         <div class="vcab">${f.cab||'Economy'}</div>
+        ${f.avion?`<div class="vavion">${f.avion}</div>`:''}
       </div>
       <div class="vtb">
-        <div class="vtime">${t2.h}</div>
-        <div class="vampm">${t2.ampm}</div>
+        <div class="vtime">${t2.h}</div><div class="vampm">${t2.ampm}</div>
         <div class="vdate">${f.lf||''}</div>
         <div class="vap">${f.destino||'---'}</div>
         <div class="vapn">${f.adest||''}</div>
       </div>
     </div>`;
-
     if (i < flights.length - 1) {
       const lay = calcLayover(flights, i);
-      if (lay) {
-        html += `<div class="vescala">
-          <div class="vescala-text">Escala en <strong>${f.destino||'—'}</strong> · Tiempo de espera: <strong>${fmtDur(lay)}</strong></div>
-        </div>`;
-      }
+      if (lay) html += `<div class="vescala"><div class="vescala-text">Escala en <strong>${f.destino||'—'}</strong> · Tiempo de espera: <strong>${fmtDur(lay)}</strong></div></div>`;
     }
   }
   return html;
@@ -484,7 +423,6 @@ function renderSegments(flights) {
 function render(){
   const ag=document.getElementById('agencia').value;
   const nota=document.getElementById('nota').value;
-
   const paxH = S.passengers.map(p=>`
     <div class="v-pax">
       <div class="pn">${p.nombre||'Pasajero'}</div>
@@ -495,36 +433,28 @@ function render(){
       ${p.bagI?`<span class="pt">🧳 Ida: ${p.bagI}</span>`:''}
       ${(S.tipo==='idavuelta'&&p.bagV)?`<span class="pt">🔁 Vuelta: ${p.bagV}</span>`:''}
     </div>`).join('');
-
   const locsH = S.locs.map(l=>`
     <div class="vloc">
       <div class="vh-lbl">${l.label}</div>
       <div class="vh-val${S.locs.length===1?' big':''}">${l.value||'------'}</div>
     </div>`).join('');
-
   function buildSection(flights, label) {
     if (!flights.length) return '';
     const total = calcTotal(flights);
-    const totalStr = total > 0 ? fmtDur(total) : '';
+    const ts = total > 0 ? fmtDur(total) : '';
     return `<div class="vsec">${label} · ${flights.length} tramo${flights.length>1?'s':''}
-      ${totalStr?`<span class="vsec-total">Total: ${totalStr}</span>`:''}
+      ${ts?`<span class="vsec-total">Total: ${ts}</span>`:''}
     </div>${renderSegments(flights)}`;
   }
-
   let sections = '';
-  if (S.tipo === 'ida') {
-    sections = S.flightsIda.length
-      ? buildSection(S.flightsIda, 'Vuelo')
-      : `<div style="color:#aaa;font-size:12px;padding:10px 0">Agrega vuelos en la pestaña Vuelos</div>`;
-  } else if (S.tipo === 'idavuelta') {
-    sections = buildSection(S.flightsIda, 'Ida') + buildSection(S.flightsVuelta, 'Vuelta');
-    if (!sections) sections = `<div style="color:#aaa;font-size:12px;padding:10px 0">Agrega vuelos en la pestaña Vuelos</div>`;
+  if (S.tipo==='ida') {
+    sections = S.flightsIda.length ? buildSection(S.flightsIda,'Vuelo') : `<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
+  } else if (S.tipo==='idavuelta') {
+    sections = buildSection(S.flightsIda,'Ida') + buildSection(S.flightsVuelta,'Vuelta');
+    if (!sections) sections = `<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
   } else {
-    sections = S.flightsIda.length
-      ? buildSection(S.flightsIda, 'Itinerario')
-      : `<div style="color:#aaa;font-size:12px;padding:10px 0">Agrega tramos en la pestaña Vuelos</div>`;
+    sections = S.flightsIda.length ? buildSection(S.flightsIda,'Itinerario') : `<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
   }
-
   document.getElementById('voucher').innerHTML=`
     <div class="vdiv"></div>
     <div class="vh">
@@ -543,13 +473,8 @@ function render(){
 }
 
 function dlPDF(){
-  const loc = S.locs[0]?.value || 'viaje';
-  html2pdf().set({
-    margin:0, filename:`voucher-${loc}.pdf`,
-    image:{type:'jpeg',quality:0.98},
-    html2canvas:{scale:2,useCORS:true},
-    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
-  }).from(document.getElementById('voucher')).save();
+  const loc = S.locs[0]?.value||'viaje';
+  html2pdf().set({margin:0,filename:`voucher-${loc}.pdf`,image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(document.getElementById('voucher')).save();
 }
 
 S.flightsIda.push(ef()); S.flightsVuelta.push(ef());
