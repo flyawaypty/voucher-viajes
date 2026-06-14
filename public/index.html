@@ -164,6 +164,12 @@ textarea { resize: vertical; line-height: 1.5; }
 
 <div class="preview">
   <div class="toolbar">
+    <select id="lang-select" onchange="render()" style="padding:7px 10px;border-radius:6px;border:1px solid #c0d0e0;font-size:12px;color:#1e3a5c;background:#fff;cursor:pointer;margin-right:6px">
+      <option value="es">🇪🇸 Español</option>
+      <option value="en">🇺🇸 English</option>
+      <option value="pt">🇧🇷 Português</option>
+      <option value="he">🇮🇱 עברית</option>
+    </select>
     <button class="btn-dl" onclick="dlPDF()">⬇ Descargar PDF</button>
   </div>
   <div id="voucher"></div>
@@ -193,7 +199,89 @@ if (sessionStorage.getItem('fa_auth') === '1') {
   document.getElementById('app-content').style.display = 'flex';
 }
 
-const BRAND = {
+const LANGS = {
+  es: {
+    dir: 'ltr',
+    passengers: 'Pasajeros',
+    flight: 'Vuelo',
+    outbound: 'Ida',
+    inbound: 'Vuelta',
+    itinerary: 'Itinerario',
+    leg: 'Tramo',
+    total: 'Total',
+    stopover: 'Escala en',
+    waitTime: 'Tiempo de espera',
+    eticket: 'E-TICKET',
+    bagAllowed: 'Maleta permitida',
+    bagOutbound: 'Maleta permitida ida',
+    bagReturn: 'Maleta permitida vuelta',
+    seat: 'Asiento',
+    meal: 'Special meal',
+    download: '⬇ Descargar PDF'
+  },
+  en: {
+    dir: 'ltr',
+    passengers: 'Passengers',
+    flight: 'Flight',
+    outbound: 'Outbound',
+    inbound: 'Return',
+    itinerary: 'Itinerary',
+    leg: 'Segment',
+    total: 'Total',
+    stopover: 'Layover at',
+    waitTime: 'Waiting time',
+    eticket: 'E-TICKET',
+    bagAllowed: 'Baggage allowance',
+    bagOutbound: 'Outbound baggage',
+    bagReturn: 'Return baggage',
+    seat: 'Seat',
+    meal: 'Special meal',
+    download: '⬇ Download PDF'
+  },
+  pt: {
+    dir: 'ltr',
+    passengers: 'Passageiros',
+    flight: 'Voo',
+    outbound: 'Ida',
+    inbound: 'Volta',
+    itinerary: 'Itinerário',
+    leg: 'Trecho',
+    total: 'Total',
+    stopover: 'Escala em',
+    waitTime: 'Tempo de espera',
+    eticket: 'E-TICKET',
+    bagAllowed: 'Bagagem permitida',
+    bagOutbound: 'Bagagem permitida ida',
+    bagReturn: 'Bagagem permitida volta',
+    seat: 'Assento',
+    meal: 'Refeição especial',
+    download: '⬇ Baixar PDF'
+  },
+  he: {
+    dir: 'rtl',
+    passengers: 'נוסעים',
+    flight: 'טיסה',
+    outbound: 'יציאה',
+    inbound: 'חזרה',
+    itinerary: 'מסלול',
+    leg: 'קטע',
+    total: 'סה״כ',
+    stopover: 'עצירה ב',
+    waitTime: 'זמן המתנה',
+    eticket: 'כרטיס אלקטרוני',
+    bagAllowed: 'כבודה מותרת',
+    bagOutbound: 'כבודה מותרת הלוך',
+    bagReturn: 'כבודה מותרת חזור',
+    seat: 'מושב',
+    meal: 'ארוחה מיוחדת',
+    download: '⬇ הורד PDF'
+  }
+};
+
+function getLang() {
+  return LANGS[document.getElementById('lang-select')?.value || 'es'] || LANGS.es;
+}
+
   whatsapp: '+507 6327-2362',
   email: 'travel@flyawaypty.com'
 };
@@ -418,7 +506,8 @@ function switchTab(n,el){
 }
 
 // ── RENDER SEGMENTS ──────────────────────────────────
-function renderSegments(flights){
+function renderSegments(flights,L){
+  if(!L) L=getLang();
   let html='';
   for(let i=0;i<flights.length;i++){
     const f=flights[i],t1=fmt12(f.sh),t2=fmt12(f.lh),dur=fmtDur(f.duracion_min);
@@ -446,7 +535,7 @@ function renderSegments(flights){
     </div>`;
     if(i<flights.length-1){
       const lay=calcLayover(flights,i);
-      if(lay) html+=`<div class="vescala"><div class="vescala-text">Escala en <strong>${f.destino||'—'}</strong> · Tiempo de espera: <strong>${fmtDur(lay)}</strong></div></div>`;
+      if(lay) html+=`<div class="vescala"><div class="vescala-text">${L.stopover} <strong>${f.destino||'—'}</strong> · ${L.waitTime}: <strong>${fmtDur(lay)}</strong></div></div>`;
     }
   }
   return html;
@@ -456,18 +545,23 @@ function renderSegments(flights){
 function render(){
   const nota=document.getElementById('nota').value;
   const ref=document.getElementById('ref').value.trim();
+  const L=getLang();
+
+  // Update download button text
+  const dlBtn=document.querySelector('.btn-dl');
+  if(dlBtn) dlBtn.textContent=L.download;
 
   const mealLabels={KSML:'Kosher Meal',SKML:'Strict Kosher Meal',VGML:'Vegan Meal',CHML:"Children's Meal"};
 
   const paxH=S.passengers.map(p=>`
-    <div class="v-pax">
+    <div class="v-pax" ${L.dir==='rtl'?'style="direction:rtl;text-align:right"':''}>
       <div class="pn">${p.nombre||'Pasajero'}</div>
-      ${p.eticket?`<span class="pt">E-TICKET: ${p.eticket.toUpperCase()}</span>`:''}
-      ${p.bagI?`<span class="pt">${S.tipo==='idavuelta'?'Maleta permitida ida':'Maleta permitida'}: ${p.bagI}</span>`:''}
-      ${(S.tipo==='idavuelta'&&p.bagV)?`<span class="pt">Maleta permitida vuelta: ${p.bagV}</span>`:''}
-      ${p.asiento?`<span class="pt">Asiento: ${p.asiento}</span>`:''}
+      ${p.eticket?`<span class="pt">${L.eticket}: ${p.eticket.toUpperCase()}</span>`:''}
+      ${p.bagI?`<span class="pt">${S.tipo==='idavuelta'?L.bagOutbound:L.bagAllowed}: ${p.bagI}</span>`:''}
+      ${(S.tipo==='idavuelta'&&p.bagV)?`<span class="pt">${L.bagReturn}: ${p.bagV}</span>`:''}
+      ${p.asiento?`<span class="pt">${L.seat}: ${p.asiento}</span>`:''}
       ${p.ff_al&&p.ff_num?`<span class="pt">${p.ff_al} # ${p.ff_num}</span>`:''}
-      ${p.meal?`<span class="pt">Special meal: ${mealLabels[p.meal]||p.meal}</span>`:''}
+      ${p.meal?`<span class="pt">${L.meal}: ${mealLabels[p.meal]||p.meal}</span>`:''}
     </div>`).join('');
 
   const locsH=S.locs.map(l=>`
@@ -479,18 +573,19 @@ function render(){
   function buildSection(flights,label){
     if(!flights.length) return '';
     const total=calcTotal(flights),ts=total>0?fmtDur(total):'';
-    return `<div class="vsec">${label} · ${flights.length} tramo${flights.length>1?'s':''}
-      ${ts?`<span class="vsec-total">Total: ${ts}</span>`:''}
-    </div>${renderSegments(flights)}`;
+    return `<div class="vsec">${label} · ${flights.length} ${L.leg}${flights.length>1?'s':''}
+      ${ts?`<span class="vsec-total">${L.total}: ${ts}</span>`:''}
+    </div>${renderSegments(flights,L)}`;
   }
   let sections='';
-  if(S.tipo==='ida') sections=S.flightsIda.length?buildSection(S.flightsIda,'Vuelo'):`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
-  else if(S.tipo==='idavuelta'){sections=buildSection(S.flightsIda,'Ida')+buildSection(S.flightsVuelta,'Vuelta');if(!sections)sections=`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;}
-  else sections=S.flightsIda.length?buildSection(S.flightsIda,'Itinerario'):`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
+  if(S.tipo==='ida') sections=S.flightsIda.length?buildSection(S.flightsIda,L.flight):`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
+  else if(S.tipo==='idavuelta'){sections=buildSection(S.flightsIda,L.outbound)+buildSection(S.flightsVuelta,L.inbound);if(!sections)sections=`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;}
+  else sections=S.flightsIda.length?buildSection(S.flightsIda,L.itinerary):`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
 
+  const voucherDir=L.dir==='rtl'?'direction:rtl':'';
   document.getElementById('voucher').innerHTML=`
     <div class="vdiv"></div>
-    <div class="vh">
+    <div class="vh" style="${voucherDir}">
       <div class="vh-brand">
         <img src="/logo.png" class="vh-logo-img" alt="Flyaway">
         <div class="vh-contact">
@@ -501,11 +596,11 @@ function render(){
       </div>
       <div class="vlocs">${locsH}</div>
     </div>
-    <div class="vb">
-      ${S.passengers.length?`<div class="vsec">Pasajeros · ${S.passengers.length}</div><div class="v-paxes">${paxH}</div>`:''}
+    <div class="vb" style="${voucherDir}">
+      ${S.passengers.length?`<div class="vsec">${L.passengers} · ${S.passengers.length}</div><div class="v-paxes">${paxH}</div>`:''}
       ${sections}
     </div>
-    <div class="vfoot"><div class="vfoot-note">${nota}</div></div>
+    <div class="vfoot" style="${voucherDir}"><div class="vfoot-note">${nota}</div></div>
     <div class="vdiv"></div>`;
 }
 
