@@ -161,7 +161,7 @@ const S = {
 
 function ef() {
   return { num:'', fecha:'', fechaInput:'', origen:'', destino:'', aorig:'', adest:'',
-           sh:'', lh:'', lf:'', al:'', cab:'Economy', duracion_min:0, found:false };
+           sh:'', lh:'', lf:'', al:'', cab:'Economy', duracion_min:0, found:false, editing:false };
 }
 
 function fmt12(t) {
@@ -275,6 +275,8 @@ async function lookup(dir, idx) {
     f.cab=info.cab||'Economy';
     f.duracion_min = parseInt(info.duracion_min) || 0;
     f.found=true;
+    f.editing=false;
+    buildList(dir);
     const dur = fmtDur(f.duracion_min);
     dEl.className='found show';
     dEl.innerHTML=`
@@ -309,6 +311,19 @@ function setDur(dir,i,v){
   render();
 }
 
+function toggleEdit(dir, i) {
+  const list = dir==='ida' ? S.flightsIda : S.flightsVuelta;
+  list[i].editing = !list[i].editing;
+  buildList(dir);
+}
+
+function setField(dir, i, key, val) {
+  const list = dir==='ida' ? S.flightsIda : S.flightsVuelta;
+  list[i][key] = val;
+  if (key === 'duracion_min') list[i][key] = parseDurInput(val);
+  render();
+}
+
 function buildList(dir) {
   const list=dir==='ida'?S.flightsIda:S.flightsVuelta;
   const cont=document.getElementById('list-'+dir);
@@ -318,6 +333,38 @@ function buildList(dir) {
     const id=`${dir}-${i}`;
     const div=document.createElement('div');
     div.className='fc';
+    const editFields = f.editing ? `
+      <div style="margin-top:8px;padding:8px;background:#0f2030;border-radius:6px;border:1px solid #2d6090">
+        <div style="font-size:10px;color:#4a9fd4;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Edición manual</div>
+        <div class="row2">
+          <div><label>Código origen</label><input value="${f.origen}" placeholder="PTY" oninput="setField('${dir}',${i},'origen',this.value)"></div>
+          <div><label>Código destino</label><input value="${f.destino}" placeholder="MAD" oninput="setField('${dir}',${i},'destino',this.value)"></div>
+        </div>
+        <label>Aeropuerto origen</label>
+        <input value="${f.aorig}" placeholder="Tocumen International Airport" oninput="setField('${dir}',${i},'aorig',this.value)">
+        <label>Aeropuerto destino</label>
+        <input value="${f.adest}" placeholder="Barajas Airport" oninput="setField('${dir}',${i},'adest',this.value)">
+        <div class="row2">
+          <div><label>Hora salida (HH:MM)</label><input value="${f.sh}" placeholder="21:05" oninput="setField('${dir}',${i},'sh',this.value)"></div>
+          <div><label>Fecha salida</label><input value="${f.fecha}" placeholder="10/08/2026" oninput="setField('${dir}',${i},'fecha',this.value)"></div>
+        </div>
+        <div class="row2">
+          <div><label>Hora llegada (HH:MM)</label><input value="${f.lh}" placeholder="14:10" oninput="setField('${dir}',${i},'lh',this.value)"></div>
+          <div><label>Fecha llegada</label><input value="${f.lf}" placeholder="11/08/2026" oninput="setField('${dir}',${i},'lf',this.value)"></div>
+        </div>
+        <label>Aerolínea</label>
+        <input value="${f.al}" placeholder="Copa Airlines" oninput="setField('${dir}',${i},'al',this.value)">
+        <label>Duración del vuelo</label>
+        <input value="${fmtDur(f.duracion_min)||''}" placeholder="Ej: 4h47min" onchange="setField('${dir}',${i},'duracion_min',this.value)">
+      </div>` : (f.found ? `
+      <div class="found show" style="margin-top:6px">
+        <div class="dr"><span>Ruta</span><span>${f.origen} → ${f.destino}</span></div>
+        <div class="dr"><span>Salida</span><span>${fmt12(f.sh).h} ${fmt12(f.sh).ampm} · ${f.fecha}</span></div>
+        <div class="dr"><span>Llegada</span><span>${fmt12(f.lh).h} ${fmt12(f.lh).ampm} · ${f.lf}</span></div>
+        <div class="dr"><span>Aerolínea</span><span>${f.al}</span></div>
+        <div class="dr"><span>Duración</span><span>${fmtDur(f.duracion_min)||'—'}</span></div>
+      </div>` : '');
+
     div.innerHTML=`
       <div class="fc-head"><span>${label} ${i+1}${f.found?' ✓':''}</span><button class="btn-rm" onclick="removeFlight('${dir}',${i})">✕</button></div>
       <div class="row2">
@@ -333,13 +380,10 @@ function buildList(dir) {
       </select>
       <button class="btn-lookup" id="b-${id}" onclick="lookup('${dir}',${i})">🔎 Buscar detalles del vuelo</button>
       <div class="status" id="s-${id}"></div>
-      <div class="found ${f.found?'show':''}" id="d-${id}">
-        ${f.found?`<div class="dr"><span>Ruta</span><span>${f.origen} → ${f.destino}</span></div><div class="dr"><span>Salida</span><span>${fmt12(f.sh).h} ${fmt12(f.sh).ampm}</span></div><div class="dr"><span>Duración</span><span>${fmtDur(f.duracion_min)||'—'}</span></div>`:''}
-      </div>
-      ${f.found?`<div class="manual-dur">
-        <label>✏️ Corregir duración (si es necesario)</label>
-        <input type="text" id="dur-${id}" value="${fmtDur(f.duracion_min)||''}" placeholder="Ej: 4h47min" onchange="setDur('${dir}',${i},this.value)">
-      </div>`:''}`;
+      ${editFields}
+      <button onclick="toggleEdit('${dir}',${i})" style="width:100%;margin-top:8px;padding:6px;border-radius:5px;background:none;border:1px solid #2d4a62;color:#7fa8c8;font-size:11px;cursor:pointer">
+        ${f.editing ? '✓ Cerrar edición' : '✏️ Editar información manualmente'}
+      </button>`;
     cont.appendChild(div);
   });
 }
