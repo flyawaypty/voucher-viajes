@@ -809,32 +809,41 @@ function dlPDF(){
     ? (document.getElementById('h-confirmacion')?.value?.trim()||'hotel')
     : (S.locs[0]?.value||'viaje');
   const filename = ref ? `TKT${ref}.pdf` : `voucher-${conf}.pdf`;
-  const el=document.getElementById('voucher');
-  const sidebar=document.querySelector('.sidebar');
-  const preview=document.querySelector('.preview');
+  const el = document.getElementById('voucher');
+  const sidebar = document.querySelector('.sidebar');
+  const preview = document.querySelector('.preview');
 
-  sidebar.style.display='none';
-  preview.style.padding='0';
-  el.style.maxWidth='100%';
-  el.style.width='100%';
-  el.style.borderRadius='0';
-  el.style.boxShadow='none';
+  sidebar.style.display = 'none';
+  preview.style.padding = '0';
+  el.style.maxWidth = '100%';
+  el.style.width = '100%';
+  el.style.borderRadius = '0';
+  el.style.boxShadow = 'none';
 
-  setTimeout(()=>{
-    html2pdf().set({
-      margin:0, filename,
-      image:{type:'jpeg',quality:0.98},
-      html2canvas:{scale:2,useCORS:true,scrollX:0,scrollY:0},
-      jsPDF:{unit:'in',format:'letter',orientation:'portrait'}
-    }).from(el).save().then(()=>{
-      sidebar.style.display='';
-      preview.style.padding='';
-      el.style.maxWidth='';
-      el.style.width='';
-      el.style.borderRadius='';
-      el.style.boxShadow='';
-    });
-  }, 100);
+  // Wait for images to load before generating PDF
+  const imgs = el.querySelectorAll('img');
+  const imagePromises = Array.from(imgs).map(img => {
+    if (img.complete) return Promise.resolve();
+    return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
+  });
+
+  Promise.all(imagePromises).then(() => {
+    setTimeout(() => {
+      html2pdf().set({
+        margin: 0, filename,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      }).from(el).save().then(() => {
+        sidebar.style.display = '';
+        preview.style.padding = '';
+        el.style.maxWidth = '';
+        el.style.width = '';
+        el.style.borderRadius = '';
+        el.style.boxShadow = '';
+      });
+    }, 200);
+  });
 }
 
 // ── PRODUCT SWITCHING ────────────────────────────────
