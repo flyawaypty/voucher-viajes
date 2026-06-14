@@ -87,18 +87,60 @@ textarea { resize: vertical; line-height: 1.5; }
 .vfoot { background: #f7fafd; border-top: 1px solid #e0ecf7; padding: 12px 30px; }
 .vfoot-note { font-size: 11px; color: #7fa8c0; }
 .vdiv { height: 5px; background: linear-gradient(90deg, #3d8fd1, #2a6fa8, #c9a97a); }
+/* PRODUCT TABS */
+.prod-tabs { display: flex; gap: 3px; margin-bottom: 14px; }
+.prod-tab { flex: 1; padding: 7px 4px; text-align: center; font-size: 10px; font-weight: 600; border-radius: 5px; cursor: pointer; border: 1px solid #2d5070; background: #163050; color: #7fa8c8; }
+.prod-tab.on { background: #3d8fd1; color: #fff; border-color: #3d8fd1; }
+/* HOTEL VOUCHER */
+.vh-photo { width: 100%; height: 160px; object-fit: cover; display: block; }
+.vh-hotel-info { padding: 16px 30px 0; border-bottom: 1px solid #f0f4f8; padding-bottom: 14px; margin-bottom: 4px; }
+.vh-hotel-name { font-size: 18px; font-weight: 800; color: #1e3a5c; margin-bottom: 3px; }
+.vh-hotel-stars { color: #c9a97a; font-size: 14px; margin-bottom: 3px; }
+.vh-hotel-addr { font-size: 10px; color: #7fa8c0; }
+.vhotel-dates { display: grid; grid-template-columns: 1fr 60px 1fr; align-items: center; gap: 10px; margin-bottom: 14px; }
+.vhotel-date-box { text-align: center; background: #f5f9ff; border-radius: 7px; padding: 12px 8px; }
+.vhotel-date-lbl { font-size: 8px; color: #8aa8c0; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.vhotel-date-val { font-size: 18px; font-weight: 800; color: #1e3a5c; }
+.vhotel-date-sub { font-size: 10px; color: #5a7fa0; margin-top: 2px; }
+.vhotel-nights { text-align: center; }
+.vhotel-nights-num { font-size: 24px; font-weight: 800; color: #3d8fd1; }
+.vhotel-nights-lbl { font-size: 8px; color: #8aa8c0; text-transform: uppercase; }
+.vhotel-room { background: #f5f9ff; border-radius: 7px; padding: 10px 14px; margin-bottom: 12px; }
+.vhotel-room-lbl { font-size: 8px; color: #8aa8c0; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.vhotel-room-val { font-size: 13px; font-weight: 700; color: #1e3a5c; }
+.vhotel-room-sub { font-size: 10px; color: #5a7fa0; margin-top: 2px; }
+.vhotel-tax { background: #fff8e8; border-left: 3px solid #c9a97a; padding: 8px 14px; border-radius: 0 6px 6px 0; margin-bottom: 12px; }
+.vhotel-tax-lbl { font-size: 8px; color: #8a6a30; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.vhotel-tax-val { font-size: 13px; font-weight: 700; color: #5a3e00; margin-top: 2px; }
+.vhotel-cancel { font-size: 10px; color: #7fa8c0; margin-bottom: 4px; }
+/* AUTOCOMPLETE */
+.autocomplete-wrap { position: relative; }
+.autocomplete-list { background: #0f2030; border: 1px solid #3d8fd1; border-radius: 5px; margin-top: 2px; max-height: 180px; overflow-y: auto; }
+.autocomplete-item { padding: 8px 10px; font-size: 11px; color: #e8f0f7; cursor: pointer; border-bottom: 1px solid #1a3040; }
+.autocomplete-item:hover { background: #163050; }
+.autocomplete-item .ac-sub { font-size: 10px; color: #7fa8c8; margin-top: 1px; }
 </style>
 </head>
 <body>
 
 <div class="sidebar">
   <h1>✈ <span style="color:#fff">Fly</span><span style="color:#c9a97a">away</span></h1>
-  <p class="sub">Pega el itinerario y el sistema extrae todos los vuelos automáticamente.</p>
-  <div class="tabs">
-    <div class="tab on" onclick="switchTab('general',this)">General</div>
-    <div class="tab" onclick="switchTab('vuelos',this)">Vuelos</div>
-    <div class="tab" onclick="switchTab('pax',this)">Pasajeros</div>
+  <p class="sub">Sistema de vouchers de viaje</p>
+
+  <!-- PRODUCT TABS -->
+  <div class="prod-tabs">
+    <div class="prod-tab on" onclick="switchProduct('vuelos',this)">✈ Vuelos</div>
+    <div class="prod-tab" onclick="switchProduct('hoteles',this)">🏨 Hoteles</div>
+    <div class="prod-tab" onclick="switchProduct('otros',this)">★ Otros</div>
   </div>
+
+  <!-- ═══ VUELOS SECTION ═══ -->
+  <div id="product-vuelos">
+    <div class="tabs">
+      <div class="tab on" onclick="switchTab('general',this)">General</div>
+      <div class="tab" onclick="switchTab('vuelos',this)">Vuelos</div>
+      <div class="tab" onclick="switchTab('pax',this)">Pasajeros</div>
+    </div>
 
   <div id="tab-general">
     <div class="sec">Tipo de voucher</div>
@@ -139,9 +181,80 @@ textarea { resize: vertical; line-height: 1.5; }
     <div id="list-pax"></div>
     <button class="btn-add" onclick="addPax()">+ Agregar pasajero</button>
   </div>
-
   <button class="btn-gen" onclick="render()">↻ Actualizar vista previa</button>
-</div>
+  </div><!-- end product-vuelos -->
+
+  <!-- ═══ HOTELES SECTION ═══ -->
+  <div id="product-hoteles" style="display:none">
+    <div class="tabs">
+      <div class="tab on" onclick="switchHotelTab('general',this)">General</div>
+      <div class="tab" onclick="switchHotelTab('hotel',this)">Hotel</div>
+      <div class="tab" onclick="switchHotelTab('huesped',this)">Huésped</div>
+    </div>
+
+    <div id="htab-general">
+      <div class="sec">Referencia interna</div>
+      <label>TKT#</label>
+      <input id="h-ref" value="" placeholder="4700" oninput="renderHotel()">
+      <div class="sec">Nota al pie</div>
+      <input id="h-nota" value="Gracias por preferirnos. Cualquier consulta estamos a su disposición." oninput="renderHotel()">
+      <div class="sec">Código de reservación</div>
+      <input id="h-confirmacion" value="" placeholder="5112SG092966" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase();renderHotel()">
+    </div>
+
+    <div id="htab-hotel" style="display:none">
+      <div class="sec">Buscar hotel</div>
+      <div class="autocomplete-wrap">
+        <input id="h-search" placeholder="Escribe el nombre del hotel..." oninput="searchHotel(this.value)" autocomplete="off">
+        <div class="autocomplete-list" id="h-suggestions" style="display:none"></div>
+      </div>
+      <div id="h-found" style="display:none;margin-top:8px;padding:8px;background:#0d3320;border-radius:5px;font-size:11px;color:#5be0a0"></div>
+      <div class="sec">Estrellas</div>
+      <div style="display:flex;gap:6px;margin-bottom:8px" id="star-selector">
+        <span style="cursor:pointer;font-size:18px;color:#7fa8c8" onclick="setStars(1)">★</span>
+        <span style="cursor:pointer;font-size:18px;color:#7fa8c8" onclick="setStars(2)">★</span>
+        <span style="cursor:pointer;font-size:18px;color:#7fa8c8" onclick="setStars(3)">★</span>
+        <span style="cursor:pointer;font-size:18px;color:#7fa8c8" onclick="setStars(4)">★</span>
+        <span style="cursor:pointer;font-size:18px;color:#7fa8c8" onclick="setStars(5)">★</span>
+      </div>
+      <div class="sec">Check-in</div>
+      <div class="row2">
+        <div><label>Fecha</label><input id="h-checkin" placeholder="18/06/2026" oninput="renderHotel()"></div>
+        <div><label>Hora</label><input id="h-checkin-hora" placeholder="15:00" oninput="renderHotel()"></div>
+      </div>
+      <div class="sec">Check-out</div>
+      <div class="row2">
+        <div><label>Fecha</label><input id="h-checkout" placeholder="21/06/2026" oninput="renderHotel()"></div>
+        <div><label>Hora</label><input id="h-checkout-hora" placeholder="12:00" oninput="renderHotel()"></div>
+      </div>
+      <div class="sec">Habitación</div>
+      <input id="h-habitacion" placeholder="Standard Room, 1 King Bed" oninput="renderHotel()">
+      <div class="sec">Régimen</div>
+      <select id="h-regimen" onchange="renderHotel()">
+        <option value="">— Sin especificar —</option>
+        <option value="Solo alojamiento">Solo alojamiento</option>
+        <option value="Alojamiento y desayuno">Alojamiento y desayuno</option>
+        <option value="Media pensión">Media pensión</option>
+        <option value="Pensión completa">Pensión completa</option>
+        <option value="Todo incluido">Todo incluido</option>
+      </select>
+      <div class="sec">Impuestos a pagar en el hotel (opcional)</div>
+      <input id="h-impuestos" placeholder="EUR 45.00 (APROX $ 52.00)" oninput="renderHotel()">
+      <div class="sec">Política de cancelación</div>
+      <input id="h-cancelacion" placeholder="Reembolsable hasta..." oninput="renderHotel()">
+    </div>
+
+    <div id="htab-huesped" style="display:none">
+      <div class="sec">Huésped</div>
+      <div id="h-list-pax"></div>
+      <button class="btn-add" onclick="addHotelPax()">+ Agregar huésped</button>
+    </div>
+
+    <button class="btn-gen" onclick="renderHotel()">↻ Actualizar vista previa</button>
+  </div><!-- end product-hoteles -->
+
+  </div><!-- end product-otros -->
+</div><!-- end sidebar -->
 
 <div class="preview">
   <div class="toolbar">
@@ -496,8 +609,15 @@ function render(){
 }
 
 function dlPDF(){
-  const ref=document.getElementById('ref').value.trim();
-  const filename=ref?`TKT${ref}.pdf`:`voucher-${S.locs[0]?.value||'viaje'}.pdf`;
+  const activeProduct = document.querySelector('.prod-tab.on')?.textContent?.trim();
+  const isHotel = activeProduct?.includes('Hotel');
+  const ref = isHotel
+    ? (document.getElementById('h-ref')?.value?.trim()||'')
+    : (document.getElementById('ref')?.value?.trim()||'');
+  const conf = isHotel
+    ? (document.getElementById('h-confirmacion')?.value?.trim()||'hotel')
+    : (S.locs[0]?.value||'viaje');
+  const filename = ref ? `TKT${ref}.pdf` : `voucher-${conf}.pdf`;
   const el=document.getElementById('voucher');
   const sidebar=document.querySelector('.sidebar');
   const preview=document.querySelector('.preview');
@@ -526,7 +646,190 @@ function dlPDF(){
   }, 100);
 }
 
-S.flightsIda.push(ef());S.flightsVuelta.push(ef());
+// ── PRODUCT SWITCHING ────────────────────────────────
+function switchProduct(p, el) {
+  ['vuelos','hoteles','otros'].forEach(x => {
+    document.getElementById('product-'+x).style.display = x===p ? 'block' : 'none';
+  });
+  document.querySelectorAll('.prod-tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  if (p==='vuelos') render();
+  if (p==='hoteles') renderHotel();
+}
+
+// ── HOTEL STATE ───────────────────────────────────────
+const HS = {
+  name:'', address:'', phone:'', photoUrl:'', stars:0,
+  passengers: [{apellido:'',nombre:''}]
+};
+let searchTimer = null;
+
+function setStars(n) {
+  HS.stars = n;
+  const spans = document.querySelectorAll('#star-selector span');
+  spans.forEach((s,i) => { s.style.color = i < n ? '#c9a97a' : '#7fa8c8'; });
+  renderHotel();
+}
+
+function switchHotelTab(n, el) {
+  ['general','hotel','huesped'].forEach(t => {
+    document.getElementById('htab-'+t).style.display = t===n ? 'block' : 'none';
+  });
+  document.querySelectorAll('#product-hoteles .tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+}
+
+function addHotelPax() {
+  HS.passengers.push({apellido:'',nombre:''});
+  buildHotelPax();
+}
+function removeHotelPax(i) { HS.passengers.splice(i,1); buildHotelPax(); renderHotel(); }
+function buildHotelPax() {
+  const c = document.getElementById('h-list-pax'); c.innerHTML='';
+  HS.passengers.forEach((p,i) => {
+    c.innerHTML += `<div class="fc">
+      <div class="fc-head"><span>Huésped ${i+1}</span>${HS.passengers.length>1?`<button class="btn-rm" onclick="removeHotelPax(${i})">✕</button>`:''}</div>
+      <div class="row2">
+        <div><label>Apellido</label><input value="${p.apellido.toUpperCase()}" style="text-transform:uppercase" oninput="HS.passengers[${i}].apellido=this.value.toUpperCase();renderHotel()"></div>
+        <div><label>Nombre</label><input value="${p.nombre.toUpperCase()}" style="text-transform:uppercase" oninput="HS.passengers[${i}].nombre=this.value.toUpperCase();renderHotel()"></div>
+      </div>
+    </div>`;
+  });
+}
+
+// ── HOTEL SEARCH ──────────────────────────────────────
+async function searchHotel(q) {
+  clearTimeout(searchTimer);
+  const list = document.getElementById('h-suggestions');
+  if (!q || q.length < 3) { list.style.display='none'; return; }
+  searchTimer = setTimeout(async () => {
+    try {
+      const res = await fetch('/api/buscar-hotel', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({action:'autocomplete', query:q})
+      });
+      const data = await res.json();
+      if (!data.ok || !data.predictions.length) { list.style.display='none'; return; }
+      list.innerHTML = data.predictions.map(p =>
+        `<div class="autocomplete-item" onclick="selectHotel('${p.place_id}','${p.name.replace(/'/g,"\\'")}')">
+          <div>${p.name}</div><div class="ac-sub">${p.address}</div>
+        </div>`
+      ).join('');
+      list.style.display = 'block';
+    } catch(e) { list.style.display='none'; }
+  }, 400);
+}
+
+async function selectHotel(place_id, name) {
+  document.getElementById('h-suggestions').style.display = 'none';
+  document.getElementById('h-search').value = name;
+  const found = document.getElementById('h-found');
+  found.style.display='block'; found.textContent='Cargando información...';
+  try {
+    const res = await fetch('/api/buscar-hotel', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'details', place_id})
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error);
+    const h = data.hotel;
+    HS.name = h.name; HS.address = h.address;
+    HS.phone = h.phone; HS.photoUrl = h.photoUrl;
+    found.textContent = `✓ ${h.name} — ${h.address}`;
+    renderHotel();
+  } catch(e) {
+    found.style.color='#e07070'; found.textContent='✗ Error al cargar el hotel';
+  }
+}
+
+// ── RENDER HOTEL VOUCHER ──────────────────────────────
+function renderHotel() {
+  const ref = (document.getElementById('h-ref')?.value||'').trim();
+  const nota = document.getElementById('h-nota')?.value||'';
+  const conf = document.getElementById('h-confirmacion')?.value||'';
+  const checkin = document.getElementById('h-checkin')?.value||'';
+  const checkinH = document.getElementById('h-checkin-hora')?.value||'';
+  const checkout = document.getElementById('h-checkout')?.value||'';
+  const checkoutH = document.getElementById('h-checkout-hora')?.value||'';
+  const hab = document.getElementById('h-habitacion')?.value||'';
+  const reg = document.getElementById('h-regimen')?.value||'';
+  const imp = document.getElementById('h-impuestos')?.value||'';
+  const cancel = document.getElementById('h-cancelacion')?.value||'';
+
+  // Calculate nights
+  let nights = '';
+  if (checkin && checkout) {
+    const [d1,m1,y1]=checkin.split('/').map(Number);
+    const [d2,m2,y2]=checkout.split('/').map(Number);
+    if (d1&&m1&&y1&&d2&&m2&&y2) {
+      const diff = (new Date(y2,m2-1,d2) - new Date(y1,m1-1,d1)) / 86400000;
+      if (diff>0) nights = diff;
+    }
+  }
+
+  const stars = HS.stars > 0 ? '★'.repeat(HS.stars) : '';
+  const guestH = HS.passengers.map(p =>
+    `<div class="pn" style="font-size:13px;font-weight:700;color:#1e3a5c">${p.apellido&&p.nombre?`${p.apellido} / ${p.nombre}`:p.apellido||p.nombre||'HUÉSPED'}</div>`
+  ).join('');
+
+  const locsHotelH = conf ? `<div class="vloc"><div class="vh-lbl">CONFIRMACIÓN</div><div class="vh-val big">${conf}</div></div>` : '';
+
+  document.getElementById('voucher').innerHTML = `
+    <div class="vdiv"></div>
+    <div class="vh">
+      <div class="vh-brand">
+        <img src="/logo.png" class="vh-logo-img" alt="Flyaway">
+        <div class="vh-contact">
+          <div class="vh-contact-item">${waIcon} ${BRAND.whatsapp}</div>
+          <div class="vh-contact-item">${emailIcon} ${BRAND.email}</div>
+        </div>
+        ${ref?`<div class="vh-ref">TKT# ${ref}</div>`:''}
+      </div>
+      <div class="vlocs">${locsHotelH}</div>
+    </div>
+    ${HS.photoUrl ? `<img src="${HS.photoUrl}" class="vh-photo" alt="Hotel">` : ''}
+    <div class="vh-hotel-info">
+      <div class="vh-hotel-name">${HS.name||'NOMBRE DEL HOTEL'}</div>
+      ${stars?`<div class="vh-hotel-stars">${stars}</div>`:''}
+      <div class="vh-hotel-addr">${[HS.address,HS.phone].filter(Boolean).join(' · ')}</div>
+    </div>
+    <div class="vb">
+      <div class="vsec">Huésped${HS.passengers.length>1?'es':''} · ${HS.passengers.length}</div>
+      <div class="v-paxes"><div class="v-pax">${guestH}</div></div>
+      <div class="vsec">Estadía</div>
+      <div class="vhotel-dates">
+        <div class="vhotel-date-box">
+          <div class="vhotel-date-lbl">Check-in</div>
+          <div class="vhotel-date-val">${checkin||'--/--/----'}</div>
+          <div class="vhotel-date-sub">${checkinH||''}</div>
+        </div>
+        <div class="vhotel-nights">
+          <div class="vhotel-nights-num">${nights||'—'}</div>
+          <div class="vhotel-nights-lbl">noches</div>
+        </div>
+        <div class="vhotel-date-box">
+          <div class="vhotel-date-lbl">Check-out</div>
+          <div class="vhotel-date-val">${checkout||'--/--/----'}</div>
+          <div class="vhotel-date-sub">${checkoutH||''}</div>
+        </div>
+      </div>
+      ${hab||reg?`<div class="vhotel-room">
+        <div class="vhotel-room-lbl">Habitación</div>
+        <div class="vhotel-room-val">${hab||''}</div>
+        ${reg?`<div class="vhotel-room-sub">${reg}</div>`:''}
+      </div>`:''}
+      ${imp?`<div class="vhotel-tax">
+        <div class="vhotel-tax-lbl">Impuestos a pagar en el hotel</div>
+        <div class="vhotel-tax-val">${imp}</div>
+      </div>`:''}
+      ${cancel?`<div class="vhotel-cancel">Cancelación: ${cancel}</div>`:''}
+    </div>
+    <div class="vfoot"><div class="vfoot-note">${nota}</div></div>
+    <div class="vdiv"></div>`;
+}
+
+buildHotelPax();
+
 S.passengers.push({apellido:'',nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1 x 50 LB',bagV:'1 x 50 LB'});
 buildLocs();buildList('ida');buildList('vuelta');buildPax();render();
 </script>
