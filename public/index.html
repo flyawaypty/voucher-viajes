@@ -8,11 +8,8 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #1a2b3c; display: flex; min-height: 100vh; }
-
-/* SIDEBAR */
 .sidebar { width: 360px; min-width: 320px; background: #1e3a5c; color: #e8f0f7; padding: 20px 16px; overflow-y: auto; flex-shrink: 0; min-height: 100vh; }
 .sidebar h1 { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 3px; }
-.sidebar h1 span { color: #c9a97a; }
 .sidebar .sub { font-size: 11px; color: #7fa8c8; margin-bottom: 16px; }
 .sec { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7fa8c8; margin: 14px 0 6px; }
 label { font-size: 11px; color: #b0cde6; display: block; margin-bottom: 2px; margin-top: 6px; }
@@ -42,8 +39,6 @@ textarea { resize: vertical; line-height: 1.5; }
 .type-selector { display: flex; gap: 4px; margin-bottom: 12px; }
 .type-btn { flex: 1; padding: 7px 4px; text-align: center; font-size: 10px; font-weight: 600; border-radius: 5px; cursor: pointer; border: 1px solid #2d5070; background: #163050; color: #7fa8c8; }
 .type-btn.on { background: #3d8fd1; color: #fff; border-color: #3d8fd1; }
-
-/* PREVIEW */
 .preview { flex: 1; padding: 20px; overflow-y: auto; background: #e8eef4; display: flex; flex-direction: column; align-items: center; }
 .toolbar { width: 100%; max-width: 740px; display: flex; justify-content: flex-end; margin-bottom: 10px; }
 .btn-dl { padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: #3d8fd1; color: #fff; }
@@ -51,11 +46,12 @@ textarea { resize: vertical; line-height: 1.5; }
 
 /* VOUCHER */
 #voucher { background: #fff; width: 100%; max-width: 740px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,.1); overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; }
-.vh { background: linear-gradient(135deg, #3d8fd1 0%, #3d8fd1 50%, #2a6fa8 100%); padding: 22px 30px; display: flex; justify-content: space-between; align-items: center; }
+.vh { background: linear-gradient(135deg, #3d8fd1 0%, #3d8fd1 60%, #2a6fa8 100%); padding: 22px 30px; display: flex; justify-content: space-between; align-items: center; }
 .vh-brand { display: flex; flex-direction: column; }
 .vh-logo-img { height: 52px; width: auto; }
-.vh-contact { margin-top: 8px; display: flex; gap: 14px; align-items: center; }
+.vh-contact { margin-top: 6px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
 .vh-contact-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: rgba(255,255,255,0.9); }
+.vh-ref { margin-top: 5px; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
 .vlocs { display: flex; gap: 20px; flex-wrap: wrap; text-align: right; }
 .vloc { text-align: right; }
 .vh-lbl { font-size: 9px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; }
@@ -66,9 +62,9 @@ textarea { resize: vertical; line-height: 1.5; }
 .vsec::after { content: ''; flex: 1; height: 1px; background: #e0ecf7; }
 .vsec-total { font-size: 10px; color: #3d8fd1; font-weight: 700; background: #e8f4ff; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
 .v-paxes { display: flex; flex-direction: column; gap: 8px; }
-.v-pax { background: #f5f9ff; border-left: 4px solid #3d8fd1; padding: 10px 16px; border-radius: 0 6px 6px 0; display: flex; flex-wrap: wrap; gap: 0 24px; }
-.v-pax .pn { font-size: 13px; font-weight: 700; color: #1e3a5c; width: 100%; margin-bottom: 4px; }
-.v-pax .pt { font-size: 11px; color: #5a7fa0; margin-right: 16px; }
+.v-pax { background: #f5f9ff; border-left: 4px solid #3d8fd1; padding: 10px 16px; border-radius: 0 6px 6px 0; }
+.v-pax .pn { font-size: 13px; font-weight: 700; color: #1e3a5c; margin-bottom: 6px; }
+.v-pax .pt { font-size: 11px; color: #5a7fa0; display: block; margin-top: 2px; }
 .vseg { display: grid; grid-template-columns: 100px 1fr 100px; align-items: center; padding: 14px 0; border-bottom: 1px solid #f0f4f8; gap: 8px; }
 .vseg:last-of-type { border-bottom: none; }
 .vtb { text-align: center; }
@@ -88,6 +84,8 @@ textarea { resize: vertical; line-height: 1.5; }
 .vescala { display: flex; align-items: center; justify-content: center; padding: 7px 16px; background: #fdf6ec; border-left: 3px solid #c9a97a; border-right: 3px solid #c9a97a; }
 .vescala-text { font-size: 11px; color: #8a6a30; }
 .vescala-text strong { color: #5a3e00; }
+.vfoot { background: #f7fafd; border-top: 1px solid #e0ecf7; padding: 12px 30px; }
+.vfoot-note { font-size: 11px; color: #7fa8c0; }
 .vdiv { height: 5px; background: linear-gradient(90deg, #3d8fd1, #2a6fa8, #c9a97a); }
 </style>
 </head>
@@ -108,6 +106,9 @@ textarea { resize: vertical; line-height: 1.5; }
       <div class="type-btn" onclick="setType('idavuelta',this)">Ida y vuelta</div>
       <div class="type-btn" onclick="setType('multi',this)">Múltiples tramos</div>
     </div>
+    <div class="sec">Referencia interna</div>
+    <label>TKT#</label>
+    <input id="ref" value="" placeholder="4700" oninput="render()">
     <div class="sec">Nota al pie</div>
     <input id="nota" value="Cada pasajero puede llevar una bolsa o mochila adicional como ítem personal." oninput="render()">
     <div class="sec">Localizadores</div>
@@ -150,10 +151,6 @@ textarea { resize: vertical; line-height: 1.5; }
 
 <script>
 const BRAND = {
-  name: 'Flyaway',
-  blue: '#3d8fd1',
-  gold: '#c9a97a',
-  dark: '#1e3a5c',
   whatsapp: '+507 6327-2362',
   email: 'travel@flyawaypty.com'
 };
@@ -171,77 +168,68 @@ function ef() {
 }
 
 function fmt12(t) {
-  if (!t || !t.includes(':')) return { h:'--:--', ampm:'' };
-  let [h, m] = t.split(':').map(Number);
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  return { h: `${h}:${String(m).padStart(2,'0')}`, ampm };
+  if (!t||!t.includes(':')) return {h:'--:--',ampm:''};
+  let [h,m]=t.split(':').map(Number);
+  const ampm=h>=12?'PM':'AM'; h=h%12||12;
+  return {h:`${h}:${String(m).padStart(2,'0')}`,ampm};
 }
 function fmtDur(mins) {
-  if (!mins || mins <= 0) return '';
-  const h = Math.floor(mins/60), m = mins%60;
-  return h > 0 ? `${h}h${m>0?' '+m+'min':''}` : `${m}min`;
+  if (!mins||mins<=0) return '';
+  const h=Math.floor(mins/60),m=mins%60;
+  return h>0?`${h}h${m>0?' '+m+'min':''}`:`${m}min`;
 }
 function toMins(t) {
   if (!t||!t.includes(':')) return null;
-  const [h,m] = t.split(':').map(Number);
-  return h*60+m;
+  const [h,m]=t.split(':').map(Number); return h*60+m;
 }
-function calcLayover(flights, i) {
+function calcLayover(flights,i) {
   if (i>=flights.length-1) return null;
   if (flights[i].layover_override>0) return flights[i].layover_override;
-  const a=toMins(flights[i].lh), d=toMins(flights[i+1].sh);
+  const a=toMins(flights[i].lh),d=toMins(flights[i+1].sh);
   if (a===null||d===null) return null;
-  let diff=d-a; if (diff<0) diff+=24*60;
+  let diff=d-a; if(diff<0) diff+=24*60;
   return diff>0?diff:null;
 }
 function calcTotal(flights) {
   let t=0;
-  for (let i=0;i<flights.length;i++) {
+  for(let i=0;i<flights.length;i++){
     t+=flights[i].duracion_min||0;
-    if (i<flights.length-1){const l=calcLayover(flights,i);if(l)t+=l;}
+    if(i<flights.length-1){const l=calcLayover(flights,i);if(l)t+=l;}
   }
   return t;
 }
 function parseDurInput(v) {
-  if (!v) return 0; v=v.trim().toLowerCase();
+  if(!v) return 0; v=v.trim().toLowerCase();
   const hm=v.match(/(\d+)h\s*(\d+)?/); if(hm) return parseInt(hm[1])*60+parseInt(hm[2]||0);
   const col=v.match(/^(\d+):(\d+)$/); if(col) return parseInt(col[1])*60+parseInt(col[2]);
   const n=parseInt(v); return isNaN(n)?0:n;
 }
 
-// WhatsApp SVG icon
-const waIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
-const emailIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>`;
-const emailIconGray = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5a7fa0" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>`;
+const waIcon=`<svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+const emailIcon=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>`;
 
 // ── PARSE ITINERARY ──────────────────────────────────
 async function parseItinerary() {
-  const texto = document.getElementById('itinerario').value.trim();
-  if (!texto) { alert('Pega el texto del itinerario primero.'); return; }
-  const sEl = document.getElementById('parse-status');
-  const btn = document.getElementById('btn-parse');
-  sEl.className='status loading'; sEl.textContent='✨ Extrayendo información de los vuelos...';
+  const texto=document.getElementById('itinerario').value.trim();
+  if(!texto){alert('Pega el texto del itinerario primero.');return;}
+  const sEl=document.getElementById('parse-status'),btn=document.getElementById('btn-parse');
+  sEl.className='status loading';sEl.textContent='✨ Extrayendo información de los vuelos...';
   btn.disabled=true;
   try {
-    const res = await fetch('/api/buscar-vuelo', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ texto })
-    });
-    const json = await res.json();
-    if (!json.ok) throw new Error(json.error);
-    const flights = json.flights;
-    if (!flights||!flights.length) throw new Error('No se encontraron vuelos en el texto');
-    S.flightsIda = flights.map(f=>({...ef(),...f,found:true}));
-    S.flightsVuelta = [];
-    buildList('ida'); buildList('vuelta');
+    const res=await fetch('/api/buscar-vuelo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({texto})});
+    const json=await res.json();
+    if(!json.ok) throw new Error(json.error);
+    const flights=json.flights;
+    if(!flights||!flights.length) throw new Error('No se encontraron vuelos en el texto');
+    S.flightsIda=flights.map(f=>({...ef(),...f,found:true}));
+    S.flightsVuelta=[];
+    buildList('ida');buildList('vuelta');
     sEl.className='status ok';
     sEl.textContent=`✓ ${flights.length} vuelo${flights.length>1?'s':''} extraído${flights.length>1?'s':''}. Revisa y corrige si es necesario.`;
     render();
   } catch(err) {
-    sEl.className='status err';
-    sEl.textContent='✗ '+(err.message||'No se pudo procesar el itinerario');
-  } finally { btn.disabled=false; }
+    sEl.className='status err';sEl.textContent='✗ '+(err.message||'No se pudo procesar el itinerario');
+  } finally {btn.disabled=false;}
 }
 
 // ── TIPO ─────────────────────────────────────────────
@@ -249,8 +237,7 @@ function setType(t,el) {
   S.tipo=t;
   document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
-  const vs=document.getElementById('vuelos-vuelta-section');
-  const li=document.getElementById('label-ida');
+  const vs=document.getElementById('vuelos-vuelta-section'),li=document.getElementById('label-ida');
   if(t==='ida'){vs.style.display='none';li.textContent='Vuelos de Ida';}
   else if(t==='idavuelta'){vs.style.display='block';li.textContent='Vuelos de Ida';}
   else{vs.style.display='none';li.textContent='Tramos';}
@@ -281,15 +268,12 @@ function setField(dir,i,key,val){
   list[i][key]=(key==='duracion_min'||key==='layover_override')?parseDurInput(val):val;
   render();
 }
-
 function buildList(dir){
   const list=dir==='ida'?S.flightsIda:S.flightsVuelta;
-  const cont=document.getElementById('list-'+dir);
-  cont.innerHTML='';
+  const cont=document.getElementById('list-'+dir);cont.innerHTML='';
   const label=S.tipo==='multi'?'Tramo':(dir==='ida'?'Tramo ida':'Tramo vuelta');
   list.forEach((f,i)=>{
-    const div=document.createElement('div');
-    div.className='fc';
+    const div=document.createElement('div');div.className='fc';
     div.innerHTML=`
       <div class="fc-head"><span>${label} ${i+1}${f.found?' ✓':''}</span><button class="btn-rm" onclick="removeFlight('${dir}',${i})">✕</button></div>
       <div class="edit-block">
@@ -327,8 +311,7 @@ function buildList(dir){
           <div><label>Duración vuelo</label><input value="${fmtDur(f.duracion_min)||''}" placeholder="4h47min" onchange="setField('${dir}',${i},'duracion_min',this.value)"></div>
           <div><label>Modelo avión</label><input value="${f.avion||''}" placeholder="Boeing 737-800" oninput="setField('${dir}',${i},'avion',this.value)"></div>
         </div>
-        ${i<list.length-1?`
-        <label>Tiempo de escala después de este vuelo</label>
+        ${i<list.length-1?`<label>Tiempo de escala después de este vuelo</label>
         <input value="${fmtDur(f.layover_override)||''}" placeholder="Automático (deja vacío)" onchange="setField('${dir}',${i},'layover_override',this.value)">`:''}</div>`;
     cont.appendChild(div);
   });
@@ -336,7 +319,7 @@ function buildList(dir){
 
 // ── PASSENGERS ───────────────────────────────────────
 function addPax(){
-  S.passengers.push({nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1x23kg',bagV:'1x23kg'});
+  S.passengers.push({nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'23 LB',bagV:'23 LB'});
   buildPax();render();
 }
 function removePax(i){S.passengers.splice(i,1);buildPax();render();}
@@ -345,30 +328,39 @@ function buildPax(){
   S.passengers.forEach((p,i)=>{
     c.innerHTML+=`<div class="fc">
       <div class="fc-head"><span>Pasajero ${i+1}</span><button class="btn-rm" onclick="removePax(${i})">✕</button></div>
-      <label>Nombre completo</label><input value="${p.nombre}" oninput="S.passengers[${i}].nombre=this.value;render()">
-      <label>E-ticket</label><input value="${p.eticket}" oninput="S.passengers[${i}].eticket=this.value;render()">
+      <label>Nombre completo</label><input value="${p.nombre.toUpperCase()}" style="text-transform:uppercase" oninput="S.passengers[${i}].nombre=this.value.toUpperCase();render()">
+      <label>E-TICKET</label><input value="${p.eticket.toUpperCase()}" style="text-transform:uppercase" oninput="S.passengers[${i}].eticket=this.value.toUpperCase();render()">
       <div class="row2">
-        <div><label>Equipaje ida</label><input value="${p.bagI}" oninput="S.passengers[${i}].bagI=this.value;render()"></div>
-        <div><label>Equipaje vuelta</label><input value="${p.bagV}" oninput="S.passengers[${i}].bagV=this.value;render()"></div>
+        <div><label>Maleta permitida ida</label><input value="${p.bagI}" oninput="S.passengers[${i}].bagI=this.value;render()"></div>
+        <div><label>Maleta permitida vuelta</label><input value="${p.bagV}" oninput="S.passengers[${i}].bagV=this.value;render()"></div>
       </div>
       <label>Asiento (opcional)</label>
       <input value="${p.asiento}" placeholder="Ej: 12A" oninput="S.passengers[${i}].asiento=this.value;render()">
       <div class="row2">
-        <div><label>Viajero frecuente N°</label><input value="${p.ff_num}" placeholder="Número" oninput="S.passengers[${i}].ff_num=this.value;render()"></div>
-        <div><label>Aerolínea FF</label><input value="${p.ff_al}" placeholder="Copa, AA..." oninput="S.passengers[${i}].ff_al=this.value;render()"></div>
+        <div><label>Programa FF</label>
+          <select onchange="S.passengers[${i}].ff_al=this.value;render()">
+            <option value="" ${!p.ff_al?'selected':''}>— Ninguno —</option>
+            <option value="AAdvantage" ${p.ff_al==='AAdvantage'?'selected':''}>AAdvantage</option>
+            <option value="Avios" ${p.ff_al==='Avios'?'selected':''}>Avios</option>
+            <option value="ConnectMiles" ${p.ff_al==='ConnectMiles'?'selected':''}>ConnectMiles</option>
+            <option value="Flying Blue" ${p.ff_al==='Flying Blue'?'selected':''}>Flying Blue</option>
+            <option value="LifeMiles" ${p.ff_al==='LifeMiles'?'selected':''}>LifeMiles</option>
+            <option value="Matmid Club" ${p.ff_al==='Matmid Club'?'selected':''}>Matmid Club</option>
+            <option value="MileagePlus" ${p.ff_al==='MileagePlus'?'selected':''}>MileagePlus</option>
+            <option value="SkyTeam" ${p.ff_al==='SkyTeam'?'selected':''}>SkyTeam</option>
+            <option value="SUMA" ${p.ff_al==='SUMA'?'selected':''}>SUMA</option>
+            <option value="FFP" ${p.ff_al==='FFP'?'selected':''}>FFP</option>
+          </select>
+        </div>
+        <div><label>N° de miembro</label><input value="${p.ff_num}" placeholder="Número" oninput="S.passengers[${i}].ff_num=this.value;render()"></div>
       </div>
       <label>Special meal (opcional)</label>
       <select onchange="S.passengers[${i}].meal=this.value;render()">
         <option value="" ${!p.meal?'selected':''}>Sin special meal</option>
-        <option value="VGML" ${p.meal==='VGML'?'selected':''}>VGML – Vegetariano</option>
-        <option value="KVML" ${p.meal==='KVML'?'selected':''}>KVML – Kosher</option>
-        <option value="MOML" ${p.meal==='MOML'?'selected':''}>MOML – Muslim</option>
-        <option value="HNML" ${p.meal==='HNML'?'selected':''}>HNML – Hindu</option>
-        <option value="DBML" ${p.meal==='DBML'?'selected':''}>DBML – Diabético</option>
-        <option value="LFML" ${p.meal==='LFML'?'selected':''}>LFML – Low fat</option>
-        <option value="GFML" ${p.meal==='GFML'?'selected':''}>GFML – Sin gluten</option>
-        <option value="BLML" ${p.meal==='BLML'?'selected':''}>BLML – Bland</option>
-        <option value="CHML" ${p.meal==='CHML'?'selected':''}>CHML – Niño</option>
+        <option value="KSML" ${p.meal==='KSML'?'selected':''}>KSML – Kosher Meal</option>
+        <option value="SKML" ${p.meal==='SKML'?'selected':''}>SKML – Strict Kosher Meal</option>
+        <option value="VGML" ${p.meal==='VGML'?'selected':''}>VGML – Vegan Meal</option>
+        <option value="CHML" ${p.meal==='CHML'?'selected':''}>CHML – Children's Meal</option>
       </select>
     </div>`;
   });
@@ -420,21 +412,27 @@ function renderSegments(flights){
 // ── RENDER VOUCHER ────────────────────────────────────
 function render(){
   const nota=document.getElementById('nota').value;
+  const ref=document.getElementById('ref').value.trim();
+
+  const mealLabels={KSML:'Kosher Meal',SKML:'Strict Kosher Meal',VGML:'Vegan Meal',CHML:"Children's Meal"};
+
   const paxH=S.passengers.map(p=>`
     <div class="v-pax">
       <div class="pn">${p.nombre||'Pasajero'}</div>
-      ${p.eticket?`<span class="pt">E-ticket: ${p.eticket}</span>`:''}
-      ${p.asiento?`<span class="pt">✈ Asiento: ${p.asiento}</span>`:''}
-      ${p.ff_num?`<span class="pt">★ FF ${p.ff_al}: ${p.ff_num}</span>`:''}
-      ${p.meal?`<span class="pt">🍽 ${p.meal}</span>`:''}
-      ${p.bagI?`<span class="pt">🧳 Ida: ${p.bagI}</span>`:''}
-      ${(S.tipo==='idavuelta'&&p.bagV)?`<span class="pt">🔁 Vuelta: ${p.bagV}</span>`:''}
+      ${p.eticket?`<span class="pt">E-TICKET: ${p.eticket.toUpperCase()}</span>`:''}
+      ${p.bagI?`<span class="pt">Maleta permitida: ${p.bagI}</span>`:''}
+      ${(S.tipo==='idavuelta'&&p.bagV)?`<span class="pt">Maleta vuelta: ${p.bagV}</span>`:''}
+      ${p.asiento?`<span class="pt">Asiento: ${p.asiento}</span>`:''}
+      ${p.ff_al&&p.ff_num?`<span class="pt">${p.ff_al} # ${p.ff_num}</span>`:''}
+      ${p.meal?`<span class="pt">Special meal: ${mealLabels[p.meal]||p.meal}</span>`:''}
     </div>`).join('');
+
   const locsH=S.locs.map(l=>`
     <div class="vloc">
       <div class="vh-lbl">${l.label}</div>
       <div class="vh-val${S.locs.length===1?' big':''}">${l.value||'------'}</div>
     </div>`).join('');
+
   function buildSection(flights,label){
     if(!flights.length) return '';
     const total=calcTotal(flights),ts=total>0?fmtDur(total):'';
@@ -456,6 +454,7 @@ function render(){
           <div class="vh-contact-item">${waIcon} ${BRAND.whatsapp}</div>
           <div class="vh-contact-item">${emailIcon} ${BRAND.email}</div>
         </div>
+        ${ref?`<div class="vh-ref">TKT# ${ref}</div>`:''}
       </div>
       <div class="vlocs">${locsH}</div>
     </div>
@@ -463,16 +462,27 @@ function render(){
       ${S.passengers.length?`<div class="vsec">Pasajeros · ${S.passengers.length}</div><div class="v-paxes">${paxH}</div>`:''}
       ${sections}
     </div>
+    <div class="vfoot"><div class="vfoot-note">${nota}</div></div>
     <div class="vdiv"></div>`;
 }
 
+// ── PDF ───────────────────────────────────────────────
 function dlPDF(){
-  const loc=S.locs[0]?.value||'viaje';
-  html2pdf().set({margin:0,filename:`voucher-${loc}.pdf`,image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(document.getElementById('voucher')).save();
+  const ref=document.getElementById('ref').value.trim();
+  const filename=ref?`TKT${ref}.pdf`:`voucher-${S.locs[0]?.value||'viaje'}.pdf`;
+  const el=document.getElementById('voucher');
+  const w=el.offsetWidth;
+  html2pdf().set({
+    margin:0,
+    filename,
+    image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2,useCORS:true,width:w,windowWidth:w},
+    jsPDF:{unit:'px',format:[w, w*1.414],orientation:'portrait'}
+  }).from(el).save();
 }
 
 S.flightsIda.push(ef());S.flightsVuelta.push(ef());
-S.passengers.push({nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1x23kg',bagV:'1x23kg'});
+S.passengers.push({nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'23 LB',bagV:'23 LB'});
 buildLocs();buildList('ida');buildList('vuelta');buildPax();render();
 </script>
 </body>
