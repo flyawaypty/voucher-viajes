@@ -129,7 +129,7 @@ textarea { resize: vertical; line-height: 1.5; }
 
   <!-- PRODUCT TABS -->
   <div class="prod-tabs">
-    <div class="prod-tab on" onclick="switchProduct('vuelos',this)">✈ Vuelos</div>
+    <div class="prod-tab" onclick="switchProduct('vuelos',this)">✈ Vuelos</div>
     <div class="prod-tab" onclick="switchProduct('hoteles',this)">🏨 Hoteles</div>
     <div class="prod-tab" onclick="switchProduct('otros',this)">★ Otros</div>
   </div>
@@ -689,13 +689,21 @@ function dlPDF(){
 
 // ── PRODUCT SWITCHING ────────────────────────────────
 function switchProduct(p, el) {
+  console.log('switchProduct called:', p, el);
+  const allTabs = document.querySelectorAll('.prod-tab');
+  console.log('Found prod-tabs:', allTabs.length);
+  allTabs.forEach(t => { 
+    t.classList.remove('on');
+    console.log('Removed on from:', t.textContent.trim(), t.classList.toString());
+  });
+  el.classList.add('on');
+  console.log('Added on to:', el.textContent.trim(), el.classList.toString());
   ['vuelos','hoteles','otros'].forEach(x => {
     document.getElementById('product-'+x).style.display = x===p ? 'block' : 'none';
   });
-  document.querySelectorAll('.prod-tab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
   if (p==='vuelos') render();
   if (p==='hoteles') renderHotel();
+  if (p==='otros') document.getElementById('voucher').innerHTML = '<div style="padding:40px;text-align:center;color:#aaa;font-size:14px">Próximamente</div>';
 }
 
 // ── HOTEL STATE ───────────────────────────────────────
@@ -940,9 +948,10 @@ function renderHotel() {
 }
 
 buildHotelPax();
-
+S.flightsIda.push(ef());S.flightsVuelta.push(ef());
 S.passengers.push({apellido:'',nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1 x 50 LB',bagV:'1 x 50 LB'});
 buildLocs();buildList('ida');buildList('vuelta');buildPax();render();
+document.querySelector('.prod-tab').classList.add('on');
 </script>
 </body>
 </html>
