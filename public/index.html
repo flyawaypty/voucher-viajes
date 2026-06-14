@@ -8,85 +8,92 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #1a2b3c; display: flex; min-height: 100vh; }
-.sidebar { width: 360px; min-width: 320px; background: #1a2b3c; color: #e8f0f7; padding: 20px 16px; overflow-y: auto; flex-shrink: 0; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar { width: 360px; min-width: 320px; background: #1e3a5c; color: #e8f0f7; padding: 20px 16px; overflow-y: auto; flex-shrink: 0; min-height: 100vh; }
 .sidebar h1 { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+.sidebar h1 span { color: #c9a97a; }
 .sidebar .sub { font-size: 11px; color: #7fa8c8; margin-bottom: 16px; }
 .sec { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7fa8c8; margin: 14px 0 6px; }
 label { font-size: 11px; color: #b0cde6; display: block; margin-bottom: 2px; margin-top: 6px; }
-input, select, textarea { width: 100%; padding: 6px 9px; border-radius: 5px; border: 1px solid #2d4a62; background: #243d52; color: #e8f0f7; font-size: 12px; outline: none; }
-input:focus, select:focus, textarea:focus { border-color: #4a9fd4; }
-select option { background: #1a2b3c; }
+input, select, textarea { width: 100%; padding: 6px 9px; border-radius: 5px; border: 1px solid #2d5070; background: #163050; color: #e8f0f7; font-size: 12px; outline: none; }
+input:focus, select:focus, textarea:focus { border-color: #3d8fd1; }
+select option { background: #1e3a5c; }
 textarea { resize: vertical; line-height: 1.5; }
-.btn-add { display: block; width: 100%; margin-top: 8px; padding: 7px; background: #243d52; border: 1px dashed #4a9fd4; color: #4a9fd4; border-radius: 5px; font-size: 11px; cursor: pointer; }
-.btn-add:hover { background: #2d5470; }
+.btn-add { display: block; width: 100%; margin-top: 8px; padding: 7px; background: #163050; border: 1px dashed #3d8fd1; color: #3d8fd1; border-radius: 5px; font-size: 11px; cursor: pointer; }
+.btn-add:hover { background: #1e4070; }
 .tabs { display: flex; gap: 3px; margin-bottom: 14px; }
-.tab { flex: 1; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: 600; border-radius: 5px; cursor: pointer; border: 1px solid #2d4a62; background: #243d52; color: #7fa8c8; }
-.tab.on { background: #1a6fa8; color: #fff; border-color: #1a6fa8; }
-.fc { background: #1e3348; border-radius: 7px; padding: 10px; margin-bottom: 8px; border: 1px solid #2d4a62; }
-.fc-head { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 600; color: #4a9fd4; margin-bottom: 8px; }
+.tab { flex: 1; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: 600; border-radius: 5px; cursor: pointer; border: 1px solid #2d5070; background: #163050; color: #7fa8c8; }
+.tab.on { background: #3d8fd1; color: #fff; border-color: #3d8fd1; }
+.fc { background: #163050; border-radius: 7px; padding: 10px; margin-bottom: 8px; border: 1px solid #2d5070; }
+.fc-head { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 600; color: #3d8fd1; margin-bottom: 8px; }
 .btn-rm { background: none; border: none; color: #e05c5c; font-size: 12px; cursor: pointer; padding: 0 4px; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.btn-parse { width: 100%; margin-top: 8px; padding: 9px; border-radius: 5px; background: linear-gradient(135deg, #1a6fa8, #4a9fd4); color: #fff; font-size: 12px; font-weight: 700; border: none; cursor: pointer; }
+.btn-parse { width: 100%; margin-top: 8px; padding: 9px; border-radius: 5px; background: linear-gradient(135deg, #3d8fd1, #5aaee8); color: #fff; font-size: 12px; font-weight: 700; border: none; cursor: pointer; }
 .btn-parse:disabled { opacity: .45; cursor: not-allowed; }
-.btn-add-manual { display: block; width: 100%; margin-top: 6px; padding: 7px; background: #243d52; border: 1px dashed #7fa8c8; color: #7fa8c8; border-radius: 5px; font-size: 11px; cursor: pointer; }
+.btn-add-manual { display: block; width: 100%; margin-top: 6px; padding: 7px; background: #163050; border: 1px dashed #7fa8c8; color: #7fa8c8; border-radius: 5px; font-size: 11px; cursor: pointer; }
 .status { font-size: 11px; margin-top: 6px; padding: 5px 8px; border-radius: 5px; display: none; }
 .status.loading { display: block; background: #1a3a50; color: #7dc9f5; }
 .status.ok { display: block; background: #0d3320; color: #5be0a0; }
 .status.err { display: block; background: #3a1a1a; color: #e07070; }
-.edit-block { margin-top:8px; padding:8px; background:#0f2030; border-radius:6px; border:1px solid #2d6090; }
-.edit-block .elabel { font-size:10px; color:#4a9fd4; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; display:block; }
-.btn-gen { width: 100%; margin-top: 16px; padding: 11px; border-radius: 7px; background: linear-gradient(135deg, #1a6fa8, #4a9fd4); color: #fff; font-size: 13px; font-weight: 700; border: none; cursor: pointer; }
+.edit-block { margin-top:8px; padding:8px; background:#0f2030; border-radius:6px; border:1px solid #2d5070; }
+.edit-block .elabel { font-size:10px; color:#3d8fd1; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; display:block; }
+.btn-gen { width: 100%; margin-top: 16px; padding: 11px; border-radius: 7px; background: linear-gradient(135deg, #3d8fd1, #5aaee8); color: #fff; font-size: 13px; font-weight: 700; border: none; cursor: pointer; }
 .type-selector { display: flex; gap: 4px; margin-bottom: 12px; }
-.type-btn { flex: 1; padding: 7px 4px; text-align: center; font-size: 10px; font-weight: 600; border-radius: 5px; cursor: pointer; border: 1px solid #2d4a62; background: #243d52; color: #7fa8c8; }
-.type-btn.on { background: #0d6fa8; color: #fff; border-color: #0d6fa8; }
+.type-btn { flex: 1; padding: 7px 4px; text-align: center; font-size: 10px; font-weight: 600; border-radius: 5px; cursor: pointer; border: 1px solid #2d5070; background: #163050; color: #7fa8c8; }
+.type-btn.on { background: #3d8fd1; color: #fff; border-color: #3d8fd1; }
+
+/* PREVIEW */
 .preview { flex: 1; padding: 20px; overflow-y: auto; background: #e8eef4; display: flex; flex-direction: column; align-items: center; }
 .toolbar { width: 100%; max-width: 740px; display: flex; justify-content: flex-end; margin-bottom: 10px; }
-.btn-dl { padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: #1a6fa8; color: #fff; }
+.btn-dl { padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: #3d8fd1; color: #fff; }
 .btn-dl:hover { opacity: .85; }
-#voucher { background: #fff; width: 100%; max-width: 740px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,.1); overflow: hidden; }
-.vh { background: linear-gradient(135deg, #0a3d62, #1a6fa8); padding: 24px 30px; display: flex; justify-content: space-between; align-items: flex-start; }
-.vh-logo { font-size: 20px; font-weight: 800; color: #fff; }
-.vlocs { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 4px; }
+
+/* VOUCHER */
+#voucher { background: #fff; width: 100%; max-width: 740px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,.1); overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; }
+.vh { background: linear-gradient(135deg, #3d8fd1 0%, #3d8fd1 50%, #2a6fa8 100%); padding: 22px 30px; display: flex; justify-content: space-between; align-items: center; }
+.vh-brand { display: flex; flex-direction: column; }
+.vh-logo-img { height: 52px; width: auto; }
+.vh-contact { margin-top: 8px; display: flex; gap: 14px; align-items: center; }
+.vh-contact-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: rgba(255,255,255,0.9); }
+.vlocs { display: flex; gap: 20px; flex-wrap: wrap; text-align: right; }
 .vloc { text-align: right; }
-.vh-lbl { font-size: 9px; color: #7dc9f5; text-transform: uppercase; letter-spacing: 1px; }
+.vh-lbl { font-size: 9px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1px; }
 .vh-val { font-size: 12px; font-weight: 700; color: #fff; }
 .vh-val.big { font-size: 20px; letter-spacing: 2px; }
-.vb { padding: 22px 30px; }
-.vsec { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7fa8c8; margin: 16px 0 10px; display: flex; align-items: center; gap: 8px; }
+.vb { padding: 20px 30px; }
+.vsec { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #3d8fd1; margin: 16px 0 10px; display: flex; align-items: center; gap: 8px; }
 .vsec::after { content: ''; flex: 1; height: 1px; background: #e0ecf7; }
-.vsec-total { font-size: 10px; color: #1a6fa8; font-weight: 700; background: #e8f4ff; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+.vsec-total { font-size: 10px; color: #3d8fd1; font-weight: 700; background: #e8f4ff; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
 .v-paxes { display: flex; flex-direction: column; gap: 8px; }
-.v-pax { background: #f0f7ff; border-left: 4px solid #1a6fa8; padding: 10px 16px; border-radius: 0 6px 6px 0; display: flex; flex-wrap: wrap; gap: 0 24px; }
-.v-pax .pn { font-size: 13px; font-weight: 700; color: #0a3d62; width: 100%; margin-bottom: 4px; }
+.v-pax { background: #f5f9ff; border-left: 4px solid #3d8fd1; padding: 10px 16px; border-radius: 0 6px 6px 0; display: flex; flex-wrap: wrap; gap: 0 24px; }
+.v-pax .pn { font-size: 13px; font-weight: 700; color: #1e3a5c; width: 100%; margin-bottom: 4px; }
 .v-pax .pt { font-size: 11px; color: #5a7fa0; margin-right: 16px; }
 .vseg { display: grid; grid-template-columns: 100px 1fr 100px; align-items: center; padding: 14px 0; border-bottom: 1px solid #f0f4f8; gap: 8px; }
 .vseg:last-of-type { border-bottom: none; }
 .vtb { text-align: center; }
-.vtime { font-size: 22px; font-weight: 800; color: #0a3d62; line-height: 1; }
-.vampm { font-size: 11px; font-weight: 700; color: #1a6fa8; margin-top: 1px; }
+.vtime { font-size: 22px; font-weight: 800; color: #1e3a5c; line-height: 1; }
+.vampm { font-size: 11px; font-weight: 700; color: #3d8fd1; margin-top: 1px; }
 .vdate { font-size: 10px; color: #7fa8c0; margin-top: 3px; }
-.vap { font-size: 14px; font-weight: 700; color: #1a6fa8; margin-top: 3px; }
+.vap { font-size: 14px; font-weight: 700; color: #3d8fd1; margin-top: 3px; }
 .vapn { font-size: 9px; color: #8aa0b0; margin-top: 2px; line-height: 1.3; }
 .vmid { display: flex; flex-direction: column; align-items: center; }
-.vfnum { font-size: 10px; font-weight: 700; color: #fff; background: #1a6fa8; padding: 2px 10px; border-radius: 20px; margin-bottom: 6px; }
-.vline { width: 100%; height: 2px; background: linear-gradient(90deg, #1a6fa8, #7dc9f5); position: relative; border-radius: 2px; }
-.vline::before { content: '✈'; position: absolute; top: -9px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #1a6fa8; }
+.vfnum { font-size: 10px; font-weight: 700; color: #fff; background: #3d8fd1; padding: 2px 10px; border-radius: 20px; margin-bottom: 6px; }
+.vline { width: 100%; height: 2px; background: linear-gradient(90deg, #3d8fd1, #c9a97a); position: relative; border-radius: 2px; }
+.vline::before { content: '✈'; position: absolute; top: -9px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #3d8fd1; }
 .vdur { font-size: 10px; color: #7fa8c0; margin-top: 5px; }
 .val { font-size: 10px; color: #7fa8c0; margin-top: 2px; }
-.vcab { font-size: 10px; color: #7fa8c0; margin-top: 2px; background: #f0f7ff; padding: 1px 8px; border-radius: 10px; }
+.vcab { font-size: 10px; color: #fff; margin-top: 2px; background: #c9a97a; padding: 1px 8px; border-radius: 10px; }
 .vavion { font-size: 10px; color: #8aa0b0; margin-top: 2px; }
-.vescala { display: flex; align-items: center; justify-content: center; padding: 7px 16px; background: #fff8e8; border-left: 3px solid #e8a820; border-right: 3px solid #e8a820; gap: 8px; }
-.vescala-text { font-size: 11px; color: #8a6010; }
+.vescala { display: flex; align-items: center; justify-content: center; padding: 7px 16px; background: #fdf6ec; border-left: 3px solid #c9a97a; border-right: 3px solid #c9a97a; }
+.vescala-text { font-size: 11px; color: #8a6a30; }
 .vescala-text strong { color: #5a3e00; }
-.vfoot { background: #f7fafd; border-top: 2px solid #e0ecf7; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; }
-.vfoot-note { font-size: 11px; color: #7fa8c0; }
-.vfoot-logo { font-size: 12px; font-weight: 700; color: #1a6fa8; }
-.vdiv { height: 5px; background: linear-gradient(90deg, #0a3d62, #1a6fa8, #7dc9f5); }
+.vdiv { height: 5px; background: linear-gradient(90deg, #3d8fd1, #2a6fa8, #c9a97a); }
 </style>
 </head>
 <body>
 <div class="sidebar">
-  <h1>✈ Voucher de Viaje</h1>
+  <h1>✈ <span style="color:#fff">Fly</span><span style="color:#c9a97a">away</span></h1>
   <p class="sub">Pega el itinerario y el sistema extrae todos los vuelos automáticamente.</p>
   <div class="tabs">
     <div class="tab on" onclick="switchTab('general',this)">General</div>
@@ -101,10 +108,7 @@ textarea { resize: vertical; line-height: 1.5; }
       <div class="type-btn" onclick="setType('idavuelta',this)">Ida y vuelta</div>
       <div class="type-btn" onclick="setType('multi',this)">Múltiples tramos</div>
     </div>
-    <div class="sec">Agencia</div>
-    <label>Nombre de la agencia</label>
-    <input id="agencia" value="FlyAway" oninput="render()">
-    <label>Nota al pie</label>
+    <div class="sec">Nota al pie</div>
     <input id="nota" value="Cada pasajero puede llevar una bolsa o mochila adicional como ítem personal." oninput="render()">
     <div class="sec">Localizadores</div>
     <div id="locs-list"></div>
@@ -113,19 +117,18 @@ textarea { resize: vertical; line-height: 1.5; }
 
   <div id="tab-vuelos" style="display:none">
     <div class="sec">Pegar itinerario</div>
-    <textarea id="itinerario" rows="6" placeholder="Pega aquí el texto del itinerario de la aerolínea, GDS (Amadeus, Sabre) o confirmación de reserva..."></textarea>
+    <textarea id="itinerario" rows="6" placeholder="Pega aquí el texto del itinerario (aerolínea, GDS Sabre/Amadeus, email de confirmación...)"></textarea>
     <button class="btn-parse" id="btn-parse" onclick="parseItinerary()">✨ Extraer vuelos automáticamente</button>
     <div class="status" id="parse-status"></div>
-
     <div id="vuelos-ida-section" style="margin-top:14px">
-      <div class="sec" id="label-ida">Vuelos de Ida <span style="color:#2d4a62;font-weight:400;text-transform:none;letter-spacing:0">— edita si es necesario</span></div>
+      <div class="sec" id="label-ida">Vuelos de Ida</div>
       <div id="list-ida"></div>
-      <button class="btn-add-manual" onclick="addFlight('ida')">+ Agregar tramo de ida manualmente</button>
+      <button class="btn-add-manual" onclick="addFlight('ida')">+ Agregar tramo manualmente</button>
     </div>
     <div id="vuelos-vuelta-section" style="display:none;margin-top:10px">
       <div class="sec">Vuelos de Vuelta</div>
       <div id="list-vuelta"></div>
-      <button class="btn-add-manual" onclick="addFlight('vuelta')">+ Agregar tramo de vuelta manualmente</button>
+      <button class="btn-add-manual" onclick="addFlight('vuelta')">+ Agregar tramo manualmente</button>
     </div>
   </div>
 
@@ -146,6 +149,15 @@ textarea { resize: vertical; line-height: 1.5; }
 </div>
 
 <script>
+const BRAND = {
+  name: 'Flyaway',
+  blue: '#3d8fd1',
+  gold: '#c9a97a',
+  dark: '#1e3a5c',
+  whatsapp: '+507 6327-2362',
+  email: 'travel@flyawaypty.com'
+};
+
 const S = {
   tipo: 'ida',
   flightsIda: [], flightsVuelta: [], passengers: [],
@@ -167,41 +179,41 @@ function fmt12(t) {
 }
 function fmtDur(mins) {
   if (!mins || mins <= 0) return '';
-  const h = Math.floor(mins / 60), m = mins % 60;
-  return h > 0 ? `${h}h${m > 0 ? ' ' + m + 'min' : ''}` : `${m}min`;
+  const h = Math.floor(mins/60), m = mins%60;
+  return h > 0 ? `${h}h${m>0?' '+m+'min':''}` : `${m}min`;
 }
 function toMins(t) {
-  if (!t || !t.includes(':')) return null;
-  const [h, m] = t.split(':').map(Number);
-  return h * 60 + m;
+  if (!t||!t.includes(':')) return null;
+  const [h,m] = t.split(':').map(Number);
+  return h*60+m;
 }
 function calcLayover(flights, i) {
-  if (i >= flights.length - 1) return null;
-  if (flights[i].layover_override > 0) return flights[i].layover_override;
-  const a = toMins(flights[i].lh), d = toMins(flights[i+1].sh);
-  if (a === null || d === null) return null;
-  let diff = d - a;
-  if (diff < 0) diff += 24 * 60;
-  return diff > 0 ? diff : null;
+  if (i>=flights.length-1) return null;
+  if (flights[i].layover_override>0) return flights[i].layover_override;
+  const a=toMins(flights[i].lh), d=toMins(flights[i+1].sh);
+  if (a===null||d===null) return null;
+  let diff=d-a; if (diff<0) diff+=24*60;
+  return diff>0?diff:null;
 }
 function calcTotal(flights) {
-  let t = 0;
-  for (let i = 0; i < flights.length; i++) {
-    t += flights[i].duracion_min || 0;
-    if (i < flights.length - 1) { const l = calcLayover(flights, i); if (l) t += l; }
+  let t=0;
+  for (let i=0;i<flights.length;i++) {
+    t+=flights[i].duracion_min||0;
+    if (i<flights.length-1){const l=calcLayover(flights,i);if(l)t+=l;}
   }
   return t;
 }
 function parseDurInput(v) {
-  if (!v) return 0;
-  v = v.trim().toLowerCase();
-  const hm = v.match(/(\d+)h\s*(\d+)?/);
-  if (hm) return parseInt(hm[1]) * 60 + parseInt(hm[2] || 0);
-  const col = v.match(/^(\d+):(\d+)$/);
-  if (col) return parseInt(col[1]) * 60 + parseInt(col[2]);
-  const n = parseInt(v);
-  return isNaN(n) ? 0 : n;
+  if (!v) return 0; v=v.trim().toLowerCase();
+  const hm=v.match(/(\d+)h\s*(\d+)?/); if(hm) return parseInt(hm[1])*60+parseInt(hm[2]||0);
+  const col=v.match(/^(\d+):(\d+)$/); if(col) return parseInt(col[1])*60+parseInt(col[2]);
+  const n=parseInt(v); return isNaN(n)?0:n;
 }
+
+// WhatsApp SVG icon
+const waIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+const emailIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>`;
+const emailIconGray = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5a7fa0" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>`;
 
 // ── PARSE ITINERARY ──────────────────────────────────
 async function parseItinerary() {
@@ -209,59 +221,49 @@ async function parseItinerary() {
   if (!texto) { alert('Pega el texto del itinerario primero.'); return; }
   const sEl = document.getElementById('parse-status');
   const btn = document.getElementById('btn-parse');
-  sEl.className = 'status loading';
-  sEl.textContent = '✨ Extrayendo información de los vuelos...';
-  btn.disabled = true;
+  sEl.className='status loading'; sEl.textContent='✨ Extrayendo información de los vuelos...';
+  btn.disabled=true;
   try {
     const res = await fetch('/api/buscar-vuelo', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ texto })
     });
     const json = await res.json();
     if (!json.ok) throw new Error(json.error);
-
     const flights = json.flights;
-    if (!flights || !flights.length) throw new Error('No se encontraron vuelos en el texto');
-
-    // If ida/vuelta mode, split by index; otherwise all go to ida
-    if (S.tipo === 'idavuelta') {
-      // User can move flights manually — for now put all in ida
-      S.flightsIda = flights.map(f => ({ ...ef(), ...f, found: true }));
-      S.flightsVuelta = [];
-    } else {
-      S.flightsIda = flights.map(f => ({ ...ef(), ...f, found: true }));
-    }
-
+    if (!flights||!flights.length) throw new Error('No se encontraron vuelos en el texto');
+    S.flightsIda = flights.map(f=>({...ef(),...f,found:true}));
+    S.flightsVuelta = [];
     buildList('ida'); buildList('vuelta');
-    sEl.className = 'status ok';
-    sEl.textContent = `✓ ${flights.length} vuelo${flights.length>1?'s':''} extraído${flights.length>1?'s':''}. Revisa y corrige si es necesario.`;
+    sEl.className='status ok';
+    sEl.textContent=`✓ ${flights.length} vuelo${flights.length>1?'s':''} extraído${flights.length>1?'s':''}. Revisa y corrige si es necesario.`;
     render();
   } catch(err) {
-    sEl.className = 'status err';
-    sEl.textContent = '✗ ' + (err.message || 'No se pudo procesar el itinerario');
-  } finally { btn.disabled = false; }
+    sEl.className='status err';
+    sEl.textContent='✗ '+(err.message||'No se pudo procesar el itinerario');
+  } finally { btn.disabled=false; }
 }
 
 // ── TIPO ─────────────────────────────────────────────
-function setType(t, el) {
-  S.tipo = t;
-  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('on'));
+function setType(t,el) {
+  S.tipo=t;
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
-  const vs = document.getElementById('vuelos-vuelta-section');
-  const li = document.getElementById('label-ida');
-  if (t === 'ida') { vs.style.display='none'; li.innerHTML='Vuelos de Ida <span style="color:#2d4a62;font-weight:400;text-transform:none;letter-spacing:0">— edita si es necesario</span>'; }
-  else if (t === 'idavuelta') { vs.style.display='block'; li.innerHTML='Vuelos de Ida <span style="color:#2d4a62;font-weight:400;text-transform:none;letter-spacing:0">— edita si es necesario</span>'; }
-  else { vs.style.display='none'; li.innerHTML='Tramos <span style="color:#2d4a62;font-weight:400;text-transform:none;letter-spacing:0">— edita si es necesario</span>'; }
+  const vs=document.getElementById('vuelos-vuelta-section');
+  const li=document.getElementById('label-ida');
+  if(t==='ida'){vs.style.display='none';li.textContent='Vuelos de Ida';}
+  else if(t==='idavuelta'){vs.style.display='block';li.textContent='Vuelos de Ida';}
+  else{vs.style.display='none';li.textContent='Tramos';}
   render();
 }
 
 // ── LOCALIZADORES ────────────────────────────────────
-function addLoc() { S.locs.push({ label: 'Localizador', value: '' }); buildLocs(); }
-function removeLoc(i) { if (S.locs.length > 1) { S.locs.splice(i,1); buildLocs(); render(); } }
-function buildLocs() {
-  const c = document.getElementById('locs-list'); c.innerHTML = '';
-  S.locs.forEach((l,i) => {
-    c.innerHTML += `<div style="margin-bottom:6px">
+function addLoc(){S.locs.push({label:'Localizador',value:''});buildLocs();}
+function removeLoc(i){if(S.locs.length>1){S.locs.splice(i,1);buildLocs();render();}}
+function buildLocs(){
+  const c=document.getElementById('locs-list');c.innerHTML='';
+  S.locs.forEach((l,i)=>{
+    c.innerHTML+=`<div style="margin-bottom:6px">
       <div class="row2" style="margin-bottom:3px">
         <div><label>Etiqueta</label><input value="${l.label}" oninput="S.locs[${i}].label=this.value;render()"></div>
         <div><label>Número</label><input value="${l.value}" oninput="S.locs[${i}].value=this.value;render()"></div>
@@ -272,24 +274,23 @@ function buildLocs() {
 }
 
 // ── FLIGHT UI ────────────────────────────────────────
-function addFlight(dir) { (dir==='ida'?S.flightsIda:S.flightsVuelta).push(ef()); buildList(dir); render(); }
-function removeFlight(dir,i) { (dir==='ida'?S.flightsIda:S.flightsVuelta).splice(i,1); buildList(dir); render(); }
-function setField(dir,i,key,val) {
-  const list = dir==='ida'?S.flightsIda:S.flightsVuelta;
-  list[i][key] = (key==='duracion_min'||key==='layover_override') ? parseDurInput(val) : val;
+function addFlight(dir){(dir==='ida'?S.flightsIda:S.flightsVuelta).push(ef());buildList(dir);render();}
+function removeFlight(dir,i){(dir==='ida'?S.flightsIda:S.flightsVuelta).splice(i,1);buildList(dir);render();}
+function setField(dir,i,key,val){
+  const list=dir==='ida'?S.flightsIda:S.flightsVuelta;
+  list[i][key]=(key==='duracion_min'||key==='layover_override')?parseDurInput(val):val;
   render();
 }
 
-function buildList(dir) {
-  const list = dir==='ida'?S.flightsIda:S.flightsVuelta;
-  const cont = document.getElementById('list-'+dir);
-  cont.innerHTML = '';
-  const label = S.tipo==='multi' ? 'Tramo' : (dir==='ida'?'Tramo ida':'Tramo vuelta');
-  list.forEach((f,i) => {
-    const id = `${dir}-${i}`;
-    const div = document.createElement('div');
-    div.className = 'fc';
-    div.innerHTML = `
+function buildList(dir){
+  const list=dir==='ida'?S.flightsIda:S.flightsVuelta;
+  const cont=document.getElementById('list-'+dir);
+  cont.innerHTML='';
+  const label=S.tipo==='multi'?'Tramo':(dir==='ida'?'Tramo ida':'Tramo vuelta');
+  list.forEach((f,i)=>{
+    const div=document.createElement('div');
+    div.className='fc';
+    div.innerHTML=`
       <div class="fc-head"><span>${label} ${i+1}${f.found?' ✓':''}</span><button class="btn-rm" onclick="removeFlight('${dir}',${i})">✕</button></div>
       <div class="edit-block">
         <span class="elabel">Información del vuelo</span>
@@ -326,22 +327,21 @@ function buildList(dir) {
           <div><label>Duración vuelo</label><input value="${fmtDur(f.duracion_min)||''}" placeholder="4h47min" onchange="setField('${dir}',${i},'duracion_min',this.value)"></div>
           <div><label>Modelo avión</label><input value="${f.avion||''}" placeholder="Boeing 737-800" oninput="setField('${dir}',${i},'avion',this.value)"></div>
         </div>
-        ${i < list.length - 1 ? `
+        ${i<list.length-1?`
         <label>Tiempo de escala después de este vuelo</label>
-        <input value="${fmtDur(f.layover_override)||''}" placeholder="Automático (deja vacío)" onchange="setField('${dir}',${i},'layover_override',this.value)">` : ''}
-      </div>`;
+        <input value="${fmtDur(f.layover_override)||''}" placeholder="Automático (deja vacío)" onchange="setField('${dir}',${i},'layover_override',this.value)">`:''}</div>`;
     cont.appendChild(div);
   });
 }
 
 // ── PASSENGERS ───────────────────────────────────────
-function addPax() {
-  S.passengers.push({ nombre:'', eticket:'', asiento:'', ff_num:'', ff_al:'', meal:'', bagI:'1x23kg', bagV:'1x23kg' });
-  buildPax(); render();
+function addPax(){
+  S.passengers.push({nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1x23kg',bagV:'1x23kg'});
+  buildPax();render();
 }
 function removePax(i){S.passengers.splice(i,1);buildPax();render();}
 function buildPax(){
-  const c=document.getElementById('list-pax'); c.innerHTML='';
+  const c=document.getElementById('list-pax');c.innerHTML='';
   S.passengers.forEach((p,i)=>{
     c.innerHTML+=`<div class="fc">
       <div class="fc-head"><span>Pasajero ${i+1}</span><button class="btn-rm" onclick="removePax(${i})">✕</button></div>
@@ -383,13 +383,11 @@ function switchTab(n,el){
 }
 
 // ── RENDER SEGMENTS ──────────────────────────────────
-function renderSegments(flights) {
-  let html = '';
-  for (let i = 0; i < flights.length; i++) {
-    const f = flights[i];
-    const t1 = fmt12(f.sh), t2 = fmt12(f.lh);
-    const dur = fmtDur(f.duracion_min);
-    html += `<div class="vseg">
+function renderSegments(flights){
+  let html='';
+  for(let i=0;i<flights.length;i++){
+    const f=flights[i],t1=fmt12(f.sh),t2=fmt12(f.lh),dur=fmtDur(f.duracion_min);
+    html+=`<div class="vseg">
       <div class="vtb">
         <div class="vtime">${t1.h}</div><div class="vampm">${t1.ampm}</div>
         <div class="vdate">${f.fecha||''}</div>
@@ -411,9 +409,9 @@ function renderSegments(flights) {
         <div class="vapn">${f.adest||''}</div>
       </div>
     </div>`;
-    if (i < flights.length - 1) {
-      const lay = calcLayover(flights, i);
-      if (lay) html += `<div class="vescala"><div class="vescala-text">Escala en <strong>${f.destino||'—'}</strong> · Tiempo de espera: <strong>${fmtDur(lay)}</strong></div></div>`;
+    if(i<flights.length-1){
+      const lay=calcLayover(flights,i);
+      if(lay) html+=`<div class="vescala"><div class="vescala-text">Escala en <strong>${f.destino||'—'}</strong> · Tiempo de espera: <strong>${fmtDur(lay)}</strong></div></div>`;
     }
   }
   return html;
@@ -421,9 +419,8 @@ function renderSegments(flights) {
 
 // ── RENDER VOUCHER ────────────────────────────────────
 function render(){
-  const ag=document.getElementById('agencia').value;
   const nota=document.getElementById('nota').value;
-  const paxH = S.passengers.map(p=>`
+  const paxH=S.passengers.map(p=>`
     <div class="v-pax">
       <div class="pn">${p.nombre||'Pasajero'}</div>
       ${p.eticket?`<span class="pt">E-ticket: ${p.eticket}</span>`:''}
@@ -433,34 +430,32 @@ function render(){
       ${p.bagI?`<span class="pt">🧳 Ida: ${p.bagI}</span>`:''}
       ${(S.tipo==='idavuelta'&&p.bagV)?`<span class="pt">🔁 Vuelta: ${p.bagV}</span>`:''}
     </div>`).join('');
-  const locsH = S.locs.map(l=>`
+  const locsH=S.locs.map(l=>`
     <div class="vloc">
       <div class="vh-lbl">${l.label}</div>
       <div class="vh-val${S.locs.length===1?' big':''}">${l.value||'------'}</div>
     </div>`).join('');
-  function buildSection(flights, label) {
-    if (!flights.length) return '';
-    const total = calcTotal(flights);
-    const ts = total > 0 ? fmtDur(total) : '';
+  function buildSection(flights,label){
+    if(!flights.length) return '';
+    const total=calcTotal(flights),ts=total>0?fmtDur(total):'';
     return `<div class="vsec">${label} · ${flights.length} tramo${flights.length>1?'s':''}
       ${ts?`<span class="vsec-total">Total: ${ts}</span>`:''}
     </div>${renderSegments(flights)}`;
   }
-  let sections = '';
-  if (S.tipo==='ida') {
-    sections = S.flightsIda.length ? buildSection(S.flightsIda,'Vuelo') : `<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
-  } else if (S.tipo==='idavuelta') {
-    sections = buildSection(S.flightsIda,'Ida') + buildSection(S.flightsVuelta,'Vuelta');
-    if (!sections) sections = `<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
-  } else {
-    sections = S.flightsIda.length ? buildSection(S.flightsIda,'Itinerario') : `<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
-  }
+  let sections='';
+  if(S.tipo==='ida') sections=S.flightsIda.length?buildSection(S.flightsIda,'Vuelo'):`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
+  else if(S.tipo==='idavuelta'){sections=buildSection(S.flightsIda,'Ida')+buildSection(S.flightsVuelta,'Vuelta');if(!sections)sections=`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;}
+  else sections=S.flightsIda.length?buildSection(S.flightsIda,'Itinerario'):`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
+
   document.getElementById('voucher').innerHTML=`
     <div class="vdiv"></div>
     <div class="vh">
-      <div>
-        <div class="vh-logo">${ag||'FlyAway'}</div>
-        <div style="font-size:10px;color:#7dc9f5;margin-top:4px">${S.tipo==='ida'?'Voucher — Solo Ida':S.tipo==='idavuelta'?'Voucher — Ida y Vuelta':'Voucher — Múltiples Tramos'}</div>
+      <div class="vh-brand">
+        <img src="/logo.png" class="vh-logo-img" alt="Flyaway">
+        <div class="vh-contact">
+          <div class="vh-contact-item">${waIcon} ${BRAND.whatsapp}</div>
+          <div class="vh-contact-item">${emailIcon} ${BRAND.email}</div>
+        </div>
       </div>
       <div class="vlocs">${locsH}</div>
     </div>
@@ -468,18 +463,17 @@ function render(){
       ${S.passengers.length?`<div class="vsec">Pasajeros · ${S.passengers.length}</div><div class="v-paxes">${paxH}</div>`:''}
       ${sections}
     </div>
-    <div class="vfoot"><div class="vfoot-note">${nota}</div><div class="vfoot-logo">${ag}</div></div>
     <div class="vdiv"></div>`;
 }
 
 function dlPDF(){
-  const loc = S.locs[0]?.value||'viaje';
+  const loc=S.locs[0]?.value||'viaje';
   html2pdf().set({margin:0,filename:`voucher-${loc}.pdf`,image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(document.getElementById('voucher')).save();
 }
 
-S.flightsIda.push(ef()); S.flightsVuelta.push(ef());
-S.passengers.push({ nombre:'', eticket:'', asiento:'', ff_num:'', ff_al:'', meal:'', bagI:'1x23kg', bagV:'1x23kg' });
-buildLocs(); buildList('ida'); buildList('vuelta'); buildPax(); render();
+S.flightsIda.push(ef());S.flightsVuelta.push(ef());
+S.passengers.push({nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1x23kg',bagV:'1x23kg'});
+buildLocs();buildList('ida');buildList('vuelta');buildPax();render();
 </script>
 </body>
 </html>
