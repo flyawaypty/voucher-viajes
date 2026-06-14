@@ -74,7 +74,6 @@ textarea { resize: vertical; line-height: 1.5; }
 .vmid { display: flex; flex-direction: column; align-items: center; }
 .vfnum { font-size: 10px; font-weight: 700; color: #fff; background: #3d8fd1; padding: 2px 10px; border-radius: 20px; margin-bottom: 6px; }
 .vline { width: 100%; height: 2px; background: linear-gradient(90deg, #3d8fd1, #c9a97a); position: relative; border-radius: 2px; }
-.vline::before { content: '✈'; position: absolute; top: -9px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #3d8fd1; }
 .vdur { font-size: 10px; color: #7fa8c0; margin-top: 5px; }
 .val { font-size: 10px; color: #7fa8c0; margin-top: 2px; }
 .vcab-economy { font-size: 10px; color: #fff; margin-top: 2px; background: #c9b99a; padding: 1px 8px; border-radius: 10px; }
@@ -167,7 +166,7 @@ const LANGS = {
   es: { dir:'ltr', passengers:'Pasajeros', flight:'Vuelo', outbound:'Ida', inbound:'Vuelta', itinerary:'Itinerario', leg:'Tramo', total:'Total', stopover:'Escala en', waitTime:'Tiempo de espera', eticket:'E-TICKET', bagAllowed:'Maleta permitida', bagOutbound:'Maleta permitida ida', bagReturn:'Maleta permitida vuelta', seat:'Asiento', meal:'Special meal', download:'⬇ Descargar PDF', resCode:'CÓDIGO DE RESERVACIÓN' },
   en: { dir:'ltr', passengers:'Passengers', flight:'Flight', outbound:'Outbound', inbound:'Return', itinerary:'Itinerary', leg:'Segment', total:'Total', stopover:'Layover at', waitTime:'Waiting time', eticket:'E-TICKET', bagAllowed:'Baggage allowance', bagOutbound:'Outbound baggage', bagReturn:'Return baggage', seat:'Seat', meal:'Special meal', download:'⬇ Download PDF', resCode:'RESERVATION CODE' },
   pt: { dir:'ltr', passengers:'Passageiros', flight:'Voo', outbound:'Ida', inbound:'Volta', itinerary:'Itinerário', leg:'Trecho', total:'Total', stopover:'Escala em', waitTime:'Tempo de espera', eticket:'E-TICKET', bagAllowed:'Bagagem permitida', bagOutbound:'Bagagem permitida ida', bagReturn:'Bagagem permitida volta', seat:'Assento', meal:'Refeição especial', download:'⬇ Baixar PDF', resCode:'CÓDIGO DE RESERVA' },
-  he: { dir:'rtl', passengers:'נוסעים', flight:'טיסה', outbound:'יציאה', inbound:'חזרה', itinerary:'מסלול', leg:'קטע', total:'סה״כ', stopover:'עצירה ב', waitTime:'זמן המתנה', eticket:'כרטיס אלקטרוני', bagAllowed:'כבודה מותרת', bagOutbound:'כבודה מותרת הלוך', bagReturn:'כבודה מותרת חזור', seat:'מושב', meal:'ארוחה מיוחדת', download:'⬇ הורד PDF', resCode:'קוד הזמנה' }
+  he: { dir:'rtl', passengers:'נוסעים', flight:'טיסה', flights:'טיסות', outbound:'יציאה', inbound:'חזרה', itinerary:'מסלול', leg:'טיסה', legs:'טיסות', total:'סה״כ', stopover:'עצירה ב', waitTime:'המתנה', eticket:'כרטיס אלקטרוני', bagAllowed:'כבודה כלולה', bagOutbound:'כבודה כלולה הלוך', bagReturn:'כבודה כלולה חזור', seat:'מושבים', meal:'ארוחה מיוחדת', download:'⬇ הורד PDF', resCode:'קוד הזמנה' }
 };
 
 function getLang() { return LANGS[document.getElementById('lang-select')?.value||'es']||LANGS.es; }
@@ -380,17 +379,31 @@ function switchTab(n,el){
 
 function renderSegments(flights,L){
   if(!L) L=getLang();
+  const isRTL = L.dir==='rtl';
   let html='';
   for(let i=0;i<flights.length;i++){
     const f=flights[i],t1=fmt12(f.sh),t2=fmt12(f.lh),dur=fmtDur(f.duracion_min);
+    const planeStyle = isRTL ? 'position:absolute;top:-9px;left:50%;transform:translateX(-50%) scaleX(-1);font-size:14px;color:#3d8fd1' : 'position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:14px;color:#3d8fd1';
     html+=`<div class="vseg">
       <div class="vtb"><div class="vtime">${t1.h}</div><div class="vampm">${t1.ampm}</div><div class="vdate">${f.fecha||''}</div><div class="vap">${f.origen||'---'}</div><div class="vapn">${f.aorig||''}</div></div>
-      <div class="vmid"><div class="vfnum">${f.num||'VUELO'}</div><div class="vline"></div>${dur?`<div class="vdur">${dur}</div>`:''}<div class="val">${f.al||''}</div><div class="vcab-${(f.cab||'economy').toLowerCase().replace(' ','')}">${f.cab||'Economy'}</div>${f.avion?`<div class="vavion">${f.avion}</div>`:''}</div>
+      <div class="vmid"><div class="vfnum">${f.num||'VUELO'}</div><div class="vline" style="position:relative"><div style="${planeStyle}">✈</div></div>${dur?`<div class="vdur">${dur}</div>`:''}<div class="val">${f.al||''}</div><div class="vcab-${(f.cab||'economy').toLowerCase().replace(' ','')}">${f.cab||'Economy'}</div>${f.avion?`<div class="vavion">${f.avion}</div>`:''}</div>
       <div class="vtb"><div class="vtime">${t2.h}</div><div class="vampm">${t2.ampm}</div><div class="vdate">${f.lf||''}</div><div class="vap">${f.destino||'---'}</div><div class="vapn">${f.adest||''}</div></div>
     </div>`;
     if(i<flights.length-1){
       const lay=calcLayover(flights,i);
-      if(lay) html+=`<div class="vescala"><div class="vescala-text">${L.stopover} <strong>${f.destino||'—'}</strong> · ${L.waitTime}: <strong>${fmtDur(lay)}</strong></div></div>`;
+      if(lay){
+        let layText;
+        if(isRTL){
+          const h=Math.floor(lay/60), m=lay%60;
+          if(h>0 && m>0) layText=`${h} שעות ${m} דקות`;
+          else if(h===1) layText=`שעה אחת`;
+          else if(h>1) layText=`${h} שעות`;
+          else layText=`${m} דקות`;
+        } else {
+          layText=fmtDur(lay);
+        }
+        html+=`<div class="vescala"><div class="vescala-text">${L.stopover} <strong>${f.destino||'—'}</strong> · ${L.waitTime}: <strong>${layText}</strong></div></div>`;
+      }
     }
   }
   return html;
@@ -404,7 +417,10 @@ function render(){
   if(dlBtn) dlBtn.textContent=L.download;
   const paxH=S.passengers.map(p=>{
     const hasExtra = p.asiento || (p.ff_al&&p.ff_num) || p.meal;
-    const mealLabels={KSML:'Kosher Meal',SKML:'Strict Kosher Meal',VGML:'Vegan Meal',CHML:"Children's Meal"};
+    const isHe = L.dir==='rtl';
+    const mealLabels = isHe
+      ? {KSML:'ארוחה כשרה', SKML:'ארוחת כשר למהדרין', VGML:'ארוחה טבעונית', CHML:'ארוחת ילדים'}
+      : {KSML:'Kosher Meal', SKML:'Strict Kosher Meal', VGML:'Vegan Meal', CHML:"Children's Meal"};
     if(hasExtra){
       return `<div class="v-pax" ${L.dir==='rtl'?'style="direction:rtl;text-align:right"':''}>
         <div style="display:flex;justify-content:space-between;align-items:flex-start">
@@ -450,7 +466,8 @@ function render(){
   function buildSection(flights,label){
     if(!flights.length) return '';
     const total=calcTotal(flights),ts=total>0?fmtDur(total):'';
-    return `<div class="vsec">${label} · ${flights.length} ${L.leg}${flights.length>1?'s':''}${ts?`<span class="vsec-total">${L.total}: ${ts}</span>`:''}</div>${renderSegments(flights,L)}`;
+    const legWord = L.dir==='rtl' ? (flights.length>1?'טיסות':'טיסה') : `${L.leg}${flights.length>1?'s':''}`;
+    return `<div class="vsec">${label} · ${flights.length} ${legWord}${ts?`<span class="vsec-total">${L.total}: ${ts}</span>`:''}</div>${renderSegments(flights,L)}`;
   }
   let sections='';
   if(S.tipo==='ida') sections=S.flightsIda.length?buildSection(S.flightsIda,L.flight):`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
