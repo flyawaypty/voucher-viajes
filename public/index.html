@@ -219,13 +219,13 @@ textarea { resize: vertical; line-height: 1.5; }
       </div>
       <div class="sec">Check-in</div>
       <div class="row2">
-        <div><label>Fecha</label><input id="h-checkin" placeholder="18/06/2026" oninput="renderHotel()"></div>
-        <div><label>Hora</label><input id="h-checkin-hora" placeholder="15:00" oninput="renderHotel()"></div>
+        <div><label>Fecha</label><input type="date" id="h-checkin" oninput="renderHotel()"></div>
+        <div><label>Hora</label><input id="h-checkin-hora" value="15:00" oninput="renderHotel()"></div>
       </div>
       <div class="sec">Check-out</div>
       <div class="row2">
-        <div><label>Fecha</label><input id="h-checkout" placeholder="21/06/2026" oninput="renderHotel()"></div>
-        <div><label>Hora</label><input id="h-checkout-hora" placeholder="12:00" oninput="renderHotel()"></div>
+        <div><label>Fecha</label><input type="date" id="h-checkout" oninput="renderHotel()"></div>
+        <div><label>Hora</label><input id="h-checkout-hora" value="12:00" oninput="renderHotel()"></div>
       </div>
       <div class="sec">Habitación</div>
       <input id="h-habitacion" placeholder="Standard Room, 1 King Bed" oninput="renderHotel()">
@@ -238,16 +238,57 @@ textarea { resize: vertical; line-height: 1.5; }
         <option value="Pensión completa">Pensión completa</option>
         <option value="Todo incluido">Todo incluido</option>
       </select>
-      <div class="sec">Impuestos a pagar en el hotel (opcional)</div>
-      <input id="h-impuestos" placeholder="EUR 45.00 (APROX $ 52.00)" oninput="renderHotel()">
+      <div class="sec">Extras incluidos (opcional)</div>
+      <div id="h-extras-list"></div>
+      <button class="btn-add" onclick="addHotelExtra()">+ Agregar extra</button>
+      <div class="row2" style="margin-bottom:6px">
+        <div>
+          <label>Moneda</label>
+          <select id="h-imp-moneda" onchange="calcImpuestos()">
+            <option value="">— Ninguno —</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="ZAR">ZAR</option>
+            <option value="JPY">JPY</option>
+            <option value="THB">THB</option>
+            <option value="AUD">AUD</option>
+            <option value="NZD">NZD</option>
+            <option value="ILS">ILS</option>
+            <option value="SGD">SGD</option>
+            <option value="AED">AED</option>
+          </select>
+        </div>
+        <div>
+          <label>Monto</label>
+          <input type="number" id="h-imp-monto" placeholder="45.00" oninput="calcImpuestos()">
+        </div>
+      </div>
+      <div id="h-imp-preview" style="font-size:11px;color:#7fa8c8;padding:4px 0;min-height:18px"></div>
       <div class="sec">Política de cancelación</div>
-      <input id="h-cancelacion" placeholder="Reembolsable hasta..." oninput="renderHotel()">
+      <select id="h-cancel-tipo" onchange="toggleCancelDate()">
+        <option value="">— Sin especificar —</option>
+        <option value="NO REEMBOLSABLE">No reembolsable</option>
+        <option value="reembolsable">Reembolsable hasta...</option>
+      </select>
+      <div id="h-cancel-fecha-wrap" style="display:none;margin-top:6px">
+        <label>Fecha límite de cancelación</label>
+        <input type="date" id="h-cancel-fecha" oninput="renderHotel()">
+      </div>
     </div>
 
     <div id="htab-huesped" style="display:none">
-      <div class="sec">Huésped</div>
+      <div class="sec">Huéspedes</div>
       <div id="h-list-pax"></div>
       <button class="btn-add" onclick="addHotelPax()">+ Agregar huésped</button>
+      <div class="sec">Acompañantes adicionales</div>
+      <select id="h-adicionales" onchange="renderHotel()">
+        <option value="">— Sin adicionales —</option>
+        <option value="+1" selected>+1</option>
+        <option value="+2">+2</option>
+        <option value="+3">+3</option>
+        <option value="+4">+4</option>
+        <option value="+5">+5</option>
+      </select>
     </div>
 
     <button class="btn-gen" onclick="renderHotel()">↻ Actualizar vista previa</button>
@@ -660,7 +701,7 @@ function switchProduct(p, el) {
 // ── HOTEL STATE ───────────────────────────────────────
 const HS = {
   name:'', address:'', phone:'', photoUrl:'', stars:0,
-  passengers: [{apellido:'',nombre:''}]
+  passengers: [{nombre:''}]
 };
 let searchTimer = null;
 
@@ -680,7 +721,7 @@ function switchHotelTab(n, el) {
 }
 
 function addHotelPax() {
-  HS.passengers.push({apellido:'',nombre:''});
+  HS.passengers.push({nombre:''});
   buildHotelPax();
 }
 function removeHotelPax(i) { HS.passengers.splice(i,1); buildHotelPax(); renderHotel(); }
@@ -689,10 +730,24 @@ function buildHotelPax() {
   HS.passengers.forEach((p,i) => {
     c.innerHTML += `<div class="fc">
       <div class="fc-head"><span>Huésped ${i+1}</span>${HS.passengers.length>1?`<button class="btn-rm" onclick="removeHotelPax(${i})">✕</button>`:''}</div>
-      <div class="row2">
-        <div><label>Apellido</label><input value="${p.apellido.toUpperCase()}" style="text-transform:uppercase" oninput="HS.passengers[${i}].apellido=this.value.toUpperCase();renderHotel()"></div>
-        <div><label>Nombre</label><input value="${p.nombre.toUpperCase()}" style="text-transform:uppercase" oninput="HS.passengers[${i}].nombre=this.value.toUpperCase();renderHotel()"></div>
-      </div>
+      <label>Nombre completo</label>
+      <input value="${p.nombre.toUpperCase()}" style="text-transform:uppercase" oninput="HS.passengers[${i}].nombre=this.value.toUpperCase();renderHotel()">
+    </div>`;
+  });
+}
+HS.extras = [];
+
+function addHotelExtra() {
+  HS.extras.push('');
+  buildHotelExtras();
+}
+function removeHotelExtra(i) { HS.extras.splice(i,1); buildHotelExtras(); renderHotel(); }
+function buildHotelExtras() {
+  const c = document.getElementById('h-extras-list'); if(!c) return; c.innerHTML='';
+  HS.extras.forEach((e,i) => {
+    c.innerHTML += `<div style="display:flex;gap:4px;margin-bottom:4px">
+      <input value="${e}" placeholder="Ej: Transfer de/para hotel" style="flex:1" oninput="HS.extras[${i}]=this.value;renderHotel()">
+      <button class="btn-rm" onclick="removeHotelExtra(${i})">✕</button>
     </div>`;
   });
 }
@@ -742,36 +797,88 @@ async function selectHotel(place_id, name) {
   }
 }
 
+// Exchange rates to USD (approximate)
+const FX = { USD:1, EUR:1.08, ZAR:0.055, JPY:0.0067, THB:0.028, AUD:0.65, NZD:0.60, ILS:0.27, SGD:0.74, AED:0.27 };
+
+function calcImpuestos() {
+  const moneda = document.getElementById('h-imp-moneda')?.value||'';
+  const monto = parseFloat(document.getElementById('h-imp-monto')?.value)||0;
+  const prev = document.getElementById('h-imp-preview');
+  if (!moneda || !monto) { if(prev) prev.textContent=''; renderHotel(); return; }
+  if (moneda==='USD') { if(prev) prev.textContent=`→ USD ${monto.toFixed(2)}`; }
+  else {
+    const usd = (monto * (FX[moneda]||1)).toFixed(2);
+    if(prev) prev.textContent=`→ APROX USD ${usd}`;
+  }
+  renderHotel();
+}
+
+function toggleCancelDate() {
+  const tipo = document.getElementById('h-cancel-tipo')?.value||'';
+  const wrap = document.getElementById('h-cancel-fecha-wrap');
+  if (wrap) wrap.style.display = tipo==='reembolsable' ? 'block' : 'none';
+  renderHotel();
+}
+
+function fmtDateDisplay(dateVal) {
+  if (!dateVal) return '';
+  const [y,m,d] = dateVal.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+const HOTEL_DISCLAIMER = {
+  es: 'Todos los cargos informados por el hotel/proveedor han sido incluidos en este voucher. Los hoteles pueden cobrar cargos adicionales obligatorios pagaderos directamente en la propiedad, incluyendo pero no exclusivamente: resort fee, cargo por instalaciones, impuesto de ciudad, cargo por estadía de ciudadanos extranjeros. El huésped también puede ser solicitado a proveer una tarjeta de crédito o depósito en efectivo como garantía de pago por servicios adicionales como: mini-bar, TV de pago, etc. La agencia no se hace responsable por la calidad de los servicios prestados por el hotel. El cliente puede contactar directamente la administración del hotel para reclamar sobre el volumen y calidad de los servicios prestados. En caso de cualquier problema durante el check-in o check-out, por favor contacte a la Agencia.',
+  en: 'All charges informed by the hotel/provider have been included in this voucher. Hotels may charge additional mandatory fees payable by the guest directly at the property, including but not exclusively: resort fee, facility fee, city tax, fee for the stay of foreign citizens. The guest can also be asked to provide a credit card or cash deposit as a guarantee of payment for additional services such as: mini-bar, pay-TV, etc. Agency is not responsible for the quality of services provided by the hotel. Client can contact administration of hotel directly to claim on volume and quality of provided services. In case of any issues during check-in or check-out, please contact the Agency.',
+  pt: 'Todas as taxas informadas pelo hotel/fornecedor foram incluídas neste voucher. Os hotéis podem cobrar taxas adicionais obrigatórias pagas pelo hóspede diretamente na propriedade, incluindo mas não exclusivamente: taxa de resort, taxa de instalações, imposto municipal, taxa de estadia de cidadãos estrangeiros. O hóspede também pode ser solicitado a fornecer um cartão de crédito ou depósito em dinheiro como garantia de pagamento por serviços adicionais como: mini-bar, TV paga, etc. A agência não é responsável pela qualidade dos serviços prestados pelo hotel. O cliente pode contatar a administração do hotel diretamente para reclamar sobre o volume e qualidade dos serviços prestados. Em caso de problemas durante o check-in ou check-out, entre em contato com a Agência.',
+  he: 'כל החיובים שנמסרו על ידי המלון/הספק נכללו בשובר זה. המלונות עשויים לגבות עמלות חובה נוספות שישולמו על ידי האורח ישירות בנכס, כולל אך לא רק: דמי נופש, דמי מתקנים, מס עירוני, דמי שהות לאזרחים זרים. ייתכן שהאורח יתבקש גם לספק כרטיס אשראי או פיקדון במזומן כערבות לתשלום עבור שירותים נוספים כגון: מיני-בר, טלוויזיה בתשלום וכדומה. הסוכנות אינה אחראית לאיכות השירותים הניתנים על ידי המלון. הלקוח יכול לפנות ישירות להנהלת המלון לתלונות על היקף ואיכות השירותים הניתנים. במקרה של בעיות כלשהן במהלך הצק-אין או הצק-אאוט, אנא צור קשר עם הסוכנות.'
+};
+
 // ── RENDER HOTEL VOUCHER ──────────────────────────────
 function renderHotel() {
   const ref = (document.getElementById('h-ref')?.value||'').trim();
   const nota = document.getElementById('h-nota')?.value||'';
   const conf = document.getElementById('h-confirmacion')?.value||'';
-  const checkin = document.getElementById('h-checkin')?.value||'';
+  const checkinRaw = document.getElementById('h-checkin')?.value||'';
   const checkinH = document.getElementById('h-checkin-hora')?.value||'';
-  const checkout = document.getElementById('h-checkout')?.value||'';
+  const checkoutRaw = document.getElementById('h-checkout')?.value||'';
   const checkoutH = document.getElementById('h-checkout-hora')?.value||'';
+  const checkin = fmtDateDisplay(checkinRaw);
+  const checkout = fmtDateDisplay(checkoutRaw);
   const hab = document.getElementById('h-habitacion')?.value||'';
   const reg = document.getElementById('h-regimen')?.value||'';
-  const imp = document.getElementById('h-impuestos')?.value||'';
-  const cancel = document.getElementById('h-cancelacion')?.value||'';
+  const moneda = document.getElementById('h-imp-moneda')?.value||'';
+  const monto = parseFloat(document.getElementById('h-imp-monto')?.value)||0;
+  const cancelTipo = document.getElementById('h-cancel-tipo')?.value||'';
+  const cancelFechaRaw = document.getElementById('h-cancel-fecha')?.value||'';
+  const cancelFecha = fmtDateDisplay(cancelFechaRaw);
+  const adicionales = document.getElementById('h-adicionales')?.value||'';
+  const lang = document.getElementById('lang-select')?.value||'es';
+  const disclaimer = HOTEL_DISCLAIMER[lang]||HOTEL_DISCLAIMER.es;
+
+  // Build cancellation text
+  let cancelText = '';
+  if (cancelTipo==='NO REEMBOLSABLE') cancelText = 'NO REEMBOLSABLE';
+  else if (cancelTipo==='reembolsable' && cancelFecha) cancelText = `REEMBOLSABLE HASTA ${cancelFecha}`;
+  else if (cancelTipo==='reembolsable') cancelText = 'REEMBOLSABLE';
+
+  // Build tax text
+  let impText = '';
+  if (moneda && monto) {
+    if (moneda==='USD') impText = `USD ${monto.toFixed(2)}`;
+    else { const usd=(monto*(FX[moneda]||1)).toFixed(2); impText=`${moneda} ${monto.toFixed(2)} (APROX USD ${usd})`; }
+  }
 
   // Calculate nights
   let nights = '';
-  if (checkin && checkout) {
-    const [d1,m1,y1]=checkin.split('/').map(Number);
-    const [d2,m2,y2]=checkout.split('/').map(Number);
-    if (d1&&m1&&y1&&d2&&m2&&y2) {
-      const diff = (new Date(y2,m2-1,d2) - new Date(y1,m1-1,d1)) / 86400000;
-      if (diff>0) nights = diff;
-    }
+  if (checkinRaw && checkoutRaw) {
+    const diff = (new Date(checkoutRaw) - new Date(checkinRaw)) / 86400000;
+    if (diff>0) nights = diff;
   }
 
   const stars = HS.stars > 0 ? '★'.repeat(HS.stars) : '';
   const guestH = HS.passengers.map(p =>
-    `<div class="pn" style="font-size:13px;font-weight:700;color:#1e3a5c">${p.apellido&&p.nombre?`${p.apellido} / ${p.nombre}`:p.apellido||p.nombre||'HUÉSPED'}</div>`
+    `<div class="pn" style="font-size:13px;font-weight:700;color:#1e3a5c">${p.nombre||'HUÉSPED'}${adicionales?` <span style="color:#3d8fd1">${adicionales}</span>`:''}</div>`
   ).join('');
-
   const locsHotelH = conf ? `<div class="vloc"><div class="vh-lbl">CONFIRMACIÓN</div><div class="vh-val big">${conf}</div></div>` : '';
 
   document.getElementById('voucher').innerHTML = `
@@ -813,18 +920,22 @@ function renderHotel() {
           <div class="vhotel-date-sub">${checkoutH||''}</div>
         </div>
       </div>
-      ${hab||reg?`<div class="vhotel-room">
+      ${hab||reg||HS.extras.length?`<div class="vhotel-room">
         <div class="vhotel-room-lbl">Habitación</div>
         <div class="vhotel-room-val">${hab||''}</div>
         ${reg?`<div class="vhotel-room-sub">${reg}</div>`:''}
+        ${HS.extras.filter(e=>e.trim()).map(e=>`<div class="vhotel-room-sub">✓ ${e}</div>`).join('')}
       </div>`:''}
-      ${imp?`<div class="vhotel-tax">
+      ${impText?`<div class="vhotel-tax">
         <div class="vhotel-tax-lbl">Impuestos a pagar en el hotel</div>
-        <div class="vhotel-tax-val">${imp}</div>
+        <div class="vhotel-tax-val">${impText}</div>
       </div>`:''}
-      ${cancel?`<div class="vhotel-cancel">Cancelación: ${cancel}</div>`:''}
+      ${cancelText?`<div class="vhotel-cancel">Política de cancelación: <strong>${cancelText}</strong></div>`:''}
     </div>
-    <div class="vfoot"><div class="vfoot-note">${nota}</div></div>
+    <div class="vfoot">
+      <div class="vfoot-note" style="margin-bottom:8px">${nota}</div>
+      <div style="font-size:9px;color:#9ab0c0;line-height:1.5;border-top:1px solid #e0ecf7;padding-top:8px;margin-top:4px">${disclaimer}</div>
+    </div>
     <div class="vdiv"></div>`;
 }
 
