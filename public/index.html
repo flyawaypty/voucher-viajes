@@ -810,17 +810,14 @@ function dlPDF(){
     : (S.locs[0]?.value||'viaje');
   const filename = ref ? `TKT${ref}.pdf` : `voucher-${conf}.pdf`;
   const el = document.getElementById('voucher');
+  const w = el.offsetWidth;
+  const h = el.offsetHeight;
 
-  // Clone voucher into a fullscreen overlay to avoid flex layout issues
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;z-index:99999;background:#fff';
-  const clone = el.cloneNode(true);
-  clone.style.cssText = 'width:100%;max-width:100%;border-radius:0;box-shadow:none';
-  overlay.appendChild(clone);
-  document.body.appendChild(overlay);
+  // Temporarily move voucher to fixed fullscreen position
+  const origStyle = el.getAttribute('style')||'';
+  el.style.cssText = `position:fixed;top:0;left:0;width:100vw;max-width:100vw;border-radius:0;box-shadow:none;z-index:99999;background:#fff`;
 
-  // Wait for images
-  const imgs = clone.querySelectorAll('img');
+  const imgs = el.querySelectorAll('img');
   const imagePromises = Array.from(imgs).map(img => {
     if (img.complete && img.naturalHeight > 0) return Promise.resolve();
     return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
@@ -828,13 +825,15 @@ function dlPDF(){
 
   Promise.all(imagePromises).then(() => {
     setTimeout(() => {
+      const elW = el.offsetWidth;
+      const elH = el.offsetHeight;
       html2pdf().set({
         margin: 0, filename,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-      }).from(clone).save().then(() => {
-        document.body.removeChild(overlay);
+        html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0, width: elW, windowWidth: elW },
+        jsPDF: { unit: 'px', format: [elW, elH], orientation: 'portrait' }
+      }).from(el).save().then(() => {
+        el.setAttribute('style', origStyle);
       });
     }, 300);
   });
