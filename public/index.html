@@ -402,13 +402,22 @@ function render(){
   const mealLabels={KSML:'Kosher Meal',SKML:'Strict Kosher Meal',VGML:'Vegan Meal',CHML:"Children's Meal"};
   const paxH=S.passengers.map(p=>`
     <div class="v-pax" ${L.dir==='rtl'?'style="direction:rtl;text-align:right"':''}>
-      <div class="pn">${p.nombre||'Pasajero'}</div>
-      ${p.eticket?`<span class="pt">${L.eticket}: ${p.eticket.toUpperCase()}</span>`:''}
-      ${p.bagI?`<span class="pt">${S.tipo==='idavuelta'?L.bagOutbound:L.bagAllowed}: ${p.bagI}</span>`:''}
-      ${(S.tipo==='idavuelta'&&p.bagV)?`<span class="pt">${L.bagReturn}: ${p.bagV}</span>`:''}
-      ${p.asiento?`<span class="pt">${L.seat}: ${p.asiento}</span>`:''}
-      ${p.ff_al&&p.ff_num?`<span class="pt">${p.ff_al} # ${p.ff_num}</span>`:''}
-      ${p.meal?`<span class="pt">${L.meal}: ${mealLabels[p.meal]||p.meal}</span>`:''}
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div class="pn">${p.nombre||'PASAJERO'}</div>
+          ${p.asiento?`<span class="pt">${L.seat}: ${p.asiento.toUpperCase()}</span>`:''}
+          ${p.ff_al&&p.ff_num?`<span class="pt">${p.ff_al.toUpperCase()} # ${p.ff_num.toUpperCase()}</span>`:''}
+          ${p.meal?`<span class="pt">${(mealLabels[p.meal]||p.meal).toUpperCase()}</span>`:''}
+        </div>
+        <div style="text-align:right;flex-shrink:0;margin-left:16px">
+          ${p.eticket?`<div style="font-size:14px;font-weight:700;color:#1e3a5c;margin-bottom:2px">${p.eticket.toUpperCase()}</div>
+          <div style="font-size:11px;color:#5a7fa0;margin-bottom:8px">${L.eticket}</div>`:''}
+          ${p.bagI?`<div style="font-size:9px;color:#8aa8c0;text-transform:uppercase;letter-spacing:0.5px">${S.tipo==='idavuelta'?L.bagOutbound:L.bagAllowed}</div>
+          <div style="font-size:12px;color:#5a7fa0;font-weight:600">${p.bagI.toUpperCase()}</div>`:''}
+          ${(S.tipo==='idavuelta'&&p.bagV)?`<div style="font-size:9px;color:#8aa8c0;text-transform:uppercase;letter-spacing:0.5px;margin-top:4px">${L.bagReturn}</div>
+          <div style="font-size:12px;color:#5a7fa0;font-weight:600">${p.bagV.toUpperCase()}</div>`:''}
+        </div>
+      </div>
     </div>`).join('');
   const locsH=S.locs.map(l=>`<div class="vloc"><div class="vh-lbl">${L.resCode}</div><div class="vh-val${S.locs.length===1?' big':''}">${l.value||'------'}</div></div>`).join('');
   function buildSection(flights,label){
