@@ -816,6 +816,7 @@ function dlPDF(){
   const preview = document.querySelector('.preview');
 
   sidebar.style.display = 'none';
+  document.body.style.display = 'block';
   preview.style.padding = '0';
   preview.style.background = '#fff';
   el.style.maxWidth = '100%';
@@ -839,6 +840,7 @@ function dlPDF(){
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
       }).from(el).save().then(() => {
         sidebar.style.display = '';
+        document.body.style.display = '';
         preview.style.padding = '';
         preview.style.background = '';
         el.style.maxWidth = '';
