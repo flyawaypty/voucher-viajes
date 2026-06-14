@@ -332,12 +332,15 @@ textarea { resize: vertical; line-height: 1.5; }
           <input id="h-manual-phone" placeholder="0689935351" style="flex:1" oninput="updatePhone()">
         </div>
         <label>Foto del hotel</label>
-        <div id="h-photo-zone" onclick="document.getElementById('h-photo-file').click()" style="border:2px dashed #2d5070;border-radius:6px;padding:14px;text-align:center;cursor:pointer;background:#0f2030;margin-top:4px" onpaste="pasteHotelPhoto(event)" tabindex="0">
-          <div id="h-photo-preview" style="display:none"><img id="h-photo-img" style="max-width:100%;max-height:80px;border-radius:4px"></div>
-          <div id="h-photo-hint" style="font-size:11px;color:#7fa8c8">📋 Pega una imagen (Ctrl+V)<br>o haz clic para subir archivo</div>
+        <div style="display:flex;gap:6px;align-items:stretch;margin-top:4px">
+          <div id="h-photo-zone" tabindex="0" onpaste="pasteHotelPhoto(event)" style="flex:1;background:#163050;border:1px solid #2d5070;border-radius:5px;padding:8px 10px;font-size:11px;color:#4a6a88;min-height:36px;display:flex;align-items:center;cursor:text;outline:none" onfocus="this.style.borderColor='#3d8fd1'" onblur="this.style.borderColor='#2d5070'">
+            <span id="h-photo-hint">📋 Pega imagen aquí (Ctrl+V)</span>
+            <img id="h-photo-img" style="display:none;max-height:28px;border-radius:3px;max-width:100%">
+          </div>
+          <button onclick="document.getElementById('h-photo-file').click()" style="flex-shrink:0;padding:8px 10px;background:#163050;border:1px solid #2d5070;border-radius:5px;color:#7fa8c8;font-size:11px;cursor:pointer;white-space:nowrap">📁 Subir</button>
+          <button id="h-photo-clear" onclick="clearHotelPhoto()" style="display:none;flex-shrink:0;padding:8px 10px;background:#163050;border:1px solid #2d5070;border-radius:5px;color:#e05c5c;font-size:11px;cursor:pointer">✕</button>
         </div>
         <input type="file" id="h-photo-file" accept="image/*" style="display:none" onchange="uploadHotelPhoto(this)">
-        <button style="font-size:10px;background:none;border:none;color:#e05c5c;cursor:pointer;margin-top:4px;padding:0" onclick="clearHotelPhoto()">✕ Quitar foto</button>
       </div>
       <div class="sec">Estrellas</div>
       <div style="display:flex;gap:6px;margin-bottom:8px" id="star-selector">
@@ -919,22 +922,27 @@ function detectDDI(phoneStr) {
 
 function setHotelPhoto(dataUrl) {
   HS.photoUrl = dataUrl;
-  const preview = document.getElementById('h-photo-preview');
   const hint = document.getElementById('h-photo-hint');
   const img = document.getElementById('h-photo-img');
-  if (preview && hint && img) {
-    img.src = dataUrl;
-    preview.style.display = 'block';
-    hint.style.display = 'none';
-  }
+  const clearBtn = document.getElementById('h-photo-clear');
+  const zone = document.getElementById('h-photo-zone');
+  if (hint) hint.style.display = 'none';
+  if (img) { img.src = dataUrl; img.style.display = 'block'; }
+  if (clearBtn) clearBtn.style.display = 'flex';
+  if (zone) zone.style.borderColor = '#3d8fd1';
   renderHotel();
 }
 
 function clearHotelPhoto() {
   HS.photoUrl = '';
-  const preview = document.getElementById('h-photo-preview');
   const hint = document.getElementById('h-photo-hint');
-  if (preview && hint) { preview.style.display='none'; hint.style.display='block'; }
+  const img = document.getElementById('h-photo-img');
+  const clearBtn = document.getElementById('h-photo-clear');
+  const zone = document.getElementById('h-photo-zone');
+  if (hint) hint.style.display = 'inline';
+  if (img) { img.src = ''; img.style.display = 'none'; }
+  if (clearBtn) clearBtn.style.display = 'none';
+  if (zone) zone.style.borderColor = '#2d5070';
   renderHotel();
 }
 
