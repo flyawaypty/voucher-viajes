@@ -209,6 +209,17 @@ textarea { resize: vertical; line-height: 1.5; }
         <div class="autocomplete-list" id="h-suggestions" style="display:none"></div>
       </div>
       <div id="h-found" style="display:none;margin-top:8px;padding:8px;background:#0d3320;border-radius:5px;font-size:11px;color:#5be0a0"></div>
+      <button class="btn-add-manual" onclick="toggleManualHotel()" id="btn-manual-hotel" style="margin-top:6px">+ Ingresar manualmente</button>
+      <div id="manual-hotel-fields" style="display:none;margin-top:6px;padding:8px;background:#0f2030;border-radius:6px;border:1px solid #2d5070">
+        <label>Nombre del hotel</label>
+        <input id="h-manual-name" placeholder="Hotel Chapter Roma" oninput="HS.name=this.value;renderHotel()">
+        <label>Dirección</label>
+        <input id="h-manual-address" placeholder="Via Santa Maria 47, Roma" oninput="HS.address=this.value;renderHotel()">
+        <label>Teléfono</label>
+        <input id="h-manual-phone" placeholder="+39 0689935351" oninput="HS.phone=this.value;renderHotel()">
+        <label>URL de foto (opcional)</label>
+        <input id="h-manual-photo" placeholder="https://..." oninput="HS.photoUrl=this.value;renderHotel()">
+      </div>
       <div class="sec">Estrellas</div>
       <div style="display:flex;gap:6px;margin-bottom:8px" id="star-selector">
         <span style="cursor:pointer;font-size:18px;color:#7fa8c8" onclick="setStars(1)">★</span>
@@ -689,15 +700,8 @@ function dlPDF(){
 
 // ── PRODUCT SWITCHING ────────────────────────────────
 function switchProduct(p, el) {
-  console.log('switchProduct called:', p, el);
-  const allTabs = document.querySelectorAll('.prod-tab');
-  console.log('Found prod-tabs:', allTabs.length);
-  allTabs.forEach(t => { 
-    t.classList.remove('on');
-    console.log('Removed on from:', t.textContent.trim(), t.classList.toString());
-  });
+  document.querySelectorAll('.prod-tab').forEach(t => t.classList.remove('on'));
   el.classList.add('on');
-  console.log('Added on to:', el.textContent.trim(), el.classList.toString());
   ['vuelos','hoteles','otros'].forEach(x => {
     document.getElementById('product-'+x).style.display = x===p ? 'block' : 'none';
   });
@@ -760,6 +764,14 @@ function buildHotelExtras() {
   });
 }
 
+function toggleManualHotel() {
+  const fields = document.getElementById('manual-hotel-fields');
+  const btn = document.getElementById('btn-manual-hotel');
+  const isOpen = fields.style.display !== 'none';
+  fields.style.display = isOpen ? 'none' : 'block';
+  btn.textContent = isOpen ? '+ Ingresar manualmente' : '− Cerrar entrada manual';
+}
+
 // ── HOTEL SEARCH ──────────────────────────────────────
 async function searchHotel(q) {
   clearTimeout(searchTimer);
@@ -798,6 +810,15 @@ async function selectHotel(place_id, name) {
     const h = data.hotel;
     HS.name = h.name; HS.address = h.address;
     HS.phone = h.phone; HS.photoUrl = h.photoUrl;
+    // Pre-fill manual fields too
+    const mName = document.getElementById('h-manual-name');
+    const mAddr = document.getElementById('h-manual-address');
+    const mPhone = document.getElementById('h-manual-phone');
+    const mPhoto = document.getElementById('h-manual-photo');
+    if(mName) mName.value = h.name;
+    if(mAddr) mAddr.value = h.address;
+    if(mPhone) mPhone.value = h.phone;
+    if(mPhoto) mPhoto.value = h.photoUrl;
     found.textContent = `✓ ${h.name} — ${h.address}`;
     renderHotel();
   } catch(e) {
