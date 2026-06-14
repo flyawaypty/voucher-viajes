@@ -9,7 +9,6 @@ export default async function handler(req, res) {
   if (!numero || !fecha) { res.status(400).json({ ok: false, error: 'Faltan datos' }); return; }
 
   try {
-    // Paso 1: buscar con web search
     const searchRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -23,7 +22,7 @@ export default async function handler(req, res) {
         tools: [{ type: 'web_search_20250305', name: 'web_search' }],
         messages: [{
           role: 'user',
-          content: `Search for flight ${numero} schedule: departure airport, arrival airport, departure time, arrival time.`
+          content: `Search for flight ${numero} schedule: departure airport, arrival airport, departure time, arrival time, and flight duration.`
         }]
       })
     });
@@ -32,11 +31,8 @@ export default async function handler(req, res) {
     if (!searchRes.ok) throw new Error(searchData.error?.message || 'Search error');
 
     const searchText = (searchData.content || [])
-      .filter(b => b.type === 'text')
-      .map(b => b.text)
-      .join('\n');
+      .filter(b => b.type === 'text').map(b => b.text).join('\n');
 
-    // Paso 2: extraer JSON sin web search
     const parseRes = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -46,10 +42,10 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 300,
+        max_tokens: 400,
         messages: [{
           role: 'user',
-          content: `Based on this flight information:\n\n${searchText}\n\nExtract data for flight ${numero} and return ONLY this JSON, no other text:\n{"origen":"IATA","destino":"IATA","aorig":"airport name","adest":"airport name","sh":"HH:MM","lh":"HH:MM","lf":"${fecha}","al":"airline name","cab":"Economy"}\n\nReturn ONLY the JSON.`
+          content: `Based on this flight information:\n\n${searchText}\n\nExtract data for flight ${numero} and return ONLY this JSON, no other text, no markdown:\n{"origen":"IATA","destino":"IATA","aorig":"airport name","adest":"airport name","sh":"HH:MM 24h departure local","lh":"HH:MM 24h arrival local","lf":"${fecha}","al":"airline name","cab":"Economy","duracion_min":NUMBER_IN_MINUTES}\n\nFor duracion_min: convert flight duration to total minutes (e.g. 3h 57min = 237). If unknown use 0. Return ONLY the JSON.`
         }]
       })
     });
@@ -58,9 +54,7 @@ export default async function handler(req, res) {
     if (!parseRes.ok) throw new Error(parseData.error?.message || 'Parse error');
 
     const parseText = (parseData.content || [])
-      .filter(b => b.type === 'text')
-      .map(b => b.text)
-      .join('');
+      .filter(b => b.type === 'text').map(b => b.text).join('');
 
     const jsonMatch = parseText.replace(/```json|```/g, '').trim().match(/\{[\s\S]*\}/);
     if (!jsonMatch) throw new Error('No se pudo estructurar la información');
