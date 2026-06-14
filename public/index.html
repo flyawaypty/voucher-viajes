@@ -77,7 +77,10 @@ textarea { resize: vertical; line-height: 1.5; }
 .vline::before { content: '✈'; position: absolute; top: -9px; left: 50%; transform: translateX(-50%); font-size: 14px; color: #3d8fd1; }
 .vdur { font-size: 10px; color: #7fa8c0; margin-top: 5px; }
 .val { font-size: 10px; color: #7fa8c0; margin-top: 2px; }
-.vcab { font-size: 10px; color: #fff; margin-top: 2px; background: #c9a97a; padding: 1px 8px; border-radius: 10px; }
+.vcab-economy { font-size: 10px; color: #fff; margin-top: 2px; background: #c9b99a; padding: 1px 8px; border-radius: 10px; }
+.vcab-premium { font-size: 10px; color: #fff; margin-top: 2px; background: #b8a080; padding: 1px 8px; border-radius: 10px; }
+.vcab-business { font-size: 10px; color: #fff; margin-top: 2px; background: #a08060; padding: 1px 8px; border-radius: 10px; }
+.vcab-first { font-size: 10px; color: #fff; margin-top: 2px; background: #7a5c3a; padding: 1px 8px; border-radius: 10px; }
 .vavion { font-size: 10px; color: #8aa0b0; margin-top: 2px; }
 .vescala { display: flex; align-items: center; justify-content: center; padding: 7px 16px; background: #fdf6ec; border-left: 3px solid #c9a97a; border-right: 3px solid #c9a97a; }
 .vescala-text { font-size: 11px; color: #8a6a30; }
@@ -161,10 +164,10 @@ const BRAND = {
 };
 
 const LANGS = {
-  es: { dir:'ltr', passengers:'Pasajeros', flight:'Vuelo', outbound:'Ida', inbound:'Vuelta', itinerary:'Itinerario', leg:'Tramo', total:'Total', stopover:'Escala en', waitTime:'Tiempo de espera', eticket:'E-TICKET', bagAllowed:'Maleta permitida', bagOutbound:'Maleta permitida ida', bagReturn:'Maleta permitida vuelta', seat:'Asiento', meal:'Special meal', download:'⬇ Descargar PDF' },
-  en: { dir:'ltr', passengers:'Passengers', flight:'Flight', outbound:'Outbound', inbound:'Return', itinerary:'Itinerary', leg:'Segment', total:'Total', stopover:'Layover at', waitTime:'Waiting time', eticket:'E-TICKET', bagAllowed:'Baggage allowance', bagOutbound:'Outbound baggage', bagReturn:'Return baggage', seat:'Seat', meal:'Special meal', download:'⬇ Download PDF' },
-  pt: { dir:'ltr', passengers:'Passageiros', flight:'Voo', outbound:'Ida', inbound:'Volta', itinerary:'Itinerário', leg:'Trecho', total:'Total', stopover:'Escala em', waitTime:'Tempo de espera', eticket:'E-TICKET', bagAllowed:'Bagagem permitida', bagOutbound:'Bagagem permitida ida', bagReturn:'Bagagem permitida volta', seat:'Assento', meal:'Refeição especial', download:'⬇ Baixar PDF' },
-  he: { dir:'rtl', passengers:'נוסעים', flight:'טיסה', outbound:'יציאה', inbound:'חזרה', itinerary:'מסלול', leg:'קטע', total:'סה״כ', stopover:'עצירה ב', waitTime:'זמן המתנה', eticket:'כרטיס אלקטרוני', bagAllowed:'כבודה מותרת', bagOutbound:'כבודה מותרת הלוך', bagReturn:'כבודה מותרת חזור', seat:'מושב', meal:'ארוחה מיוחדת', download:'⬇ הורד PDF' }
+  es: { dir:'ltr', passengers:'Pasajeros', flight:'Vuelo', outbound:'Ida', inbound:'Vuelta', itinerary:'Itinerario', leg:'Tramo', total:'Total', stopover:'Escala en', waitTime:'Tiempo de espera', eticket:'E-TICKET', bagAllowed:'Maleta permitida', bagOutbound:'Maleta permitida ida', bagReturn:'Maleta permitida vuelta', seat:'Asiento', meal:'Special meal', download:'⬇ Descargar PDF', resCode:'CÓDIGO DE RESERVACIÓN' },
+  en: { dir:'ltr', passengers:'Passengers', flight:'Flight', outbound:'Outbound', inbound:'Return', itinerary:'Itinerary', leg:'Segment', total:'Total', stopover:'Layover at', waitTime:'Waiting time', eticket:'E-TICKET', bagAllowed:'Baggage allowance', bagOutbound:'Outbound baggage', bagReturn:'Return baggage', seat:'Seat', meal:'Special meal', download:'⬇ Download PDF', resCode:'RESERVATION CODE' },
+  pt: { dir:'ltr', passengers:'Passageiros', flight:'Voo', outbound:'Ida', inbound:'Volta', itinerary:'Itinerário', leg:'Trecho', total:'Total', stopover:'Escala em', waitTime:'Tempo de espera', eticket:'E-TICKET', bagAllowed:'Bagagem permitida', bagOutbound:'Bagagem permitida ida', bagReturn:'Bagagem permitida volta', seat:'Assento', meal:'Refeição especial', download:'⬇ Baixar PDF', resCode:'CÓDIGO DE RESERVA' },
+  he: { dir:'rtl', passengers:'נוסעים', flight:'טיסה', outbound:'יציאה', inbound:'חזרה', itinerary:'מסלול', leg:'קטע', total:'סה״כ', stopover:'עצירה ב', waitTime:'זמן המתנה', eticket:'כרטיס אלקטרוני', bagAllowed:'כבודה מותרת', bagOutbound:'כבודה מותרת הלוך', bagReturn:'כבודה מותרת חזור', seat:'מושב', meal:'ארוחה מיוחדת', download:'⬇ הורד PDF', resCode:'קוד הזמנה' }
 };
 
 function getLang() { return LANGS[document.getElementById('lang-select')?.value||'es']||LANGS.es; }
@@ -259,11 +262,9 @@ function buildLocs(){
   const c=document.getElementById('locs-list');c.innerHTML='';
   S.locs.forEach((l,i)=>{
     c.innerHTML+=`<div style="margin-bottom:6px">
-      <div class="row2" style="margin-bottom:3px">
-        <div><label>Etiqueta</label><input value="${l.label}" oninput="S.locs[${i}].label=this.value;render()"></div>
-        <div><label>Número</label><input value="${l.value.toUpperCase()}" style="text-transform:uppercase" oninput="S.locs[${i}].value=this.value.toUpperCase();render()"></div>
-      </div>
-      ${S.locs.length>1?`<button style="font-size:11px;background:none;border:none;cursor:pointer;color:#e05c5c" onclick="removeLoc(${i})">✕ Quitar</button>`:''}
+      <label style="color:#7fa8c8;font-size:10px">Número</label>
+      <input value="${l.value.toUpperCase()}" style="text-transform:uppercase" oninput="S.locs[${i}].value=this.value.toUpperCase();render()">
+      ${S.locs.length>1?`<button style="font-size:11px;background:none;border:none;cursor:pointer;color:#e05c5c;margin-top:4px" onclick="removeLoc(${i})">✕ Quitar</button>`:''}
     </div>`;
   });
 }
@@ -353,7 +354,7 @@ function buildPax(){
             <option value="FFP" ${p.ff_al==='FFP'?'selected':''}>FFP</option>
           </select>
         </div>
-        <div><label>N° de miembro</label><input value="${p.ff_num}" placeholder="Número" oninput="S.passengers[${i}].ff_num=this.value;render()"></div>
+        <div><label>N° de miembro</label><input value="${p.ff_num.toUpperCase()}" style="text-transform:uppercase" placeholder="Número" oninput="S.passengers[${i}].ff_num=this.value.toUpperCase();render()"></div>
       </div>
       <label>Special meal (opcional)</label>
       <select onchange="S.passengers[${i}].meal=this.value;render()">
@@ -381,7 +382,7 @@ function renderSegments(flights,L){
     const f=flights[i],t1=fmt12(f.sh),t2=fmt12(f.lh),dur=fmtDur(f.duracion_min);
     html+=`<div class="vseg">
       <div class="vtb"><div class="vtime">${t1.h}</div><div class="vampm">${t1.ampm}</div><div class="vdate">${f.fecha||''}</div><div class="vap">${f.origen||'---'}</div><div class="vapn">${f.aorig||''}</div></div>
-      <div class="vmid"><div class="vfnum">${f.num||'VUELO'}</div><div class="vline"></div>${dur?`<div class="vdur">${dur}</div>`:''}<div class="val">${f.al||''}</div><div class="vcab">${f.cab||'Economy'}</div>${f.avion?`<div class="vavion">${f.avion}</div>`:''}</div>
+      <div class="vmid"><div class="vfnum">${f.num||'VUELO'}</div><div class="vline"></div>${dur?`<div class="vdur">${dur}</div>`:''}<div class="val">${f.al||''}</div><div class="vcab-${(f.cab||'economy').toLowerCase().replace(' ','')}">${f.cab||'Economy'}</div>${f.avion?`<div class="vavion">${f.avion}</div>`:''}</div>
       <div class="vtb"><div class="vtime">${t2.h}</div><div class="vampm">${t2.ampm}</div><div class="vdate">${f.lf||''}</div><div class="vap">${f.destino||'---'}</div><div class="vapn">${f.adest||''}</div></div>
     </div>`;
     if(i<flights.length-1){
@@ -409,7 +410,7 @@ function render(){
       ${p.ff_al&&p.ff_num?`<span class="pt">${p.ff_al} # ${p.ff_num}</span>`:''}
       ${p.meal?`<span class="pt">${L.meal}: ${mealLabels[p.meal]||p.meal}</span>`:''}
     </div>`).join('');
-  const locsH=S.locs.map(l=>`<div class="vloc"><div class="vh-lbl">${l.label}</div><div class="vh-val${S.locs.length===1?' big':''}">${l.value||'------'}</div></div>`).join('');
+  const locsH=S.locs.map(l=>`<div class="vloc"><div class="vh-lbl">${L.resCode}</div><div class="vh-val${S.locs.length===1?' big':''}">${l.value||'------'}</div></div>`).join('');
   function buildSection(flights,label){
     if(!flights.length) return '';
     const total=calcTotal(flights),ts=total>0?fmtDur(total):'';
@@ -445,10 +446,17 @@ function dlPDF(){
   const ref=document.getElementById('ref').value.trim();
   const filename=ref?`TKT${ref}.pdf`:`voucher-${S.locs[0]?.value||'viaje'}.pdf`;
   const el=document.getElementById('voucher');
-  const prev=el.style.maxWidth;
-  el.style.maxWidth='none';el.style.borderRadius='0';el.style.boxShadow='none';
-  html2pdf().set({margin:0,filename,image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'in',format:'letter',orientation:'portrait'}}).from(el).save().then(()=>{
-    el.style.maxWidth=prev;el.style.borderRadius='';el.style.boxShadow='';
+  const prevMax=el.style.maxWidth, prevRad=el.style.borderRadius, prevShadow=el.style.boxShadow, prevWidth=el.style.width;
+  el.style.maxWidth='100%'; el.style.width='100%';
+  el.style.borderRadius='0'; el.style.boxShadow='none';
+  html2pdf().set({
+    margin:0, filename,
+    image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2,useCORS:true,scrollX:0,scrollY:0},
+    jsPDF:{unit:'in',format:'letter',orientation:'portrait'}
+  }).from(el).save().then(()=>{
+    el.style.maxWidth=prevMax; el.style.width=prevWidth;
+    el.style.borderRadius=prevRad; el.style.boxShadow=prevShadow;
   });
 }
 
