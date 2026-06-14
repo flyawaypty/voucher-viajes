@@ -216,9 +216,128 @@ textarea { resize: vertical; line-height: 1.5; }
         <label>Dirección</label>
         <input id="h-manual-address" placeholder="Via Santa Maria 47, Roma" oninput="HS.address=this.value;renderHotel()">
         <label>Teléfono</label>
-        <input id="h-manual-phone" placeholder="+39 0689935351" oninput="HS.phone=this.value;renderHotel()">
-        <label>URL de foto (opcional)</label>
-        <input id="h-manual-photo" placeholder="https://..." oninput="HS.photoUrl=this.value;renderHotel()">
+        <div style="display:flex;gap:4px">
+          <select id="h-ddi" onchange="updatePhone()" style="width:110px;flex-shrink:0">
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+1-CA">🇨🇦 +1</option>
+            <option value="+7">🇷🇺 +7</option>
+            <option value="+20">🇪🇬 +20</option>
+            <option value="+27">🇿🇦 +27</option>
+            <option value="+30">🇬🇷 +30</option>
+            <option value="+31">🇳🇱 +31</option>
+            <option value="+32">🇧🇪 +32</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+34">🇪🇸 +34</option>
+            <option value="+36">🇭🇺 +36</option>
+            <option value="+39" selected>🇮🇹 +39</option>
+            <option value="+40">🇷🇴 +40</option>
+            <option value="+41">🇨🇭 +41</option>
+            <option value="+43">🇦🇹 +43</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+45">🇩🇰 +45</option>
+            <option value="+46">🇸🇪 +46</option>
+            <option value="+47">🇳🇴 +47</option>
+            <option value="+48">🇵🇱 +48</option>
+            <option value="+49">🇩🇪 +49</option>
+            <option value="+51">🇵🇪 +51</option>
+            <option value="+52">🇲🇽 +52</option>
+            <option value="+53">🇨🇺 +53</option>
+            <option value="+54">🇦🇷 +54</option>
+            <option value="+55">🇧🇷 +55</option>
+            <option value="+56">🇨🇱 +56</option>
+            <option value="+57">🇨🇴 +57</option>
+            <option value="+58">🇻🇪 +58</option>
+            <option value="+60">🇲🇾 +60</option>
+            <option value="+61">🇦🇺 +61</option>
+            <option value="+62">🇮🇩 +62</option>
+            <option value="+63">🇵🇭 +63</option>
+            <option value="+64">🇳🇿 +64</option>
+            <option value="+65">🇸🇬 +65</option>
+            <option value="+66">🇹🇭 +66</option>
+            <option value="+81">🇯🇵 +81</option>
+            <option value="+82">🇰🇷 +82</option>
+            <option value="+84">🇻🇳 +84</option>
+            <option value="+86">🇨🇳 +86</option>
+            <option value="+90">🇹🇷 +90</option>
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+92">🇵🇰 +92</option>
+            <option value="+93">🇦🇫 +93</option>
+            <option value="+94">🇱🇰 +94</option>
+            <option value="+95">🇲🇲 +95</option>
+            <option value="+98">🇮🇷 +98</option>
+            <option value="+212">🇲🇦 +212</option>
+            <option value="+213">🇩🇿 +213</option>
+            <option value="+216">🇹🇳 +216</option>
+            <option value="+218">🇱🇾 +218</option>
+            <option value="+220">🇬🇲 +220</option>
+            <option value="+234">🇳🇬 +234</option>
+            <option value="+254">🇰🇪 +254</option>
+            <option value="+255">🇹🇿 +255</option>
+            <option value="+256">🇺🇬 +256</option>
+            <option value="+263">🇿🇼 +263</option>
+            <option value="+351">🇵🇹 +351</option>
+            <option value="+352">🇱🇺 +352</option>
+            <option value="+353">🇮🇪 +353</option>
+            <option value="+354">🇮🇸 +354</option>
+            <option value="+356">🇲🇹 +356</option>
+            <option value="+357">🇨🇾 +357</option>
+            <option value="+358">🇫🇮 +358</option>
+            <option value="+370">🇱🇹 +370</option>
+            <option value="+371">🇱🇻 +371</option>
+            <option value="+372">🇪🇪 +372</option>
+            <option value="+380">🇺🇦 +380</option>
+            <option value="+385">🇭🇷 +385</option>
+            <option value="+386">🇸🇮 +386</option>
+            <option value="+389">🇲🇰 +389</option>
+            <option value="+420">🇨🇿 +420</option>
+            <option value="+421">🇸🇰 +421</option>
+            <option value="+502">🇬🇹 +502</option>
+            <option value="+503">🇸🇻 +503</option>
+            <option value="+504">🇭🇳 +504</option>
+            <option value="+505">🇳🇮 +505</option>
+            <option value="+506">🇨🇷 +506</option>
+            <option value="+507">🇵🇦 +507</option>
+            <option value="+509">🇭🇹 +509</option>
+            <option value="+591">🇧🇴 +591</option>
+            <option value="+593">🇪🇨 +593</option>
+            <option value="+595">🇵🇾 +595</option>
+            <option value="+598">🇺🇾 +598</option>
+            <option value="+852">🇭🇰 +852</option>
+            <option value="+853">🇲🇴 +853</option>
+            <option value="+855">🇰🇭 +855</option>
+            <option value="+856">🇱🇦 +856</option>
+            <option value="+880">🇧🇩 +880</option>
+            <option value="+886">🇹🇼 +886</option>
+            <option value="+960">🇲🇻 +960</option>
+            <option value="+961">🇱🇧 +961</option>
+            <option value="+962">🇯🇴 +962</option>
+            <option value="+963">🇸🇾 +963</option>
+            <option value="+964">🇮🇶 +964</option>
+            <option value="+965">🇰🇼 +965</option>
+            <option value="+966">🇸🇦 +966</option>
+            <option value="+968">🇴🇲 +968</option>
+            <option value="+970">🇵🇸 +970</option>
+            <option value="+971">🇦🇪 +971</option>
+            <option value="+972">🇮🇱 +972</option>
+            <option value="+973">🇧🇭 +973</option>
+            <option value="+974">🇶🇦 +974</option>
+            <option value="+975">🇧🇹 +975</option>
+            <option value="+976">🇲🇳 +976</option>
+            <option value="+977">🇳🇵 +977</option>
+            <option value="+992">🇹🇯 +992</option>
+            <option value="+994">🇦🇿 +994</option>
+            <option value="+995">🇬🇪 +995</option>
+            <option value="+998">🇺🇿 +998</option>
+          </select>
+          <input id="h-manual-phone" placeholder="0689935351" style="flex:1" oninput="updatePhone()">
+        </div>
+        <label>Foto del hotel</label>
+        <div id="h-photo-zone" onclick="document.getElementById('h-photo-file').click()" style="border:2px dashed #2d5070;border-radius:6px;padding:14px;text-align:center;cursor:pointer;background:#0f2030;margin-top:4px" onpaste="pasteHotelPhoto(event)" tabindex="0">
+          <div id="h-photo-preview" style="display:none"><img id="h-photo-img" style="max-width:100%;max-height:80px;border-radius:4px"></div>
+          <div id="h-photo-hint" style="font-size:11px;color:#7fa8c8">📋 Pega una imagen (Ctrl+V)<br>o haz clic para subir archivo</div>
+        </div>
+        <input type="file" id="h-photo-file" accept="image/*" style="display:none" onchange="uploadHotelPhoto(this)">
+        <button style="font-size:10px;background:none;border:none;color:#e05c5c;cursor:pointer;margin-top:4px;padding:0" onclick="clearHotelPhoto()">✕ Quitar foto</button>
       </div>
       <div class="sec">Estrellas</div>
       <div style="display:flex;gap:6px;margin-bottom:8px" id="star-selector">
@@ -328,10 +447,14 @@ const BRAND = {
 };
 
 const LANGS = {
-  es: { dir:'ltr', passengers:'Pasajeros', flight:'Vuelo', flightOut:'Vuelo de Ida', outbound:'Ida', inbound:'Vuelta', itinerary:'Itinerario', leg:'Tramo', total:'Total', stopover:'Escala en', waitTime:'Tiempo de espera', eticket:'E-TICKET', bagAllowed:'Equipaje permitido', bagOutbound:'Equipaje permitido ida', bagReturn:'Equipaje permitido vuelta', seat:'Asiento', meal:'Special meal', download:'⬇ Descargar PDF', resCode:'CÓDIGO DE RESERVACIÓN' },
-  en: { dir:'ltr', passengers:'Passengers', flight:'Flight', flightOut:'Outbound Flight', outbound:'Outbound', inbound:'Return', itinerary:'Itinerary', leg:'Segment', total:'Total', stopover:'Layover at', waitTime:'Waiting time', eticket:'E-TICKET', bagAllowed:'Baggage allowance', bagOutbound:'Outbound baggage', bagReturn:'Return baggage', seat:'Seat', meal:'Special meal', download:'⬇ Download PDF', resCode:'RESERVATION CODE' },
-  pt: { dir:'ltr', passengers:'Passageiros', flight:'Voo', flightOut:'Voo de Ida', outbound:'Ida', inbound:'Volta', itinerary:'Itinerário', leg:'Trecho', total:'Total', stopover:'Escala em', waitTime:'Tempo de espera', eticket:'E-TICKET', bagAllowed:'Bagagem permitida', bagOutbound:'Bagagem permitida ida', bagReturn:'Bagagem permitida volta', seat:'Assento', meal:'Refeição especial', download:'⬇ Baixar PDF', resCode:'CÓDIGO DE RESERVA' },
-  he: { dir:'rtl', passengers:'נוסעים', flight:'טיסה', flightOut:'טיסת הלוך', flights:'טיסות', outbound:'יציאה', inbound:'חזרה', itinerary:'מסלול', leg:'טיסה', legs:'טיסות', total:'סה״כ', stopover:'עצירה ב', waitTime:'המתנה', eticket:'כרטיס אלקטרוני', bagAllowed:'כבודה כלולה', bagOutbound:'כבודה כלולה הלוך', bagReturn:'כבודה כלולה חזור', seat:'מושבים', meal:'ארוחה מיוחדת', download:'⬇ הורד PDF', resCode:'קוד הזמנה' }
+  es: { dir:'ltr', passengers:'Pasajeros', flight:'Vuelo', flightOut:'Vuelo de Ida', outbound:'Ida', inbound:'Vuelta', itinerary:'Itinerario', leg:'Tramo', total:'Total', stopover:'Escala en', waitTime:'Tiempo de espera', eticket:'E-TICKET', bagAllowed:'Equipaje permitido', bagOutbound:'Equipaje permitido ida', bagReturn:'Equipaje permitido vuelta', seat:'Asiento', meal:'Special meal', download:'⬇ Descargar PDF', resCode:'CÓDIGO DE RESERVACIÓN',
+    hGuest:'Huésped', hGuests:'Huéspedes', hStay:'Estadía', hCheckin:'Check-in', hCheckout:'Check-out', hNights:'noches', hRoom:'Habitación', hTax:'Impuestos a pagar en el hotel', hCancel:'Política de cancelación', hConfirm:'CONFIRMACIÓN' },
+  en: { dir:'ltr', passengers:'Passengers', flight:'Flight', flightOut:'Outbound Flight', outbound:'Outbound', inbound:'Return', itinerary:'Itinerary', leg:'Segment', total:'Total', stopover:'Layover at', waitTime:'Waiting time', eticket:'E-TICKET', bagAllowed:'Baggage allowance', bagOutbound:'Outbound baggage', bagReturn:'Return baggage', seat:'Seat', meal:'Special meal', download:'⬇ Download PDF', resCode:'RESERVATION CODE',
+    hGuest:'Guest', hGuests:'Guests', hStay:'Stay', hCheckin:'Check-in', hCheckout:'Check-out', hNights:'nights', hRoom:'Room', hTax:'Taxes payable at hotel', hCancel:'Cancellation policy', hConfirm:'CONFIRMATION' },
+  pt: { dir:'ltr', passengers:'Passageiros', flight:'Voo', flightOut:'Voo de Ida', outbound:'Ida', inbound:'Volta', itinerary:'Itinerário', leg:'Trecho', total:'Total', stopover:'Escala em', waitTime:'Tempo de espera', eticket:'E-TICKET', bagAllowed:'Bagagem permitida', bagOutbound:'Bagagem permitida ida', bagReturn:'Bagagem permitida volta', seat:'Assento', meal:'Refeição especial', download:'⬇ Baixar PDF', resCode:'CÓDIGO DE RESERVA',
+    hGuest:'Hóspede', hGuests:'Hóspedes', hStay:'Estadia', hCheckin:'Check-in', hCheckout:'Check-out', hNights:'noites', hRoom:'Quarto', hTax:'Impostos a pagar no hotel', hCancel:'Política de cancelamento', hConfirm:'CONFIRMAÇÃO' },
+  he: { dir:'rtl', passengers:'נוסעים', flight:'טיסה', flightOut:'טיסת הלוך', flights:'טיסות', outbound:'יציאה', inbound:'חזרה', itinerary:'מסלול', leg:'טיסה', legs:'טיסות', total:'סה״כ', stopover:'עצירה ב', waitTime:'המתנה', eticket:'כרטיס אלקטרוני', bagAllowed:'כבודה כלולה', bagOutbound:'כבודה כלולה הלוך', bagReturn:'כבודה כלולה חזור', seat:'מושבים', meal:'ארוחה מיוחדת', download:'⬇ הורד PDF', resCode:'קוד הזמנה',
+    hGuest:'אורח', hGuests:'אורחים', hStay:'שהייה', hCheckin:'צ׳ק-אין', hCheckout:'צ׳ק-אאוט', hNights:'לילות', hRoom:'חדר', hTax:'מיסים לתשלום במלון', hCancel:'מדיניות ביטול', hConfirm:'אישור הזמנה' }
 };
 
 function getLang() { return LANGS[document.getElementById('lang-select')?.value||'es']||LANGS.es; }
@@ -764,6 +887,80 @@ function buildHotelExtras() {
   });
 }
 
+function updatePhone() {
+  const ddi = document.getElementById('h-ddi')?.value||'';
+  const num = document.getElementById('h-manual-phone')?.value||'';
+  const ddiClean = ddi.replace('-CA','');
+  HS.phone = num ? `${ddiClean} ${num}` : '';
+  renderHotel();
+}
+
+function detectDDI(phoneStr) {
+  if (!phoneStr) return;
+  // Try to match country code from phone string like "+39 06..." or "+972-..."
+  const match = phoneStr.match(/^\+(\d{1,4})/);
+  if (!match) return;
+  const code = '+' + match[1];
+  const sel = document.getElementById('h-ddi');
+  if (!sel) return;
+  // Find matching option
+  for (let opt of sel.options) {
+    if (opt.value === code || opt.value.startsWith(code+'-')) {
+      sel.value = opt.value;
+      // Set just the local number without the country code
+      const localNum = phoneStr.replace(/^\+\d{1,4}[\s\-]?/, '');
+      const phoneInput = document.getElementById('h-manual-phone');
+      if (phoneInput) phoneInput.value = localNum;
+      break;
+    }
+  }
+  updatePhone();
+}
+
+function setHotelPhoto(dataUrl) {
+  HS.photoUrl = dataUrl;
+  const preview = document.getElementById('h-photo-preview');
+  const hint = document.getElementById('h-photo-hint');
+  const img = document.getElementById('h-photo-img');
+  if (preview && hint && img) {
+    img.src = dataUrl;
+    preview.style.display = 'block';
+    hint.style.display = 'none';
+  }
+  renderHotel();
+}
+
+function clearHotelPhoto() {
+  HS.photoUrl = '';
+  const preview = document.getElementById('h-photo-preview');
+  const hint = document.getElementById('h-photo-hint');
+  if (preview && hint) { preview.style.display='none'; hint.style.display='block'; }
+  renderHotel();
+}
+
+function pasteHotelPhoto(e) {
+  const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+  if (!items) return;
+  for (let item of items) {
+    if (item.type.startsWith('image/')) {
+      e.preventDefault();
+      const file = item.getAsFile();
+      const reader = new FileReader();
+      reader.onload = ev => setHotelPhoto(ev.target.result);
+      reader.readAsDataURL(file);
+      return;
+    }
+  }
+}
+
+function uploadHotelPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => setHotelPhoto(ev.target.result);
+  reader.readAsDataURL(file);
+}
+
 function toggleManualHotel() {
   const fields = document.getElementById('manual-hotel-fields');
   const btn = document.getElementById('btn-manual-hotel');
@@ -814,11 +1011,12 @@ async function selectHotel(place_id, name) {
     const mName = document.getElementById('h-manual-name');
     const mAddr = document.getElementById('h-manual-address');
     const mPhone = document.getElementById('h-manual-phone');
-    const mPhoto = document.getElementById('h-manual-photo');
+    const mPhoto = null;
     if(mName) mName.value = h.name;
     if(mAddr) mAddr.value = h.address;
-    if(mPhone) mPhone.value = h.phone;
-    if(mPhoto) mPhoto.value = h.photoUrl;
+    if(mPhone) { mPhone.value = h.phone; detectDDI(h.phone); }
+    if(mPhoto) { mPhoto.value = h.photoUrl; }
+    if(h.photoUrl) setHotelPhoto(h.photoUrl);
     found.textContent = `✓ ${h.name} — ${h.address}`;
     renderHotel();
   } catch(e) {
@@ -882,19 +1080,22 @@ function renderHotel() {
   const cancelFecha = fmtDateDisplay(cancelFechaRaw);
   const adicionales = document.getElementById('h-adicionales')?.value||'';
   const lang = document.getElementById('lang-select')?.value||'es';
+  const L = LANGS[lang]||LANGS.es;
   const disclaimer = HOTEL_DISCLAIMER[lang]||HOTEL_DISCLAIMER.es;
+  const isRTL = L.dir==='rtl';
+  const vd = isRTL?'direction:rtl':'';
 
   // Build cancellation text
   let cancelText = '';
-  if (cancelTipo==='NO REEMBOLSABLE') cancelText = 'NO REEMBOLSABLE';
-  else if (cancelTipo==='reembolsable' && cancelFecha) cancelText = `REEMBOLSABLE HASTA ${cancelFecha}`;
-  else if (cancelTipo==='reembolsable') cancelText = 'REEMBOLSABLE';
+  if (cancelTipo==='NO REEMBOLSABLE') cancelText = lang==='en'?'NON-REFUNDABLE':lang==='pt'?'NÃO REEMBOLSÁVEL':lang==='he'?'לא ניתן להחזר':'NO REEMBOLSABLE';
+  else if (cancelTipo==='reembolsable' && cancelFecha) cancelText = lang==='en'?`REFUNDABLE UNTIL ${cancelFecha}`:lang==='pt'?`REEMBOLSÁVEL ATÉ ${cancelFecha}`:lang==='he'?`ניתן לביטול עד ${cancelFecha}`:`REEMBOLSABLE HASTA ${cancelFecha}`;
+  else if (cancelTipo==='reembolsable') cancelText = lang==='en'?'REFUNDABLE':lang==='pt'?'REEMBOLSÁVEL':lang==='he'?'ניתן לביטול':'REEMBOLSABLE';
 
   // Build tax text
   let impText = '';
   if (moneda && monto) {
     if (moneda==='USD') impText = `USD ${monto.toFixed(2)}`;
-    else { const usd=(monto*(FX[moneda]||1)).toFixed(2); impText=`${moneda} ${monto.toFixed(2)} (APROX USD ${usd})`; }
+    else { const usd=(monto*(FX[moneda]||1)).toFixed(2); impText=`${moneda} ${monto.toFixed(2)} (${lang==='en'?'APPROX':lang==='pt'?'APROX':lang==='he'?'בערך':'APROX'} USD ${usd})`; }
   }
 
   // Calculate nights
@@ -908,11 +1109,11 @@ function renderHotel() {
   const guestH = HS.passengers.map(p =>
     `<div class="pn" style="font-size:13px;font-weight:700;color:#1e3a5c">${p.nombre||'HUÉSPED'}${adicionales?` <span style="color:#3d8fd1">${adicionales}</span>`:''}</div>`
   ).join('');
-  const locsHotelH = conf ? `<div class="vloc"><div class="vh-lbl">CONFIRMACIÓN</div><div class="vh-val big">${conf}</div></div>` : '';
+  const locsHotelH = conf ? `<div class="vloc"><div class="vh-lbl">${L.hConfirm}</div><div class="vh-val big">${conf}</div></div>` : '';
 
   document.getElementById('voucher').innerHTML = `
     <div class="vdiv"></div>
-    <div class="vh">
+    <div class="vh" style="${vd}">
       <div class="vh-brand">
         <img src="/logo.png" class="vh-logo-img" alt="Flyaway">
         <div class="vh-contact">
@@ -924,44 +1125,44 @@ function renderHotel() {
       <div class="vlocs">${locsHotelH}</div>
     </div>
     ${HS.photoUrl ? `<img src="${HS.photoUrl}" class="vh-photo" alt="Hotel">` : ''}
-    <div class="vh-hotel-info">
+    <div class="vh-hotel-info" style="${vd}">
       <div class="vh-hotel-name">${HS.name||'NOMBRE DEL HOTEL'}</div>
       ${stars?`<div class="vh-hotel-stars">${stars}</div>`:''}
       <div class="vh-hotel-addr">${[HS.address,HS.phone].filter(Boolean).join(' · ')}</div>
     </div>
-    <div class="vb">
-      <div class="vsec">Huésped${HS.passengers.length>1?'es':''} · ${HS.passengers.length}</div>
+    <div class="vb" style="${vd}">
+      <div class="vsec">${HS.passengers.length>1?L.hGuests:L.hGuest} · ${HS.passengers.length}</div>
       <div class="v-paxes"><div class="v-pax">${guestH}</div></div>
-      <div class="vsec">Estadía</div>
+      <div class="vsec">${L.hStay}</div>
       <div class="vhotel-dates">
         <div class="vhotel-date-box">
-          <div class="vhotel-date-lbl">Check-in</div>
+          <div class="vhotel-date-lbl">${L.hCheckin}</div>
           <div class="vhotel-date-val">${checkin||'--/--/----'}</div>
           <div class="vhotel-date-sub">${checkinH||''}</div>
         </div>
         <div class="vhotel-nights">
           <div class="vhotel-nights-num">${nights||'—'}</div>
-          <div class="vhotel-nights-lbl">noches</div>
+          <div class="vhotel-nights-lbl">${L.hNights}</div>
         </div>
         <div class="vhotel-date-box">
-          <div class="vhotel-date-lbl">Check-out</div>
+          <div class="vhotel-date-lbl">${L.hCheckout}</div>
           <div class="vhotel-date-val">${checkout||'--/--/----'}</div>
           <div class="vhotel-date-sub">${checkoutH||''}</div>
         </div>
       </div>
       ${hab||reg||HS.extras.length?`<div class="vhotel-room">
-        <div class="vhotel-room-lbl">Habitación</div>
+        <div class="vhotel-room-lbl">${L.hRoom}</div>
         <div class="vhotel-room-val">${hab||''}</div>
         ${reg?`<div class="vhotel-room-sub">${reg}</div>`:''}
         ${HS.extras.filter(e=>e.trim()).map(e=>`<div class="vhotel-room-sub">✓ ${e}</div>`).join('')}
       </div>`:''}
       ${impText?`<div class="vhotel-tax">
-        <div class="vhotel-tax-lbl">Impuestos a pagar en el hotel</div>
+        <div class="vhotel-tax-lbl">${L.hTax}</div>
         <div class="vhotel-tax-val">${impText}</div>
       </div>`:''}
-      ${cancelText?`<div class="vhotel-cancel">Política de cancelación: <strong>${cancelText}</strong></div>`:''}
+      ${cancelText?`<div class="vhotel-cancel">${L.hCancel}: <strong>${cancelText}</strong></div>`:""}
     </div>
-    <div class="vfoot">
+    <div class="vfoot" style="${vd}">
       <div class="vfoot-note" style="margin-bottom:8px">${nota}</div>
       <div style="font-size:9px;color:#9ab0c0;line-height:1.5;border-top:1px solid #e0ecf7;padding-top:8px;margin-top:4px">${disclaimer}</div>
     </div>
