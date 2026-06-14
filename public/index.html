@@ -322,7 +322,7 @@ function buildList(dir){
 }
 
 function addPax(){
-  S.passengers.push({nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1 x 50 LB',bagV:'1 x 50 LB'});
+  S.passengers.push({apellido:'',nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1 x 50 LB',bagV:'1 x 50 LB'});
   buildPax();render();
 }
 function removePax(i){S.passengers.splice(i,1);buildPax();render();}
@@ -331,7 +331,10 @@ function buildPax(){
   S.passengers.forEach((p,i)=>{
     c.innerHTML+=`<div class="fc">
       <div class="fc-head"><span>Pasajero ${i+1}</span><button class="btn-rm" onclick="removePax(${i})">✕</button></div>
-      <label>Nombre completo</label><input value="${p.nombre.toUpperCase()}" style="text-transform:uppercase" oninput="S.passengers[${i}].nombre=this.value.toUpperCase();render()">
+      <div class="row2">
+        <div><label>Apellido</label><input value="${p.apellido.toUpperCase()}" style="text-transform:uppercase" oninput="S.passengers[${i}].apellido=this.value.toUpperCase();render()"></div>
+        <div><label>Nombre</label><input value="${p.nombre.toUpperCase()}" style="text-transform:uppercase" oninput="S.passengers[${i}].nombre=this.value.toUpperCase();render()"></div>
+      </div>
       <label>E-TICKET</label><input value="${p.eticket.toUpperCase()}" style="text-transform:uppercase" oninput="S.passengers[${i}].eticket=this.value.toUpperCase();render()">
       <div class="row2">
         <div><label>Maleta permitida ida</label><input value="${p.bagI}" oninput="S.passengers[${i}].bagI=this.value;render()"></div>
@@ -404,7 +407,7 @@ function render(){
     <div class="v-pax" ${L.dir==='rtl'?'style="direction:rtl;text-align:right"':''}>
       <div style="display:flex;justify-content:space-between;align-items:flex-start">
         <div>
-          <div class="pn">${p.nombre||'PASAJERO'}</div>
+        <div class="pn">${p.apellido&&p.nombre?`${p.apellido} / ${p.nombre}`:p.apellido||p.nombre||'PASAJERO'}</div>
           ${p.asiento?`<span class="pt">${L.seat}: ${p.asiento.toUpperCase()}</span>`:''}
           ${p.ff_al&&p.ff_num?`<span class="pt">${p.ff_al.toUpperCase()} # ${p.ff_num.toUpperCase()}</span>`:''}
           ${p.meal?`<span class="pt">${(mealLabels[p.meal]||p.meal).toUpperCase()}</span>`:''}
@@ -483,7 +486,7 @@ function dlPDF(){
 }
 
 S.flightsIda.push(ef());S.flightsVuelta.push(ef());
-S.passengers.push({nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1 x 50 LB',bagV:'1 x 50 LB'});
+S.passengers.push({apellido:'',nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1 x 50 LB',bagV:'1 x 50 LB'});
 buildLocs();buildList('ida');buildList('vuelta');buildPax();render();
 </script>
 </body>
