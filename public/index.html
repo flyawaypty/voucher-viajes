@@ -163,7 +163,7 @@ const BRAND = {
 };
 
 const LANGS = {
-  es: { dir:'ltr', passengers:'Pasajeros', flight:'Vuelo', flightOut:'Vuelo de Ida', outbound:'Ida', inbound:'Vuelta', itinerary:'Itinerario', leg:'Tramo', total:'Total', stopover:'Escala en', waitTime:'Tiempo de espera', eticket:'E-TICKET', bagAllowed:'Maleta permitida', bagOutbound:'Maleta permitida ida', bagReturn:'Maleta permitida vuelta', seat:'Asiento', meal:'Special meal', download:'⬇ Descargar PDF', resCode:'CÓDIGO DE RESERVACIÓN' },
+  es: { dir:'ltr', passengers:'Pasajeros', flight:'Vuelo', flightOut:'Vuelo de Ida', outbound:'Ida', inbound:'Vuelta', itinerary:'Itinerario', leg:'Tramo', total:'Total', stopover:'Escala en', waitTime:'Tiempo de espera', eticket:'E-TICKET', bagAllowed:'Equipaje permitido', bagOutbound:'Equipaje permitido ida', bagReturn:'Equipaje permitido vuelta', seat:'Asiento', meal:'Special meal', download:'⬇ Descargar PDF', resCode:'CÓDIGO DE RESERVACIÓN' },
   en: { dir:'ltr', passengers:'Passengers', flight:'Flight', flightOut:'Outbound Flight', outbound:'Outbound', inbound:'Return', itinerary:'Itinerary', leg:'Segment', total:'Total', stopover:'Layover at', waitTime:'Waiting time', eticket:'E-TICKET', bagAllowed:'Baggage allowance', bagOutbound:'Outbound baggage', bagReturn:'Return baggage', seat:'Seat', meal:'Special meal', download:'⬇ Download PDF', resCode:'RESERVATION CODE' },
   pt: { dir:'ltr', passengers:'Passageiros', flight:'Voo', flightOut:'Voo de Ida', outbound:'Ida', inbound:'Volta', itinerary:'Itinerário', leg:'Trecho', total:'Total', stopover:'Escala em', waitTime:'Tempo de espera', eticket:'E-TICKET', bagAllowed:'Bagagem permitida', bagOutbound:'Bagagem permitida ida', bagReturn:'Bagagem permitida volta', seat:'Assento', meal:'Refeição especial', download:'⬇ Baixar PDF', resCode:'CÓDIGO DE RESERVA' },
   he: { dir:'rtl', passengers:'נוסעים', flight:'טיסה', flightOut:'טיסת הלוך', flights:'טיסות', outbound:'יציאה', inbound:'חזרה', itinerary:'מסלול', leg:'טיסה', legs:'טיסות', total:'סה״כ', stopover:'עצירה ב', waitTime:'המתנה', eticket:'כרטיס אלקטרוני', bagAllowed:'כבודה כלולה', bagOutbound:'כבודה כלולה הלוך', bagReturn:'כבודה כלולה חזור', seat:'מושבים', meal:'ארוחה מיוחדת', download:'⬇ הורד PDF', resCode:'קוד הזמנה' }
@@ -336,8 +336,8 @@ function buildPax(){
       </div>
       <label>E-TICKET</label><input value="${p.eticket.toUpperCase()}" style="text-transform:uppercase" oninput="S.passengers[${i}].eticket=this.value.toUpperCase();render()">
       <div class="row2">
-        <div><label>Maleta permitida ida</label><input value="${p.bagI}" oninput="S.passengers[${i}].bagI=this.value;render()"></div>
-        <div><label>Maleta permitida vuelta</label><input value="${p.bagV}" oninput="S.passengers[${i}].bagV=this.value;render()"></div>
+        <div><label>Equipaje permitido ida</label><input value="${p.bagI}" oninput="S.passengers[${i}].bagI=this.value;render()"></div>
+        <div><label>Equipaje permitido vuelta</label><input value="${p.bagV}" oninput="S.passengers[${i}].bagV=this.value;render()"></div>
       </div>
       <label>Asiento (opcional)</label><input value="${p.asiento}" placeholder="Ej: 12A" oninput="S.passengers[${i}].asiento=this.value;render()">
       <div class="row2">
