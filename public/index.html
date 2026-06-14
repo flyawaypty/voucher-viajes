@@ -93,7 +93,7 @@ textarea { resize: vertical; line-height: 1.5; }
 .prod-tab { flex: 1; padding: 7px 4px; text-align: center; font-size: 10px; font-weight: 600; border-radius: 5px; cursor: pointer; border: 1px solid #2d5070; background: #163050; color: #7fa8c8; }
 .prod-tab.on { background: #3d8fd1; color: #fff; border-color: #3d8fd1; }
 /* HOTEL VOUCHER */
-.vh-photo { width: 100%; height: 160px; object-fit: cover; display: block; }
+.vh-photo { width: 100%; height: 160px; object-fit: cover; display: block; border-radius: 8px; margin: 0 30px 16px; width: calc(100% - 60px); }
 .vh-hotel-info { padding: 16px 30px 0; border-bottom: 1px solid #f0f4f8; padding-bottom: 14px; margin-bottom: 4px; }
 .vh-hotel-name { font-size: 18px; font-weight: 800; color: #1e3a5c; margin-bottom: 3px; }
 .vh-hotel-stars { color: #c9a97a; font-size: 14px; margin-bottom: 3px; }
@@ -102,6 +102,7 @@ textarea { resize: vertical; line-height: 1.5; }
 .vhotel-date-box { text-align: center; background: #f5f9ff; border-radius: 7px; padding: 12px 8px; }
 .vhotel-date-lbl { font-size: 8px; color: #8aa8c0; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
 .vhotel-date-val { font-size: 18px; font-weight: 800; color: #1e3a5c; }
+.vhotel-date-day { font-size: 10px; color: #3d8fd1; font-weight: 600; margin-top: 1px; }
 .vhotel-date-sub { font-size: 10px; color: #5a7fa0; margin-top: 2px; }
 .vhotel-nights { text-align: center; }
 .vhotel-nights-num { font-size: 24px; font-weight: 800; color: #3d8fd1; }
@@ -1094,6 +1095,19 @@ function fmtDateDisplay(dateVal) {
   return `${d}/${m}/${y}`;
 }
 
+function getDayName(dateVal, lang) {
+  if (!dateVal) return '';
+  const days = {
+    es: ['DOMINGO','LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO'],
+    en: ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'],
+    pt: ['DOMINGO','SEGUNDA','TERÇA','QUARTA','QUINTA','SEXTA','SÁBADO'],
+    he: ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת']
+  };
+  const d = new Date(dateVal);
+  const dayList = days[lang] || days.es;
+  return dayList[d.getDay()];
+}
+
 const HOTEL_DISCLAIMER = {
   es: 'Todos los cargos informados por el hotel/proveedor han sido incluidos en este voucher. Los hoteles pueden cobrar cargos adicionales obligatorios pagaderos directamente en la propiedad, incluyendo pero no exclusivamente: resort fee, cargo por instalaciones, impuesto de ciudad, cargo por estadía de ciudadanos extranjeros. El huésped también puede ser solicitado a proveer una tarjeta de crédito o depósito en efectivo como garantía de pago por servicios adicionales como: mini-bar, TV de pago, etc. La agencia no se hace responsable por la calidad de los servicios prestados por el hotel. El cliente puede contactar directamente la administración del hotel para reclamar sobre el volumen y calidad de los servicios prestados. En caso de cualquier problema durante el check-in o check-out, por favor contacte a la Agencia.',
   en: 'All charges informed by the hotel/provider have been included in this voucher. Hotels may charge additional mandatory fees payable by the guest directly at the property, including but not exclusively: resort fee, facility fee, city tax, fee for the stay of foreign citizens. The guest can also be asked to provide a credit card or cash deposit as a guarantee of payment for additional services such as: mini-bar, pay-TV, etc. Agency is not responsible for the quality of services provided by the hotel. Client can contact administration of hotel directly to claim on volume and quality of provided services. In case of any issues during check-in or check-out, please contact the Agency.',
@@ -1148,6 +1162,8 @@ function renderHotel() {
     if (diff>0) nights = diff;
   }
 
+  const checkinDay = getDayName(checkinRaw, lang);
+  const checkoutDay = getDayName(checkoutRaw, lang);
   const stars = HS.stars > 0 ? '★'.repeat(HS.stars) : '';
   const guestH = HS.passengers.map(p =>
     `<div class="pn" style="font-size:13px;font-weight:700;color:#1e3a5c">${p.nombre||'HUÉSPED'}${adicionales?` <span style="color:#3d8fd1">${adicionales}</span>`:''}</div>`
@@ -1167,19 +1183,20 @@ function renderHotel() {
       </div>
       <div class="vlocs">${locsHotelH}</div>
     </div>
-    ${HS.photoUrl ? `<img src="${HS.photoUrl}" class="vh-photo" alt="Hotel">` : ''}
     <div class="vh-hotel-info" style="${vd}">
       <div class="vh-hotel-name">${HS.name||'NOMBRE DEL HOTEL'}</div>
       ${stars?`<div class="vh-hotel-stars">${stars}</div>`:''}
       <div class="vh-hotel-addr">${[HS.address,HS.phone].filter(Boolean).join(' · ')}</div>
     </div>
     <div class="vb" style="${vd}">
+      ${HS.photoUrl?`<img src="${HS.photoUrl}" class="vh-photo" alt="Hotel">`:''}
       <div class="vsec">${HS.passengers.length>1?L.hGuests:L.hGuest} · ${HS.passengers.length}</div>
       <div class="v-paxes"><div class="v-pax">${guestH}</div></div>
       <div class="vsec">${L.hStay}</div>
       <div class="vhotel-dates">
         <div class="vhotel-date-box">
-          <div class="vhotel-date-lbl">${L.hCheckin}</div>
+          <div class="vhotel-date-val">${checkin||'--/--/----'}</div>
+          <div class="vhotel-date-day">${checkinDay}</div>
           <div class="vhotel-date-val">${checkin||'--/--/----'}</div>
           <div class="vhotel-date-sub">${checkinH||''}</div>
         </div>
@@ -1190,6 +1207,7 @@ function renderHotel() {
         <div class="vhotel-date-box">
           <div class="vhotel-date-lbl">${L.hCheckout}</div>
           <div class="vhotel-date-val">${checkout||'--/--/----'}</div>
+          <div class="vhotel-date-day">${checkoutDay}</div>
           <div class="vhotel-date-sub">${checkoutH||''}</div>
         </div>
       </div>
