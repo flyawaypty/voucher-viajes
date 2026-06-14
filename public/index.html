@@ -87,6 +87,7 @@ textarea { resize: vertical; line-height: 1.5; }
 .vfoot { background: #f7fafd; border-top: 1px solid #e0ecf7; padding: 12px 30px; }
 .vfoot-note { font-size: 11px; color: #7fa8c0; }
 .vdiv { height: 5px; background: linear-gradient(90deg, #3d8fd1, #2a6fa8, #c9a97a); }
+.sidebar-hidden .preview { margin-left: 0 !important; }
 /* PRODUCT TABS */
 .prod-tabs { display: flex; gap: 3px; margin-bottom: 14px; }
 .prod-tab { flex: 1; padding: 7px 4px; text-align: center; font-size: 10px; font-weight: 600; border-radius: 5px; cursor: pointer; border: 1px solid #2d5070; background: #163050; color: #7fa8c8; }
@@ -810,13 +811,19 @@ function dlPDF(){
     : (S.locs[0]?.value||'viaje');
   const filename = ref ? `TKT${ref}.pdf` : `voucher-${conf}.pdf`;
   const el = document.getElementById('voucher');
-  const w = el.offsetWidth;
-  const h = el.offsetHeight;
+  const sidebar = document.querySelector('.sidebar');
+  const preview = document.querySelector('.preview');
 
-  // Temporarily move voucher to fixed fullscreen position
-  const origStyle = el.getAttribute('style')||'';
-  el.style.cssText = `position:fixed;top:0;left:0;width:100vw;max-width:100vw;border-radius:0;box-shadow:none;z-index:99999;background:#fff`;
+  // Hide sidebar, expand voucher
+  sidebar.style.display = 'none';
+  preview.style.padding = '0';
+  preview.style.background = '#fff';
+  el.style.maxWidth = '100%';
+  el.style.width = '100%';
+  el.style.borderRadius = '0';
+  el.style.boxShadow = 'none';
 
+  // Wait for images
   const imgs = el.querySelectorAll('img');
   const imagePromises = Array.from(imgs).map(img => {
     if (img.complete && img.naturalHeight > 0) return Promise.resolve();
@@ -825,17 +832,21 @@ function dlPDF(){
 
   Promise.all(imagePromises).then(() => {
     setTimeout(() => {
-      const elW = el.offsetWidth;
-      const elH = el.offsetHeight;
       html2pdf().set({
         margin: 0, filename,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0, width: elW, windowWidth: elW },
-        jsPDF: { unit: 'px', format: [elW, elH], orientation: 'portrait' }
+        html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
       }).from(el).save().then(() => {
-        el.setAttribute('style', origStyle);
+        sidebar.style.display = '';
+        preview.style.padding = '';
+        preview.style.background = '';
+        el.style.maxWidth = '';
+        el.style.width = '';
+        el.style.borderRadius = '';
+        el.style.boxShadow = '';
       });
-    }, 300);
+    }, 200);
   });
 }
 
