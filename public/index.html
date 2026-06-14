@@ -815,7 +815,12 @@ function dlPDF(){
   const sidebar = document.querySelector('.sidebar');
   const preview = document.querySelector('.preview');
 
-  sidebar.style.display = 'none';
+  // Option B: collapse sidebar without removing from flow
+  sidebar.style.visibility = 'hidden';
+  sidebar.style.width = '0';
+  sidebar.style.minWidth = '0';
+  sidebar.style.padding = '0';
+  sidebar.style.overflow = 'hidden';
   document.body.style.display = 'block';
   preview.style.padding = '0';
   preview.style.background = '#fff';
@@ -839,7 +844,11 @@ function dlPDF(){
         html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
       }).from(el).save().then(() => {
-        sidebar.style.display = '';
+        sidebar.style.visibility = '';
+        sidebar.style.width = '';
+        sidebar.style.minWidth = '';
+        sidebar.style.padding = '';
+        sidebar.style.overflow = '';
         document.body.style.display = '';
         preview.style.padding = '';
         preview.style.background = '';
