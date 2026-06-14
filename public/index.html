@@ -40,9 +40,6 @@ select option { background: #1a2b3c; }
 .type-selector { display: flex; gap: 4px; margin-bottom: 12px; }
 .type-btn { flex: 1; padding: 7px 4px; text-align: center; font-size: 10px; font-weight: 600; border-radius: 5px; cursor: pointer; border: 1px solid #2d4a62; background: #243d52; color: #7fa8c8; }
 .type-btn.on { background: #0d6fa8; color: #fff; border-color: #0d6fa8; }
-.loc-row { display: flex; gap: 6px; align-items: center; margin-bottom: 4px; }
-.loc-row input { flex: 1; }
-.loc-row .btn-rm { padding: 4px 6px; }
 .preview { flex: 1; padding: 20px; overflow-y: auto; background: #e8eef4; display: flex; flex-direction: column; align-items: center; }
 .toolbar { width: 100%; max-width: 740px; display: flex; justify-content: flex-end; margin-bottom: 10px; }
 .btn-dl { padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: #1a6fa8; color: #fff; }
@@ -57,6 +54,7 @@ select option { background: #1a2b3c; }
 .vb { padding: 22px 30px; }
 .vsec { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7fa8c8; margin: 16px 0 8px; display: flex; align-items: center; gap: 8px; }
 .vsec::after { content: ''; flex: 1; height: 1px; background: #e0ecf7; }
+.vsec-total { font-size: 10px; color: #1a6fa8; font-weight: 700; background: #e8f4ff; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
 .v-paxes { display: flex; gap: 10px; flex-wrap: wrap; }
 .v-pax { background: #f0f7ff; border-left: 4px solid #1a6fa8; padding: 8px 14px; border-radius: 0 6px 6px 0; flex: 1; min-width: 200px; }
 .v-pax .pn { font-size: 13px; font-weight: 700; color: #0a3d62; }
@@ -73,8 +71,18 @@ select option { background: #1a2b3c; }
 .vfnum { font-size: 10px; font-weight: 700; color: #fff; background: #1a6fa8; padding: 2px 8px; border-radius: 20px; margin-bottom: 5px; }
 .vline { width: 100%; height: 2px; background: linear-gradient(90deg, #1a6fa8, #7dc9f5); position: relative; border-radius: 2px; }
 .vline::before { content: '✈'; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); font-size: 13px; color: #1a6fa8; }
-.val { font-size: 10px; color: #7fa8c0; margin-top: 4px; }
+.vdur { font-size: 10px; color: #7fa8c0; margin-top: 5px; }
+.val { font-size: 10px; color: #7fa8c0; margin-top: 2px; }
 .vcab { font-size: 10px; color: #7fa8c0; margin-top: 3px; background: #f0f7ff; padding: 1px 8px; border-radius: 10px; }
+/* ESCALA */
+.vescala {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px; margin: 0; background: #fff8e8;
+  border-left: 3px solid #e8a820; border-right: 3px solid #e8a820;
+}
+.vescala-icon { font-size: 14px; }
+.vescala-text { font-size: 11px; color: #8a6010; }
+.vescala-text strong { color: #5a3e00; }
 .vfoot { background: #f7fafd; border-top: 2px solid #e0ecf7; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; }
 .vfoot-note { font-size: 11px; color: #7fa8c0; }
 .vfoot-logo { font-size: 12px; font-weight: 700; color: #1a6fa8; }
@@ -87,14 +95,12 @@ select option { background: #1a2b3c; }
 <div class="sidebar">
   <h1>✈ Voucher de Viaje</h1>
   <p class="sub">Ingresa el vuelo y la fecha — buscamos los detalles automáticamente.</p>
-
   <div class="tabs">
     <div class="tab on" onclick="switchTab('general',this)">General</div>
     <div class="tab" onclick="switchTab('vuelos',this)">Vuelos</div>
     <div class="tab" onclick="switchTab('pax',this)">Pasajeros</div>
   </div>
 
-  <!-- TAB GENERAL -->
   <div id="tab-general">
     <div class="sec">Tipo de voucher</div>
     <div class="type-selector">
@@ -112,7 +118,6 @@ select option { background: #1a2b3c; }
     <button class="btn-add" onclick="addLoc()">+ Agregar localizador</button>
   </div>
 
-  <!-- TAB VUELOS -->
   <div id="tab-vuelos" style="display:none">
     <div id="vuelos-ida-section">
       <div class="sec" id="label-ida">Vuelos de Ida</div>
@@ -126,7 +131,6 @@ select option { background: #1a2b3c; }
     </div>
   </div>
 
-  <!-- TAB PASAJEROS -->
   <div id="tab-pax" style="display:none">
     <div class="sec">Pasajeros</div>
     <div id="list-pax"></div>
@@ -151,10 +155,59 @@ const S = {
 };
 
 function ef() {
-  return { num:'', fecha:'', fechaInput:'', origen:'', destino:'', aorig:'', adest:'', sh:'', lh:'', lf:'', al:'', cab:'Economy', found:false };
+  return { num:'', fecha:'', fechaInput:'', origen:'', destino:'', aorig:'', adest:'',
+           sh:'', lh:'', lf:'', al:'', cab:'Economy', duracion_min:0, found:false };
 }
 
-// ── TIPO ────────────────────────────────────────────
+// ── HELPERS ──────────────────────────────────────────
+function fmt12(t) {
+  if (!t || !t.includes(':')) return { h:'--:--', ampm:'' };
+  let [h, m] = t.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return { h: `${h}:${String(m).padStart(2,'0')}`, ampm };
+}
+
+function fmtDur(mins) {
+  if (!mins || mins <= 0) return '';
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return h > 0 ? `${h}h ${m > 0 ? m + 'min' : ''}`.trim() : `${m}min`;
+}
+
+// Convert HH:MM to minutes from midnight
+function toMins(t) {
+  if (!t || !t.includes(':')) return null;
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+// Calculate layover between flight i arrival and flight i+1 departure
+function calcLayover(flights, i) {
+  if (i >= flights.length - 1) return null;
+  const arrMins = toMins(flights[i].lh);
+  const depMins = toMins(flights[i+1].sh);
+  if (arrMins === null || depMins === null) return null;
+  let diff = depMins - arrMins;
+  // Handle overnight layover
+  if (diff < 0) diff += 24 * 60;
+  return diff > 0 ? diff : null;
+}
+
+// Total trip time: sum of flight durations + layovers
+function calcTotal(flights) {
+  let total = 0;
+  for (let i = 0; i < flights.length; i++) {
+    total += flights[i].duracion_min || 0;
+    if (i < flights.length - 1) {
+      const lay = calcLayover(flights, i);
+      if (lay) total += lay;
+    }
+  }
+  return total;
+}
+
+// ── TIPO ─────────────────────────────────────────────
 function setType(t, el) {
   S.tipo = t;
   document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('on'));
@@ -168,24 +221,18 @@ function setType(t, el) {
 }
 
 // ── LOCALIZADORES ────────────────────────────────────
-function addLoc() {
-  S.locs.push({ label: 'Localizador', value: '' });
-  buildLocs();
-}
-function removeLoc(i) {
-  if (S.locs.length > 1) { S.locs.splice(i,1); buildLocs(); render(); }
-}
+function addLoc() { S.locs.push({ label: 'Localizador', value: '' }); buildLocs(); }
+function removeLoc(i) { if (S.locs.length > 1) { S.locs.splice(i,1); buildLocs(); render(); } }
 function buildLocs() {
   const c = document.getElementById('locs-list'); c.innerHTML = '';
   S.locs.forEach((l,i) => {
-    c.innerHTML += `
-      <div style="margin-bottom:6px">
-        <div class="row2" style="margin-bottom:3px">
-          <div><label>Etiqueta</label><input value="${l.label}" oninput="S.locs[${i}].label=this.value;render()"></div>
-          <div><label>Número</label><input value="${l.value}" oninput="S.locs[${i}].value=this.value;render()"></div>
-        </div>
-        ${S.locs.length>1?`<button class="btn-rm" style="font-size:11px;color:#e05c5c;background:none;border:none;cursor:pointer" onclick="removeLoc(${i})">✕ Quitar</button>`:''}
-      </div>`;
+    c.innerHTML += `<div style="margin-bottom:6px">
+      <div class="row2" style="margin-bottom:3px">
+        <div><label>Etiqueta</label><input value="${l.label}" oninput="S.locs[${i}].label=this.value;render()"></div>
+        <div><label>Número</label><input value="${l.value}" oninput="S.locs[${i}].value=this.value;render()"></div>
+      </div>
+      ${S.locs.length>1?`<button class="btn-rm" style="font-size:11px;background:none;border:none;cursor:pointer;color:#e05c5c" onclick="removeLoc(${i})">✕ Quitar</button>`:''}
+    </div>`;
   });
 }
 
@@ -212,14 +259,17 @@ async function lookup(dir, idx) {
     f.aorig=info.aorig||''; f.adest=info.adest||'';
     f.sh=info.sh||''; f.lh=info.lh||'';
     f.lf=info.lf||f.fecha; f.al=info.al||'';
-    f.cab=info.cab||'Economy'; f.found=true;
+    f.cab=info.cab||'Economy';
+    f.duracion_min = parseInt(info.duracion_min) || 0;
+    f.found=true;
+    const dur = fmtDur(f.duracion_min);
     dEl.className='found show';
     dEl.innerHTML=`
       <div class="dr"><span>Ruta</span><span>${f.origen} → ${f.destino}</span></div>
-      <div class="dr"><span>Salida</span><span>${fmt12(f.sh)} · ${f.fecha}</span></div>
-      <div class="dr"><span>Llegada</span><span>${fmt12(f.lh)} · ${f.lf}</span></div>
+      <div class="dr"><span>Salida</span><span>${fmt12(f.sh).h} ${fmt12(f.sh).ampm} · ${f.fecha}</span></div>
+      <div class="dr"><span>Llegada</span><span>${fmt12(f.lh).h} ${fmt12(f.lh).ampm} · ${f.lf}</span></div>
       <div class="dr"><span>Aerolínea</span><span>${f.al}</span></div>
-      <div class="dr"><span>Cabina</span><span>${f.cab}</span></div>`;
+      ${dur?`<div class="dr"><span>Duración</span><span>${dur}</span></div>`:''}`;
     sEl.className='status ok'; sEl.textContent='✓ Detalles encontrados correctamente';
     render();
   } catch(err) {
@@ -227,24 +277,9 @@ async function lookup(dir, idx) {
   } finally { btn.disabled=false; }
 }
 
-// ── TIME FORMAT ──────────────────────────────────────
-function fmt12(t) {
-  if (!t || !t.includes(':')) return t;
-  let [h, m] = t.split(':').map(Number);
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  return `${h}:${String(m).padStart(2,'0')} ${ampm}`;
-}
-
 // ── FLIGHT UI ────────────────────────────────────────
-function addFlight(dir) {
-  (dir==='ida' ? S.flightsIda : S.flightsVuelta).push(ef());
-  buildList(dir); render();
-}
-function removeFlight(dir,i) {
-  (dir==='ida' ? S.flightsIda : S.flightsVuelta).splice(i,1);
-  buildList(dir); render();
-}
+function addFlight(dir) { (dir==='ida'?S.flightsIda:S.flightsVuelta).push(ef()); buildList(dir); render(); }
+function removeFlight(dir,i) { (dir==='ida'?S.flightsIda:S.flightsVuelta).splice(i,1); buildList(dir); render(); }
 function handleDate(dir,i,v) {
   const f=(dir==='ida'?S.flightsIda:S.flightsVuelta)[i];
   f.fechaInput=v;
@@ -271,7 +306,7 @@ function buildList(dir) {
       <button class="btn-lookup" id="b-${id}" onclick="lookup('${dir}',${i})">🔎 Buscar detalles del vuelo</button>
       <div class="status" id="s-${id}"></div>
       <div class="found ${f.found?'show':''}" id="d-${id}">
-        ${f.found?`<div class="dr"><span>Ruta</span><span>${f.origen} → ${f.destino}</span></div><div class="dr"><span>Salida</span><span>${fmt12(f.sh)} · ${f.fecha}</span></div><div class="dr"><span>Aerolínea</span><span>${f.al}</span></div>`:''}
+        ${f.found?`<div class="dr"><span>Ruta</span><span>${f.origen} → ${f.destino}</span></div><div class="dr"><span>Salida</span><span>${fmt12(f.sh).h} ${fmt12(f.sh).ampm}</span></div><div class="dr"><span>Duración</span><span>${fmtDur(f.duracion_min)||'—'}</span></div>`:''}
       </div>`;
     cont.appendChild(div);
   });
@@ -288,10 +323,8 @@ function buildPax(){
   S.passengers.forEach((p,i)=>{
     c.innerHTML+=`<div class="fc">
       <div class="fc-head"><span>Pasajero ${i+1}</span><button class="btn-rm" onclick="removePax(${i})">✕</button></div>
-      <label>Nombre completo</label>
-      <input value="${p.nombre}" oninput="S.passengers[${i}].nombre=this.value;render()">
-      <label>E-ticket</label>
-      <input value="${p.eticket}" oninput="S.passengers[${i}].eticket=this.value;render()">
+      <label>Nombre completo</label><input value="${p.nombre}" oninput="S.passengers[${i}].nombre=this.value;render()">
+      <label>E-ticket</label><input value="${p.eticket}" oninput="S.passengers[${i}].eticket=this.value;render()">
       <div class="row2">
         <div><label>Equipaje ida</label><input value="${p.bagI}" oninput="S.passengers[${i}].bagI=this.value;render()"></div>
         <div><label>Equipaje vuelta</label><input value="${p.bagV}" oninput="S.passengers[${i}].bagV=this.value;render()"></div>
@@ -327,32 +360,61 @@ function switchTab(n,el){
   el.classList.add('on');
 }
 
+// ── RENDER SEGMENT GROUP ─────────────────────────────
+function renderSegments(flights) {
+  if (!flights.length) return '';
+  let html = '';
+  for (let i = 0; i < flights.length; i++) {
+    const f = flights[i];
+    const t1 = fmt12(f.sh);
+    const t2 = fmt12(f.lh);
+    const dur = fmtDur(f.duracion_min);
+    html += `<div class="vseg">
+      <div class="vtb">
+        <div class="vtime">${t1.h}</div>
+        <div class="vampm">${t1.ampm}</div>
+        <div class="vdate">${f.fecha||''}</div>
+        <div class="vap">${f.origen||'---'}</div>
+        <div class="vapn">${f.aorig||''}</div>
+      </div>
+      <div class="vmid">
+        <div class="vfnum">${f.num||'VUELO'}</div>
+        <div class="vline"></div>
+        ${dur?`<div class="vdur">⏱ ${dur}</div>`:''}
+        <div class="val">${f.al||''}</div>
+        <div class="vcab">${f.cab||'Economy'}</div>
+      </div>
+      <div class="vtb">
+        <div class="vtime">${t2.h}</div>
+        <div class="vampm">${t2.ampm}</div>
+        <div class="vdate">${f.lf||''}</div>
+        <div class="vap">${f.destino||'---'}</div>
+        <div class="vapn">${f.adest||''}</div>
+      </div>
+    </div>`;
+
+    // Layover between flights
+    if (i < flights.length - 1) {
+      const lay = calcLayover(flights, i);
+      const nextF = flights[i+1];
+      if (lay) {
+        html += `<div class="vescala">
+          <div class="vescala-icon">🕐</div>
+          <div class="vescala-text">
+            <strong>Escala en ${f.destino||'—'}</strong> · Espera de <strong>${fmtDur(lay)}</strong>
+            · Próximo vuelo: ${nextF.num} a las ${fmt12(nextF.sh).h} ${fmt12(nextF.sh).ampm}
+          </div>
+        </div>`;
+      }
+    }
+  }
+  return html;
+}
+
 // ── RENDER VOUCHER ────────────────────────────────────
 function render(){
   const ag=document.getElementById('agencia').value;
   const nota=document.getElementById('nota').value;
-
-  // Time block helper
-  const tb = (time, date, ap, apname) => `
-    <div class="vtb">
-      <div class="vtime">${time ? fmt12(time).split(' ')[0] : '--:--'}</div>
-      <div class="vampm">${time ? fmt12(time).split(' ')[1] : ''}</div>
-      <div class="vdate">${date||''}</div>
-      <div class="vap">${ap||'---'}</div>
-      <div class="vapn">${apname||''}</div>
-    </div>`;
-
-  const seg = fs => fs.map(f=>`
-    <div class="vseg">
-      ${tb(f.sh, f.fecha, f.origen, f.aorig)}
-      <div class="vmid">
-        <div class="vfnum">${f.num||'VUELO'}</div>
-        <div class="vline"></div>
-        <div class="val">${f.al||''}</div>
-        <div class="vcab">${f.cab||'Economy'}</div>
-      </div>
-      ${tb(f.lh, f.lf, f.destino, f.adest)}
-    </div>`).join('');
 
   const paxH = S.passengers.map(p=>`
     <div class="v-pax">
@@ -362,32 +424,53 @@ function render(){
       ${p.ff_num?`<div class="pt">★ FF ${p.ff_al}: ${p.ff_num}</div>`:''}
       ${p.meal?`<div class="pt">🍽 Meal: ${p.meal}</div>`:''}
       ${p.bagI?`<div class="pt">🧳 Ida: ${p.bagI}</div>`:''}
-      ${(S.tipo==='idavuelta' && p.bagV)?`<div class="pt">🔁 Vuelta: ${p.bagV}</div>`:''}
+      ${(S.tipo==='idavuelta'&&p.bagV)?`<div class="pt">🔁 Vuelta: ${p.bagV}</div>`:''}
     </div>`).join('');
 
-  // Localizadores header
   const locsH = S.locs.map(l=>`
     <div class="vloc">
       <div class="vh-lbl">${l.label}</div>
       <div class="vh-val${S.locs.length===1?' big':''}">${l.value||'------'}</div>
     </div>`).join('');
 
-  // Sections based on type
+  // Build sections
   let sections = '';
   if (S.tipo === 'ida') {
-    sections = S.flightsIda.length
-      ? `<div class="vsec">Vuelo · ${S.flightsIda.length} tramo${S.flightsIda.length>1?'s':''}</div>${seg(S.flightsIda)}`
-      : `<div style="color:#aaa;font-size:12px;padding:10px 0">Agrega vuelos en la pestaña Vuelos</div>`;
+    if (S.flightsIda.length) {
+      const total = calcTotal(S.flightsIda);
+      const totalStr = total > 0 ? fmtDur(total) : '';
+      sections = `<div class="vsec">Vuelo · ${S.flightsIda.length} tramo${S.flightsIda.length>1?'s':''}
+        ${totalStr?`<span class="vsec-total">⏱ Total: ${totalStr}</span>`:''}
+      </div>${renderSegments(S.flightsIda)}`;
+    } else {
+      sections = `<div style="color:#aaa;font-size:12px;padding:10px 0">Agrega vuelos en la pestaña Vuelos</div>`;
+    }
   } else if (S.tipo === 'idavuelta') {
-    sections = '';
-    if (S.flightsIda.length) sections += `<div class="vsec">Ida · ${S.flightsIda.length} tramo${S.flightsIda.length>1?'s':''}</div>${seg(S.flightsIda)}`;
-    if (S.flightsVuelta.length) sections += `<div class="vsec">Vuelta · ${S.flightsVuelta.length} tramo${S.flightsVuelta.length>1?'s':''}</div>${seg(S.flightsVuelta)}`;
+    if (S.flightsIda.length) {
+      const total = calcTotal(S.flightsIda);
+      const totalStr = total > 0 ? fmtDur(total) : '';
+      sections += `<div class="vsec">Ida · ${S.flightsIda.length} tramo${S.flightsIda.length>1?'s':''}
+        ${totalStr?`<span class="vsec-total">⏱ Total: ${totalStr}</span>`:''}
+      </div>${renderSegments(S.flightsIda)}`;
+    }
+    if (S.flightsVuelta.length) {
+      const total = calcTotal(S.flightsVuelta);
+      const totalStr = total > 0 ? fmtDur(total) : '';
+      sections += `<div class="vsec">Vuelta · ${S.flightsVuelta.length} tramo${S.flightsVuelta.length>1?'s':''}
+        ${totalStr?`<span class="vsec-total">⏱ Total: ${totalStr}</span>`:''}
+      </div>${renderSegments(S.flightsVuelta)}`;
+    }
     if (!sections) sections = `<div style="color:#aaa;font-size:12px;padding:10px 0">Agrega vuelos en la pestaña Vuelos</div>`;
   } else {
-    const all = [...S.flightsIda];
-    sections = all.length
-      ? `<div class="vsec">Itinerario · ${all.length} tramo${all.length>1?'s':''}</div>${seg(all)}`
-      : `<div style="color:#aaa;font-size:12px;padding:10px 0">Agrega tramos en la pestaña Vuelos</div>`;
+    if (S.flightsIda.length) {
+      const total = calcTotal(S.flightsIda);
+      const totalStr = total > 0 ? fmtDur(total) : '';
+      sections = `<div class="vsec">Itinerario · ${S.flightsIda.length} tramo${S.flightsIda.length>1?'s':''}
+        ${totalStr?`<span class="vsec-total">⏱ Total: ${totalStr}</span>`:''}
+      </div>${renderSegments(S.flightsIda)}`;
+    } else {
+      sections = `<div style="color:#aaa;font-size:12px;padding:10px 0">Agrega tramos en la pestaña Vuelos</div>`;
+    }
   }
 
   document.getElementById('voucher').innerHTML=`
@@ -395,7 +478,7 @@ function render(){
     <div class="vh">
       <div>
         <div class="vh-logo">${ag||'FlyAway'}</div>
-        <div style="font-size:10px;color:#7dc9f5;margin-top:4px">${S.tipo==='ida'?'Voucher de Viaje — Solo Ida':S.tipo==='idavuelta'?'Voucher de Viaje — Ida y Vuelta':'Voucher de Viaje — Múltiples Tramos'}</div>
+        <div style="font-size:10px;color:#7dc9f5;margin-top:4px">${S.tipo==='ida'?'Voucher — Solo Ida':S.tipo==='idavuelta'?'Voucher — Ida y Vuelta':'Voucher — Múltiples Tramos'}</div>
       </div>
       <div class="vlocs">${locsH}</div>
     </div>
@@ -407,7 +490,6 @@ function render(){
     <div class="vdiv"></div>`;
 }
 
-// ── PDF ───────────────────────────────────────────────
 function dlPDF(){
   const loc = S.locs[0]?.value || 'viaje';
   html2pdf().set({
@@ -418,9 +500,7 @@ function dlPDF(){
   }).from(document.getElementById('voucher')).save();
 }
 
-// ── INIT ──────────────────────────────────────────────
-S.flightsIda.push(ef());
-S.flightsVuelta.push(ef());
+S.flightsIda.push(ef()); S.flightsVuelta.push(ef());
 S.passengers.push({ nombre:'', eticket:'', asiento:'', ff_num:'', ff_al:'', meal:'', bagI:'1x23kg', bagV:'1x23kg' });
 buildLocs(); buildList('ida'); buildList('vuelta'); buildPax(); render();
 </script>
