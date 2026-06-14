@@ -253,7 +253,7 @@ function buildLocs(){
     c.innerHTML+=`<div style="margin-bottom:6px">
       <div class="row2" style="margin-bottom:3px">
         <div><label>Etiqueta</label><input value="${l.label}" oninput="S.locs[${i}].label=this.value;render()"></div>
-        <div><label>Número</label><input value="${l.value}" oninput="S.locs[${i}].value=this.value;render()"></div>
+        <div><label>Número</label><input value="${l.value.toUpperCase()}" style="text-transform:uppercase" oninput="S.locs[${i}].value=this.value.toUpperCase();render()"></div>
       </div>
       ${S.locs.length>1?`<button style="font-size:11px;background:none;border:none;cursor:pointer;color:#e05c5c" onclick="removeLoc(${i})">✕ Quitar</button>`:''}
     </div>`;
@@ -319,7 +319,7 @@ function buildList(dir){
 
 // ── PASSENGERS ───────────────────────────────────────
 function addPax(){
-  S.passengers.push({nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'23 LB',bagV:'23 LB'});
+  S.passengers.push({nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1 x 50 LB',bagV:'1 x 50 LB'});
   buildPax();render();
 }
 function removePax(i){S.passengers.splice(i,1);buildPax();render();}
@@ -420,8 +420,8 @@ function render(){
     <div class="v-pax">
       <div class="pn">${p.nombre||'Pasajero'}</div>
       ${p.eticket?`<span class="pt">E-TICKET: ${p.eticket.toUpperCase()}</span>`:''}
-      ${p.bagI?`<span class="pt">Maleta permitida: ${p.bagI}</span>`:''}
-      ${(S.tipo==='idavuelta'&&p.bagV)?`<span class="pt">Maleta vuelta: ${p.bagV}</span>`:''}
+      ${p.bagI?`<span class="pt">${S.tipo==='idavuelta'?'Maleta permitida ida':'Maleta permitida'}: ${p.bagI}</span>`:''}
+      ${(S.tipo==='idavuelta'&&p.bagV)?`<span class="pt">Maleta permitida vuelta: ${p.bagV}</span>`:''}
       ${p.asiento?`<span class="pt">Asiento: ${p.asiento}</span>`:''}
       ${p.ff_al&&p.ff_num?`<span class="pt">${p.ff_al} # ${p.ff_num}</span>`:''}
       ${p.meal?`<span class="pt">Special meal: ${mealLabels[p.meal]||p.meal}</span>`:''}
@@ -470,19 +470,17 @@ function render(){
 function dlPDF(){
   const ref=document.getElementById('ref').value.trim();
   const filename=ref?`TKT${ref}.pdf`:`voucher-${S.locs[0]?.value||'viaje'}.pdf`;
-  const el=document.getElementById('voucher');
-  const w=el.offsetWidth;
   html2pdf().set({
-    margin:0,
+    margin: 0,
     filename,
-    image:{type:'jpeg',quality:0.98},
-    html2canvas:{scale:2,useCORS:true,width:w,windowWidth:w},
-    jsPDF:{unit:'px',format:[w, w*1.414],orientation:'portrait'}
-  }).from(el).save();
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+  }).from(document.getElementById('voucher')).save();
 }
 
 S.flightsIda.push(ef());S.flightsVuelta.push(ef());
-S.passengers.push({nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'23 LB',bagV:'23 LB'});
+S.passengers.push({nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1 x 50 LB',bagV:'1 x 50 LB'});
 buildLocs();buildList('ida');buildList('vuelta');buildPax();render();
 </script>
 </body>
