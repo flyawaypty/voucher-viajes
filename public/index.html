@@ -8,43 +8,24 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #1a2b3c; display: flex; min-height: 100vh; }
-
-.sidebar {
-  width: 340px; min-width: 300px; background: #1a2b3c; color: #e8f0f7;
-  padding: 20px 16px; overflow-y: auto; flex-shrink: 0; min-height: 100vh;
-}
+.sidebar { width: 340px; min-width: 300px; background: #1a2b3c; color: #e8f0f7; padding: 20px 16px; overflow-y: auto; flex-shrink: 0; min-height: 100vh; }
 .sidebar h1 { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 3px; }
 .sidebar .sub { font-size: 11px; color: #7fa8c8; margin-bottom: 16px; }
 .sec { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7fa8c8; margin: 14px 0 6px; }
 label { font-size: 11px; color: #b0cde6; display: block; margin-bottom: 2px; margin-top: 6px; }
-input, select {
-  width: 100%; padding: 6px 9px; border-radius: 5px; border: 1px solid #2d4a62;
-  background: #243d52; color: #e8f0f7; font-size: 12px; outline: none;
-}
+input, select { width: 100%; padding: 6px 9px; border-radius: 5px; border: 1px solid #2d4a62; background: #243d52; color: #e8f0f7; font-size: 12px; outline: none; }
 input:focus, select:focus { border-color: #4a9fd4; }
 select option { background: #1a2b3c; }
-.btn-add {
-  display: block; width: 100%; margin-top: 8px; padding: 7px;
-  background: #243d52; border: 1px dashed #4a9fd4; color: #4a9fd4;
-  border-radius: 5px; font-size: 11px; cursor: pointer;
-}
+.btn-add { display: block; width: 100%; margin-top: 8px; padding: 7px; background: #243d52; border: 1px dashed #4a9fd4; color: #4a9fd4; border-radius: 5px; font-size: 11px; cursor: pointer; }
 .btn-add:hover { background: #2d5470; }
 .tabs { display: flex; gap: 3px; margin-bottom: 14px; }
-.tab {
-  flex: 1; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: 600;
-  border-radius: 5px; cursor: pointer; border: 1px solid #2d4a62;
-  background: #243d52; color: #7fa8c8;
-}
+.tab { flex: 1; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: 600; border-radius: 5px; cursor: pointer; border: 1px solid #2d4a62; background: #243d52; color: #7fa8c8; }
 .tab.on { background: #1a6fa8; color: #fff; border-color: #1a6fa8; }
 .fc { background: #1e3348; border-radius: 7px; padding: 10px; margin-bottom: 8px; border: 1px solid #2d4a62; }
 .fc-head { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 600; color: #4a9fd4; margin-bottom: 8px; }
 .btn-rm { background: none; border: none; color: #e05c5c; font-size: 12px; cursor: pointer; padding: 0 4px; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.btn-lookup {
-  width: 100%; margin-top: 8px; padding: 7px; border-radius: 5px;
-  background: linear-gradient(135deg, #1a6fa8, #4a9fd4);
-  color: #fff; font-size: 12px; font-weight: 600; border: none; cursor: pointer;
-}
+.btn-lookup { width: 100%; margin-top: 8px; padding: 7px; border-radius: 5px; background: linear-gradient(135deg, #1a6fa8, #4a9fd4); color: #fff; font-size: 12px; font-weight: 600; border: none; cursor: pointer; }
 .btn-lookup:disabled { opacity: .45; cursor: not-allowed; }
 .status { font-size: 11px; margin-top: 6px; padding: 5px 8px; border-radius: 5px; display: none; }
 .status.loading { display: block; background: #1a3a50; color: #7dc9f5; }
@@ -55,39 +36,36 @@ select option { background: #1a2b3c; }
 .dr { display: flex; justify-content: space-between; padding: 2px 0; }
 .dr span:first-child { color: #7dc9f5; }
 .dr span:last-child { color: #e8f0f7; font-weight: 600; }
-.btn-gen {
-  width: 100%; margin-top: 16px; padding: 11px; border-radius: 7px;
-  background: linear-gradient(135deg, #1a6fa8, #4a9fd4);
-  color: #fff; font-size: 13px; font-weight: 700; border: none; cursor: pointer;
-}
+.btn-gen { width: 100%; margin-top: 16px; padding: 11px; border-radius: 7px; background: linear-gradient(135deg, #1a6fa8, #4a9fd4); color: #fff; font-size: 13px; font-weight: 700; border: none; cursor: pointer; }
+.type-selector { display: flex; gap: 4px; margin-bottom: 12px; }
+.type-btn { flex: 1; padding: 7px 4px; text-align: center; font-size: 10px; font-weight: 600; border-radius: 5px; cursor: pointer; border: 1px solid #2d4a62; background: #243d52; color: #7fa8c8; }
+.type-btn.on { background: #0d6fa8; color: #fff; border-color: #0d6fa8; }
+.loc-row { display: flex; gap: 6px; align-items: center; margin-bottom: 4px; }
+.loc-row input { flex: 1; }
+.loc-row .btn-rm { padding: 4px 6px; }
 .preview { flex: 1; padding: 20px; overflow-y: auto; background: #e8eef4; display: flex; flex-direction: column; align-items: center; }
 .toolbar { width: 100%; max-width: 740px; display: flex; justify-content: flex-end; margin-bottom: 10px; }
-.btn-dl {
-  padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600;
-  cursor: pointer; border: none; background: #1a6fa8; color: #fff;
-}
+.btn-dl { padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: #1a6fa8; color: #fff; }
 .btn-dl:hover { opacity: .85; }
-#voucher {
-  background: #fff; width: 100%; max-width: 740px;
-  border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,.1); overflow: hidden;
-}
+#voucher { background: #fff; width: 100%; max-width: 740px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,.1); overflow: hidden; }
 .vh { background: linear-gradient(135deg, #0a3d62, #1a6fa8); padding: 24px 30px; display: flex; justify-content: space-between; align-items: flex-start; }
 .vh-logo { font-size: 20px; font-weight: 800; color: #fff; }
 .vh-info { text-align: right; }
 .vh-lbl { font-size: 9px; color: #7dc9f5; text-transform: uppercase; letter-spacing: 1px; }
-.vh-val { font-size: 13px; font-weight: 700; color: #fff; }
-.vh-val.big { font-size: 22px; letter-spacing: 2px; }
+.vh-val { font-size: 12px; font-weight: 700; color: #fff; }
+.vh-val.big { font-size: 20px; letter-spacing: 2px; }
 .vb { padding: 22px 30px; }
 .vsec { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7fa8c8; margin: 16px 0 8px; display: flex; align-items: center; gap: 8px; }
 .vsec::after { content: ''; flex: 1; height: 1px; background: #e0ecf7; }
 .v-paxes { display: flex; gap: 10px; flex-wrap: wrap; }
-.v-pax { background: #f0f7ff; border-left: 4px solid #1a6fa8; padding: 8px 14px; border-radius: 0 6px 6px 0; flex: 1; min-width: 160px; }
+.v-pax { background: #f0f7ff; border-left: 4px solid #1a6fa8; padding: 8px 14px; border-radius: 0 6px 6px 0; flex: 1; min-width: 200px; }
 .v-pax .pn { font-size: 13px; font-weight: 700; color: #0a3d62; }
 .v-pax .pt { font-size: 11px; color: #5a7fa0; margin-top: 2px; }
 .vseg { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f4f8; }
 .vseg:last-child { border-bottom: none; }
 .vtb { text-align: center; min-width: 85px; }
-.vtime { font-size: 22px; font-weight: 800; color: #0a3d62; line-height: 1; }
+.vtime { font-size: 20px; font-weight: 800; color: #0a3d62; line-height: 1; }
+.vampm { font-size: 11px; font-weight: 600; color: #1a6fa8; }
 .vdate { font-size: 10px; color: #7fa8c0; margin-top: 2px; }
 .vap { font-size: 13px; font-weight: 700; color: #1a6fa8; margin-top: 2px; }
 .vapn { font-size: 9px; color: #8aa0b0; margin-top: 1px; }
@@ -101,45 +79,54 @@ select option { background: #1a2b3c; }
 .vfoot-note { font-size: 11px; color: #7fa8c0; }
 .vfoot-logo { font-size: 12px; font-weight: 700; color: #1a6fa8; }
 .vdiv { height: 5px; background: linear-gradient(90deg, #0a3d62, #1a6fa8, #7dc9f5); }
+.vlocs { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 6px; }
+.vloc { text-align: right; }
 </style>
 </head>
 <body>
-
 <div class="sidebar">
   <h1>✈ Voucher de Viaje</h1>
   <p class="sub">Ingresa el vuelo y la fecha — buscamos los detalles automáticamente.</p>
 
   <div class="tabs">
     <div class="tab on" onclick="switchTab('general',this)">General</div>
-    <div class="tab" onclick="switchTab('ida',this)">Ida</div>
-    <div class="tab" onclick="switchTab('vuelta',this)">Vuelta</div>
+    <div class="tab" onclick="switchTab('vuelos',this)">Vuelos</div>
     <div class="tab" onclick="switchTab('pax',this)">Pasajeros</div>
   </div>
 
+  <!-- TAB GENERAL -->
   <div id="tab-general">
+    <div class="sec">Tipo de voucher</div>
+    <div class="type-selector">
+      <div class="type-btn on" onclick="setType('ida',this)">Solo ida</div>
+      <div class="type-btn" onclick="setType('idavuelta',this)">Ida y vuelta</div>
+      <div class="type-btn" onclick="setType('multi',this)">Múltiples tramos</div>
+    </div>
     <div class="sec">Agencia</div>
     <label>Nombre de la agencia</label>
     <input id="agencia" value="FlyAway" oninput="render()">
-    <label>Localizador PNR</label>
-    <input id="loc" value="" oninput="render()">
-    <label>Localizador aerolínea</label>
-    <input id="loc2" value="" oninput="render()">
     <label>Nota al pie</label>
     <input id="nota" value="Cada pasajero puede llevar una bolsa o mochila adicional como ítem personal." oninput="render()">
+    <div class="sec">Localizadores</div>
+    <div id="locs-list"></div>
+    <button class="btn-add" onclick="addLoc()">+ Agregar localizador</button>
   </div>
 
-  <div id="tab-ida" style="display:none">
-    <div class="sec">Vuelos de Ida</div>
-    <div id="list-ida"></div>
-    <button class="btn-add" onclick="addFlight('ida')">+ Agregar tramo de ida</button>
+  <!-- TAB VUELOS -->
+  <div id="tab-vuelos" style="display:none">
+    <div id="vuelos-ida-section">
+      <div class="sec" id="label-ida">Vuelos de Ida</div>
+      <div id="list-ida"></div>
+      <button class="btn-add" onclick="addFlight('ida')">+ Agregar tramo de ida</button>
+    </div>
+    <div id="vuelos-vuelta-section" style="display:none">
+      <div class="sec">Vuelos de Vuelta</div>
+      <div id="list-vuelta"></div>
+      <button class="btn-add" onclick="addFlight('vuelta')">+ Agregar tramo de vuelta</button>
+    </div>
   </div>
 
-  <div id="tab-vuelta" style="display:none">
-    <div class="sec">Vuelos de Vuelta</div>
-    <div id="list-vuelta"></div>
-    <button class="btn-add" onclick="addFlight('vuelta')">+ Agregar tramo de vuelta</button>
-  </div>
-
+  <!-- TAB PASAJEROS -->
   <div id="tab-pax" style="display:none">
     <div class="sec">Pasajeros</div>
     <div id="list-pax"></div>
@@ -157,9 +144,52 @@ select option { background: #1a2b3c; }
 </div>
 
 <script>
-const S = { flightsIda: [], flightsVuelta: [], passengers: [] };
-function ef() { return { num:'', fecha:'', fechaInput:'', origen:'', destino:'', aorig:'', adest:'', sh:'', lh:'', lf:'', al:'', cab:'Económica', found:false }; }
+const S = {
+  tipo: 'ida',
+  flightsIda: [], flightsVuelta: [], passengers: [],
+  locs: [{ label: 'Localizador', value: '' }]
+};
 
+function ef() {
+  return { num:'', fecha:'', fechaInput:'', origen:'', destino:'', aorig:'', adest:'', sh:'', lh:'', lf:'', al:'', cab:'Economy', found:false };
+}
+
+// ── TIPO ────────────────────────────────────────────
+function setType(t, el) {
+  S.tipo = t;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+  const vs = document.getElementById('vuelos-vuelta-section');
+  const li = document.getElementById('label-ida');
+  if (t === 'ida') { vs.style.display='none'; li.textContent='Vuelos de Ida'; }
+  else if (t === 'idavuelta') { vs.style.display='block'; li.textContent='Vuelos de Ida'; }
+  else { vs.style.display='none'; li.textContent='Tramos'; }
+  render();
+}
+
+// ── LOCALIZADORES ────────────────────────────────────
+function addLoc() {
+  S.locs.push({ label: 'Localizador', value: '' });
+  buildLocs();
+}
+function removeLoc(i) {
+  if (S.locs.length > 1) { S.locs.splice(i,1); buildLocs(); render(); }
+}
+function buildLocs() {
+  const c = document.getElementById('locs-list'); c.innerHTML = '';
+  S.locs.forEach((l,i) => {
+    c.innerHTML += `
+      <div style="margin-bottom:6px">
+        <div class="row2" style="margin-bottom:3px">
+          <div><label>Etiqueta</label><input value="${l.label}" oninput="S.locs[${i}].label=this.value;render()"></div>
+          <div><label>Número</label><input value="${l.value}" oninput="S.locs[${i}].value=this.value;render()"></div>
+        </div>
+        ${S.locs.length>1?`<button class="btn-rm" style="font-size:11px;color:#e05c5c;background:none;border:none;cursor:pointer" onclick="removeLoc(${i})">✕ Quitar</button>`:''}
+      </div>`;
+  });
+}
+
+// ── FLIGHT LOOKUP ────────────────────────────────────
 async function lookup(dir, idx) {
   const list = dir==='ida' ? S.flightsIda : S.flightsVuelta;
   const f = list[idx];
@@ -172,8 +202,7 @@ async function lookup(dir, idx) {
   btn.disabled = true;
   try {
     const res = await fetch('/api/buscar-vuelo', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ numero: f.num, fecha: f.fecha })
     });
     const json = await res.json();
@@ -183,16 +212,14 @@ async function lookup(dir, idx) {
     f.aorig=info.aorig||''; f.adest=info.adest||'';
     f.sh=info.sh||''; f.lh=info.lh||'';
     f.lf=info.lf||f.fecha; f.al=info.al||'';
-    f.cab=info.cab||'Económica'; f.found=true;
+    f.cab=info.cab||'Economy'; f.found=true;
     dEl.className='found show';
     dEl.innerHTML=`
       <div class="dr"><span>Ruta</span><span>${f.origen} → ${f.destino}</span></div>
-      <div class="dr"><span>Salida</span><span>${f.sh} · ${f.fecha}</span></div>
-      <div class="dr"><span>Llegada</span><span>${f.lh} · ${f.lf}</span></div>
+      <div class="dr"><span>Salida</span><span>${fmt12(f.sh)} · ${f.fecha}</span></div>
+      <div class="dr"><span>Llegada</span><span>${fmt12(f.lh)} · ${f.lf}</span></div>
       <div class="dr"><span>Aerolínea</span><span>${f.al}</span></div>
-      <div class="dr"><span>Cabina</span><span>${f.cab}</span></div>
-      <div class="dr"><span>Origen</span><span>${f.aorig}</span></div>
-      <div class="dr"><span>Destino</span><span>${f.adest}</span></div>`;
+      <div class="dr"><span>Cabina</span><span>${f.cab}</span></div>`;
     sEl.className='status ok'; sEl.textContent='✓ Detalles encontrados correctamente';
     render();
   } catch(err) {
@@ -200,8 +227,24 @@ async function lookup(dir, idx) {
   } finally { btn.disabled=false; }
 }
 
-function addFlight(dir) { (dir==='ida'?S.flightsIda:S.flightsVuelta).push(ef()); buildList(dir); render(); }
-function removeFlight(dir,i) { (dir==='ida'?S.flightsIda:S.flightsVuelta).splice(i,1); buildList(dir); render(); }
+// ── TIME FORMAT ──────────────────────────────────────
+function fmt12(t) {
+  if (!t || !t.includes(':')) return t;
+  let [h, m] = t.split(':').map(Number);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${h}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+// ── FLIGHT UI ────────────────────────────────────────
+function addFlight(dir) {
+  (dir==='ida' ? S.flightsIda : S.flightsVuelta).push(ef());
+  buildList(dir); render();
+}
+function removeFlight(dir,i) {
+  (dir==='ida' ? S.flightsIda : S.flightsVuelta).splice(i,1);
+  buildList(dir); render();
+}
 function handleDate(dir,i,v) {
   const f=(dir==='ida'?S.flightsIda:S.flightsVuelta)[i];
   f.fechaInput=v;
@@ -214,12 +257,13 @@ function buildList(dir) {
   const list=dir==='ida'?S.flightsIda:S.flightsVuelta;
   const cont=document.getElementById('list-'+dir);
   cont.innerHTML='';
+  const label = S.tipo==='multi' ? 'Tramo' : (dir==='ida'?'Tramo ida':'Tramo vuelta');
   list.forEach((f,i)=>{
     const id=`${dir}-${i}`;
     const div=document.createElement('div');
     div.className='fc';
     div.innerHTML=`
-      <div class="fc-head"><span>Tramo ${i+1}${f.found?' ✓':''}</span><button class="btn-rm" onclick="removeFlight('${dir}',${i})">✕</button></div>
+      <div class="fc-head"><span>${label} ${i+1}${f.found?' ✓':''}</span><button class="btn-rm" onclick="removeFlight('${dir}',${i})">✕</button></div>
       <div class="row2">
         <div><label>N° de vuelo</label><input type="text" value="${f.num}" placeholder="CM444" oninput="setNum('${dir}',${i},this.value)"></div>
         <div><label>Fecha salida</label><input type="date" value="${f.fechaInput||''}" onchange="handleDate('${dir}',${i},this.value)"></div>
@@ -227,80 +271,158 @@ function buildList(dir) {
       <button class="btn-lookup" id="b-${id}" onclick="lookup('${dir}',${i})">🔎 Buscar detalles del vuelo</button>
       <div class="status" id="s-${id}"></div>
       <div class="found ${f.found?'show':''}" id="d-${id}">
-        ${f.found?`<div class="dr"><span>Ruta</span><span>${f.origen} → ${f.destino}</span></div><div class="dr"><span>Salida</span><span>${f.sh} · ${f.fecha}</span></div><div class="dr"><span>Aerolínea</span><span>${f.al}</span></div>`:''}
+        ${f.found?`<div class="dr"><span>Ruta</span><span>${f.origen} → ${f.destino}</span></div><div class="dr"><span>Salida</span><span>${fmt12(f.sh)} · ${f.fecha}</span></div><div class="dr"><span>Aerolínea</span><span>${f.al}</span></div>`:''}
       </div>`;
     cont.appendChild(div);
   });
 }
 
-function addPax(){S.passengers.push({nombre:'',eticket:'',bagI:'1x10kg + 1x23kg',bagV:'1x10kg + 1x23kg'});buildPax();render();}
+// ── PASSENGERS ───────────────────────────────────────
+function addPax() {
+  S.passengers.push({ nombre:'', eticket:'', asiento:'', ff_num:'', ff_al:'', meal:'', bagI:'1x23kg', bagV:'1x23kg' });
+  buildPax(); render();
+}
 function removePax(i){S.passengers.splice(i,1);buildPax();render();}
 function buildPax(){
-  const c=document.getElementById('list-pax');c.innerHTML='';
+  const c=document.getElementById('list-pax'); c.innerHTML='';
   S.passengers.forEach((p,i)=>{
     c.innerHTML+=`<div class="fc">
       <div class="fc-head"><span>Pasajero ${i+1}</span><button class="btn-rm" onclick="removePax(${i})">✕</button></div>
-      <label>Nombre completo</label><input value="${p.nombre}" oninput="S.passengers[${i}].nombre=this.value;render()">
-      <label>E-ticket</label><input value="${p.eticket}" oninput="S.passengers[${i}].eticket=this.value;render()">
+      <label>Nombre completo</label>
+      <input value="${p.nombre}" oninput="S.passengers[${i}].nombre=this.value;render()">
+      <label>E-ticket</label>
+      <input value="${p.eticket}" oninput="S.passengers[${i}].eticket=this.value;render()">
       <div class="row2">
         <div><label>Equipaje ida</label><input value="${p.bagI}" oninput="S.passengers[${i}].bagI=this.value;render()"></div>
         <div><label>Equipaje vuelta</label><input value="${p.bagV}" oninput="S.passengers[${i}].bagV=this.value;render()"></div>
       </div>
+      <label>Asiento (opcional)</label>
+      <input value="${p.asiento}" placeholder="Ej: 12A" oninput="S.passengers[${i}].asiento=this.value;render()">
+      <div class="row2">
+        <div><label>Viajero frecuente N°</label><input value="${p.ff_num}" placeholder="Número" oninput="S.passengers[${i}].ff_num=this.value;render()"></div>
+        <div><label>Aerolínea FF</label><input value="${p.ff_al}" placeholder="Copa, AA..." oninput="S.passengers[${i}].ff_al=this.value;render()"></div>
+      </div>
+      <label>Special meal (opcional)</label>
+      <select onchange="S.passengers[${i}].meal=this.value;render()">
+        <option value="" ${!p.meal?'selected':''}>Sin special meal</option>
+        <option value="VGML" ${p.meal==='VGML'?'selected':''}>VGML – Vegetariano</option>
+        <option value="KVML" ${p.meal==='KVML'?'selected':''}>KVML – Kosher</option>
+        <option value="MOML" ${p.meal==='MOML'?'selected':''}>MOML – Muslim</option>
+        <option value="HNML" ${p.meal==='HNML'?'selected':''}>HNML – Hindu</option>
+        <option value="DBML" ${p.meal==='DBML'?'selected':''}>DBML – Diabético</option>
+        <option value="LFML" ${p.meal==='LFML'?'selected':''}>LFML – Low fat</option>
+        <option value="GFML" ${p.meal==='GFML'?'selected':''}>GFML – Sin gluten</option>
+        <option value="BLML" ${p.meal==='BLML'?'selected':''}>BLML – Bland</option>
+        <option value="CHML" ${p.meal==='CHML'?'selected':''}>CHML – Niño</option>
+      </select>
     </div>`;
   });
 }
 
+// ── TABS ─────────────────────────────────────────────
 function switchTab(n,el){
-  ['general','ida','vuelta','pax'].forEach(t=>document.getElementById('tab-'+t).style.display='none');
+  ['general','vuelos','pax'].forEach(t=>document.getElementById('tab-'+t).style.display='none');
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   document.getElementById('tab-'+n).style.display='block';
   el.classList.add('on');
 }
 
+// ── RENDER VOUCHER ────────────────────────────────────
 function render(){
   const ag=document.getElementById('agencia').value;
-  const loc=document.getElementById('loc').value;
-  const loc2=document.getElementById('loc2').value;
   const nota=document.getElementById('nota').value;
-  const seg=fs=>fs.map(f=>`
+
+  // Time block helper
+  const tb = (time, date, ap, apname) => `
+    <div class="vtb">
+      <div class="vtime">${time ? fmt12(time).split(' ')[0] : '--:--'}</div>
+      <div class="vampm">${time ? fmt12(time).split(' ')[1] : ''}</div>
+      <div class="vdate">${date||''}</div>
+      <div class="vap">${ap||'---'}</div>
+      <div class="vapn">${apname||''}</div>
+    </div>`;
+
+  const seg = fs => fs.map(f=>`
     <div class="vseg">
-      <div class="vtb"><div class="vtime">${f.sh||'--:--'}</div><div class="vdate">${f.fecha||''}</div><div class="vap">${f.origen||'---'}</div><div class="vapn">${f.aorig||''}</div></div>
-      <div class="vmid"><div class="vfnum">${f.num||'VUELO'}</div><div class="vline"></div><div class="val">${f.al||''}</div><div class="vcab">${f.cab||'Económica'}</div></div>
-      <div class="vtb"><div class="vtime">${f.lh||'--:--'}</div><div class="vdate">${f.lf||''}</div><div class="vap">${f.destino||'---'}</div><div class="vapn">${f.adest||''}</div></div>
+      ${tb(f.sh, f.fecha, f.origen, f.aorig)}
+      <div class="vmid">
+        <div class="vfnum">${f.num||'VUELO'}</div>
+        <div class="vline"></div>
+        <div class="val">${f.al||''}</div>
+        <div class="vcab">${f.cab||'Economy'}</div>
+      </div>
+      ${tb(f.lh, f.lf, f.destino, f.adest)}
     </div>`).join('');
-  const paxH=S.passengers.map(p=>`
+
+  const paxH = S.passengers.map(p=>`
     <div class="v-pax">
       <div class="pn">${p.nombre||'Pasajero'}</div>
       ${p.eticket?`<div class="pt">E-ticket: ${p.eticket}</div>`:''}
+      ${p.asiento?`<div class="pt">✈ Asiento: ${p.asiento}</div>`:''}
+      ${p.ff_num?`<div class="pt">★ FF ${p.ff_al}: ${p.ff_num}</div>`:''}
+      ${p.meal?`<div class="pt">🍽 Meal: ${p.meal}</div>`:''}
       ${p.bagI?`<div class="pt">🧳 Ida: ${p.bagI}</div>`:''}
-      ${p.bagV?`<div class="pt">🔁 Vuelta: ${p.bagV}</div>`:''}
+      ${(S.tipo==='idavuelta' && p.bagV)?`<div class="pt">🔁 Vuelta: ${p.bagV}</div>`:''}
     </div>`).join('');
+
+  // Localizadores header
+  const locsH = S.locs.map(l=>`
+    <div class="vloc">
+      <div class="vh-lbl">${l.label}</div>
+      <div class="vh-val${S.locs.length===1?' big':''}">${l.value||'------'}</div>
+    </div>`).join('');
+
+  // Sections based on type
+  let sections = '';
+  if (S.tipo === 'ida') {
+    sections = S.flightsIda.length
+      ? `<div class="vsec">Vuelo · ${S.flightsIda.length} tramo${S.flightsIda.length>1?'s':''}</div>${seg(S.flightsIda)}`
+      : `<div style="color:#aaa;font-size:12px;padding:10px 0">Agrega vuelos en la pestaña Vuelos</div>`;
+  } else if (S.tipo === 'idavuelta') {
+    sections = '';
+    if (S.flightsIda.length) sections += `<div class="vsec">Ida · ${S.flightsIda.length} tramo${S.flightsIda.length>1?'s':''}</div>${seg(S.flightsIda)}`;
+    if (S.flightsVuelta.length) sections += `<div class="vsec">Vuelta · ${S.flightsVuelta.length} tramo${S.flightsVuelta.length>1?'s':''}</div>${seg(S.flightsVuelta)}`;
+    if (!sections) sections = `<div style="color:#aaa;font-size:12px;padding:10px 0">Agrega vuelos en la pestaña Vuelos</div>`;
+  } else {
+    const all = [...S.flightsIda];
+    sections = all.length
+      ? `<div class="vsec">Itinerario · ${all.length} tramo${all.length>1?'s':''}</div>${seg(all)}`
+      : `<div style="color:#aaa;font-size:12px;padding:10px 0">Agrega tramos en la pestaña Vuelos</div>`;
+  }
+
   document.getElementById('voucher').innerHTML=`
     <div class="vdiv"></div>
     <div class="vh">
-      <div><div class="vh-logo">${ag||'FlyAway'}</div><div style="font-size:10px;color:#7dc9f5;margin-top:4px">Documento de Viaje</div></div>
-      <div class="vh-info">
-        <div class="vh-lbl">Localizador</div><div class="vh-val big">${loc||'------'}</div>
-        ${loc2?`<div class="vh-lbl" style="margin-top:6px">Aerolínea</div><div class="vh-val">${loc2}</div>`:''}
+      <div>
+        <div class="vh-logo">${ag||'FlyAway'}</div>
+        <div style="font-size:10px;color:#7dc9f5;margin-top:4px">${S.tipo==='ida'?'Voucher de Viaje — Solo Ida':S.tipo==='idavuelta'?'Voucher de Viaje — Ida y Vuelta':'Voucher de Viaje — Múltiples Tramos'}</div>
       </div>
+      <div class="vlocs">${locsH}</div>
     </div>
     <div class="vb">
       ${S.passengers.length?`<div class="vsec">Pasajeros · ${S.passengers.length}</div><div class="v-paxes">${paxH}</div>`:''}
-      ${S.flightsIda.length?`<div class="vsec">Ida · ${S.flightsIda.length} tramo${S.flightsIda.length>1?'s':''}</div>${seg(S.flightsIda)}`:`<div style="color:#aaa;font-size:12px;padding:10px 0">Agrega vuelos de ida en el panel izquierdo</div>`}
-      ${S.flightsVuelta.length?`<div class="vsec">Vuelta · ${S.flightsVuelta.length} tramo${S.flightsVuelta.length>1?'s':''}</div>${seg(S.flightsVuelta)}`:''}
+      ${sections}
     </div>
     <div class="vfoot"><div class="vfoot-note">${nota}</div><div class="vfoot-logo">${ag}</div></div>
     <div class="vdiv"></div>`;
 }
 
+// ── PDF ───────────────────────────────────────────────
 function dlPDF(){
-  const loc=document.getElementById('loc').value;
-  html2pdf().set({margin:0,filename:`voucher-${loc||'viaje'}.pdf`,image:{type:'jpeg',quality:0.98},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(document.getElementById('voucher')).save();
+  const loc = S.locs[0]?.value || 'viaje';
+  html2pdf().set({
+    margin:0, filename:`voucher-${loc}.pdf`,
+    image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2,useCORS:true},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+  }).from(document.getElementById('voucher')).save();
 }
 
-S.flightsIda.push(ef());S.flightsVuelta.push(ef());
-S.passengers.push({nombre:'',eticket:'',bagI:'1x10kg + 1x23kg',bagV:'1x10kg + 1x23kg'});
-buildList('ida');buildList('vuelta');buildPax();render();
+// ── INIT ──────────────────────────────────────────────
+S.flightsIda.push(ef());
+S.flightsVuelta.push(ef());
+S.passengers.push({ nombre:'', eticket:'', asiento:'', ff_num:'', ff_al:'', meal:'', bagI:'1x23kg', bagV:'1x23kg' });
+buildLocs(); buildList('ida'); buildList('vuelta'); buildPax(); render();
 </script>
 </body>
 </html>
