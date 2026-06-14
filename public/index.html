@@ -823,55 +823,14 @@ function dlPDF(){
   el.style.borderRadius = '0';
   el.style.boxShadow = 'none';
 
-  // Convert all images with object-fit:cover to canvas to fix html2canvas rendering
-  const hotelImgs = el.querySelectorAll('img[style*="object-fit"]');
-  const convertPromises = Array.from(hotelImgs).map(img => {
-    return new Promise(resolve => {
-      const w = img.offsetWidth;
-      const h = img.offsetHeight;
-      if (!w || !h || !img.src) return resolve();
-      const tempImg = new Image();
-      tempImg.crossOrigin = 'anonymous';
-      tempImg.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext('2d');
-        // Simulate object-fit: cover
-        const imgAR = tempImg.naturalWidth / tempImg.naturalHeight;
-        const boxAR = w / h;
-        let sw, sh, sx, sy;
-        if (imgAR > boxAR) {
-          sh = tempImg.naturalHeight;
-          sw = sh * boxAR;
-          sx = (tempImg.naturalWidth - sw) / 2;
-          sy = 0;
-        } else {
-          sw = tempImg.naturalWidth;
-          sh = sw / boxAR;
-          sx = 0;
-          sy = (tempImg.naturalHeight - sh) / 2;
-        }
-        ctx.drawImage(tempImg, sx, sy, sw, sh, 0, 0, w, h);
-        img.style.objectFit = 'unset';
-        img.style.width = w + 'px';
-        img.style.height = h + 'px';
-        img.src = canvas.toDataURL('image/jpeg', 0.95);
-        resolve();
-      };
-      tempImg.onerror = resolve;
-      tempImg.src = img.src;
-    });
-  });
-
-  // Also wait for logo and other images
+  // Wait for all images
   const allImgs = el.querySelectorAll('img');
   const waitPromises = Array.from(allImgs).map(img => {
     if (img.complete && img.naturalHeight > 0) return Promise.resolve();
     return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
   });
 
-  Promise.all([...convertPromises, ...waitPromises]).then(() => {
+  Promise.all(waitPromises).then(() => {
     setTimeout(() => {
       html2pdf().set({
         margin: 0, filename,
@@ -886,8 +845,6 @@ function dlPDF(){
         el.style.width = '';
         el.style.borderRadius = '';
         el.style.boxShadow = '';
-        // Re-render to restore original photo
-        renderHotel();
       });
     }, 300);
   });
@@ -990,16 +947,37 @@ function detectDDI(phoneStr) {
 }
 
 function setHotelPhoto(dataUrl) {
-  HS.photoUrl = dataUrl;
-  const hint = document.getElementById('h-photo-hint');
-  const img = document.getElementById('h-photo-img');
-  const clearBtn = document.getElementById('h-photo-clear');
-  const zone = document.getElementById('h-photo-zone');
-  if (hint) hint.style.display = 'none';
-  if (img) { img.src = dataUrl; img.style.display = 'block'; }
-  if (clearBtn) clearBtn.style.display = 'flex';
-  if (zone) zone.style.borderColor = '#3d8fd1';
-  renderHotel();
+  // Pre-crop image to fixed dimensions using canvas (avoids object-fit issues in PDF)
+  const tempImg = new Image();
+  tempImg.onload = () => {
+    const W = 800, H = 200;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    const imgAR = tempImg.naturalWidth / tempImg.naturalHeight;
+    const boxAR = W / H;
+    let sw, sh, sx, sy;
+    if (imgAR > boxAR) {
+      sh = tempImg.naturalHeight; sw = sh * boxAR;
+      sx = (tempImg.naturalWidth - sw) / 2; sy = 0;
+    } else {
+      sw = tempImg.naturalWidth; sh = sw / boxAR;
+      sx = 0; sy = (tempImg.naturalHeight - sh) / 2;
+    }
+    ctx.drawImage(tempImg, sx, sy, sw, sh, 0, 0, W, H);
+    const cropped = canvas.toDataURL('image/jpeg', 0.95);
+    HS.photoUrl = cropped;
+    const hint = document.getElementById('h-photo-hint');
+    const img = document.getElementById('h-photo-img');
+    const clearBtn = document.getElementById('h-photo-clear');
+    const zone = document.getElementById('h-photo-zone');
+    if (hint) hint.style.display = 'none';
+    if (img) { img.src = cropped; img.style.display = 'block'; }
+    if (clearBtn) clearBtn.style.display = 'flex';
+    if (zone) zone.style.borderColor = '#3d8fd1';
+    renderHotel();
+  };
+  tempImg.src = dataUrl;
 }
 
 function clearHotelPhoto() {
@@ -1231,7 +1209,7 @@ function renderHotel() {
       <div class="vh-hotel-addr">${[HS.address,HS.phone].filter(Boolean).join(' · ')}</div>
     </div>
     <div class="vb" style="${vd}">
-      ${HS.photoUrl?`<div style="padding:0 30px 16px"><img src="${HS.photoUrl}" style="width:100%;height:160px;object-fit:cover;border-radius:8px;display:block" alt="Hotel"></div>`:''}
+      ${HS.photoUrl?`<div style="padding:0 30px 16px"><img src="${HS.photoUrl}" style="width:100%;border-radius:8px;display:block" alt="Hotel"></div>`:''}
       <div class="vsec">${HS.passengers.length>1?L.hGuests:L.hGuest} · ${HS.passengers.length}</div>
       <div class="v-paxes"><div class="v-pax">${guestH}</div></div>
       <div class="vsec">${L.hStay}</div>
