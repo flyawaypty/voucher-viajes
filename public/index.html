@@ -442,6 +442,26 @@ textarea { resize: vertical; line-height: 1.5; }
     <button class="btn-gen" onclick="renderHotel()">↻ Actualizar vista previa</button>
   </div><!-- end product-hoteles -->
 
+  <!-- ═══ OTROS SECTION ═══ -->
+  <div id="product-otros" style="display:none">
+    <div class="sec">Referencia interna</div>
+    <label>TKT#</label>
+    <input id="o-ref" value="" placeholder="4738" oninput="renderOtros()">
+    <div class="sec">Código de reservación</div>
+    <input id="o-confirmacion" value="" placeholder="17210442PA4" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase();renderOtros()">
+    <div class="sec">Nota al pie</div>
+    <input id="o-nota" value="Gracias por preferirnos. Cualquier consulta estamos a su disposición." oninput="renderOtros()">
+    <div class="sec">Voucher del proveedor</div>
+    <div style="display:flex;gap:6px;align-items:stretch;margin-top:4px">
+      <div id="o-photo-zone" tabindex="0" onpaste="pasteOtrosPhoto(event)" style="flex:1;background:#163050;border:1px solid #2d5070;border-radius:5px;padding:8px 10px;font-size:11px;color:#4a6a88;min-height:36px;display:flex;align-items:center;cursor:text;outline:none" onfocus="this.style.borderColor='#3d8fd1'" onblur="this.style.borderColor='#2d5070'">
+        <span id="o-photo-hint">📋 Pega imagen aquí (Ctrl+V)</span>
+        <img id="o-photo-img" style="display:none;max-height:28px;border-radius:3px;max-width:100%">
+      </div>
+      <button onclick="document.getElementById('o-photo-file').click()" style="flex-shrink:0;padding:8px 10px;background:#163050;border:1px solid #2d5070;border-radius:5px;color:#7fa8c8;font-size:11px;cursor:pointer;white-space:nowrap">📁 Subir</button>
+      <button id="o-photo-clear" onclick="clearOtrosPhoto()" style="display:none;flex-shrink:0;padding:8px 10px;background:#163050;border:1px solid #2d5070;border-radius:5px;color:#e05c5c;font-size:11px;cursor:pointer">✕</button>
+    </div>
+    <input type="file" id="o-photo-file" accept="image/*" style="display:none" onchange="uploadOtrosPhoto(this)">
+    <button class="btn-gen" onclick="renderOtros()">↻ Actualizar vista previa</button>
   </div><!-- end product-otros -->
 </div><!-- end sidebar -->
 
@@ -861,7 +881,7 @@ function switchProduct(p, el) {
   });
   if (p==='vuelos') render();
   if (p==='hoteles') renderHotel();
-  if (p==='otros') document.getElementById('voucher').innerHTML = '<div style="padding:40px;text-align:center;color:#aaa;font-size:14px">Próximamente</div>';
+  if (p==='otros') renderOtros();
 }
 
 // ── HOTEL STATE ───────────────────────────────────────
@@ -1253,8 +1273,90 @@ function renderHotel() {
     <div class="vdiv"></div>`;
 }
 
+// ── OTROS (CAR VOUCHER) ───────────────────────────────
+const OS = { photoUrl: '' };
+
+function setOtrosPhoto(dataUrl) {
+  OS.photoUrl = dataUrl;
+  const hint = document.getElementById('o-photo-hint');
+  const img = document.getElementById('o-photo-img');
+  const clearBtn = document.getElementById('o-photo-clear');
+  const zone = document.getElementById('o-photo-zone');
+  if (hint) hint.style.display = 'none';
+  if (img) { img.src = dataUrl; img.style.display = 'block'; }
+  if (clearBtn) clearBtn.style.display = 'flex';
+  if (zone) zone.style.borderColor = '#3d8fd1';
+  renderOtros();
+}
+
+function clearOtrosPhoto() {
+  OS.photoUrl = '';
+  const hint = document.getElementById('o-photo-hint');
+  const img = document.getElementById('o-photo-img');
+  const clearBtn = document.getElementById('o-photo-clear');
+  const zone = document.getElementById('o-photo-zone');
+  if (hint) hint.style.display = 'inline';
+  if (img) { img.src = ''; img.style.display = 'none'; }
+  if (clearBtn) clearBtn.style.display = 'none';
+  if (zone) zone.style.borderColor = '#2d5070';
+  renderOtros();
+}
+
+function pasteOtrosPhoto(e) {
+  const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+  if (!items) return;
+  for (let item of items) {
+    if (item.type.startsWith('image/')) {
+      e.preventDefault();
+      const file = item.getAsFile();
+      const reader = new FileReader();
+      reader.onload = ev => setOtrosPhoto(ev.target.result);
+      reader.readAsDataURL(file);
+      return;
+    }
+  }
+}
+
+function uploadOtrosPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => setOtrosPhoto(ev.target.result);
+  reader.readAsDataURL(file);
+}
+
+function renderOtros() {
+  const ref = (document.getElementById('o-ref')?.value||'').trim();
+  const conf = document.getElementById('o-confirmacion')?.value||'';
+  const nota = document.getElementById('o-nota')?.value||'';
+  const locsH = conf ? `<div class="vloc"><div class="vh-lbl">CÓDIGO DE RESERVACIÓN</div><div class="vh-val big">${conf}</div></div>` : '';
+
+  document.getElementById('voucher').innerHTML = `
+    <div class="vdiv"></div>
+    <div class="vh">
+      <div class="vh-brand">
+        <img src="/logo.png" class="vh-logo-img" alt="Flyaway">
+        <div class="vh-contact">
+          <div class="vh-contact-item">${waIcon} ${BRAND.whatsapp}</div>
+          <div class="vh-contact-item">${emailIcon} ${BRAND.email}</div>
+        </div>
+        ${ref?`<div class="vh-ref">TKT# ${ref}</div>`:''}
+      </div>
+      <div class="vlocs">${locsH}</div>
+    </div>
+    <div class="vb">
+      ${OS.photoUrl ?
+        `<div class="vsec">Voucher del proveedor</div>
+        <div style="border:1px solid #e0ecf7;border-radius:6px;overflow:hidden">
+          <img src="${OS.photoUrl}" style="width:100%;display:block">
+        </div>` :
+        `<div style="color:#aaa;font-size:12px;padding:20px 0;text-align:center">Sube o pega la imagen del voucher del proveedor</div>`}
+    </div>
+    <div class="vfoot"><div class="vfoot-note">${nota}</div></div>
+    <div class="vdiv"></div>`;
+}
+
 buildHotelPax();
-S.flightsIda.push(ef());S.flightsVuelta.push(ef());
 S.passengers.push({apellido:'',nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1 x 50 LB',bagV:'1 x 50 LB'});
 buildLocs();buildList('ida');buildList('vuelta');buildPax();render();
 document.querySelector('.prod-tab').classList.add('on');
