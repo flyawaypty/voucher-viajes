@@ -200,6 +200,19 @@ textarea { resize: vertical; line-height: 1.5; }
       <input id="h-nota" value="Gracias por preferirnos. Cualquier consulta estamos a su disposición." oninput="renderHotel()">
       <div class="sec">Código de reservación</div>
       <input id="h-confirmacion" value="" placeholder="5112SG092966" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase();renderHotel()">
+      <div class="sec">Proveedor</div>
+      <select id="h-proveedor" onchange="toggleProveedorOtro()" oninput="renderHotel()">
+        <option value="">— Sin especificar —</option>
+        <option value="TAAP">TAAP</option>
+        <option value="RH">RH</option>
+        <option value="Direct">Direct</option>
+        <option value="Marriott Bonvoy">Marriott Bonvoy</option>
+        <option value="WOH">WOH</option>
+        <option value="otro">Otro...</option>
+      </select>
+      <div id="h-proveedor-otro-wrap" style="display:none;margin-top:4px">
+        <input id="h-proveedor-otro" placeholder="Escribe el proveedor" oninput="renderHotel()">
+      </div>
     </div>
 
     <div id="htab-hotel" style="display:none">
@@ -969,6 +982,13 @@ function uploadHotelPhoto(input) {
   reader.readAsDataURL(file);
 }
 
+function toggleProveedorOtro() {
+  const sel = document.getElementById('h-proveedor')?.value;
+  const wrap = document.getElementById('h-proveedor-otro-wrap');
+  if (wrap) wrap.style.display = sel==='otro' ? 'block' : 'none';
+  renderHotel();
+}
+
 function toggleManualHotel() {
   const fields = document.getElementById('manual-hotel-fields');
   const btn = document.getElementById('btn-manual-hotel');
@@ -1087,6 +1107,8 @@ function renderHotel() {
   const cancelFechaRaw = document.getElementById('h-cancel-fecha')?.value||'';
   const cancelFecha = fmtDateDisplay(cancelFechaRaw);
   const adicionales = document.getElementById('h-adicionales')?.value||'';
+  const proveedorSel = document.getElementById('h-proveedor')?.value||'';
+  const proveedor = proveedorSel==='otro' ? (document.getElementById('h-proveedor-otro')?.value||'') : proveedorSel;
   const lang = document.getElementById('lang-select')?.value||'es';
   const L = LANGS[lang]||LANGS.es;
   const disclaimer = HOTEL_DISCLAIMER[lang]||HOTEL_DISCLAIMER.es;
@@ -1172,6 +1194,7 @@ function renderHotel() {
     </div>
     <div class="vfoot" style="${vd}">
       <div class="vfoot-note" style="margin-bottom:8px">${nota}</div>
+      ${proveedor?`<div style="font-size:9px;color:#9ab0c0;margin-bottom:8px;border-bottom:1px solid #e0ecf7;padding-bottom:6px">Proveedor: ${proveedor}</div>`:''}
       <div style="font-size:9px;color:#9ab0c0;line-height:1.5;border-top:1px solid #e0ecf7;padding-top:8px;margin-top:4px">${disclaimer}</div>
     </div>
     <div class="vdiv"></div>`;
