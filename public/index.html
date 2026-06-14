@@ -181,9 +181,10 @@ textarea { resize: vertical; line-height: 1.5; }
 const PASSWORD = '0421';
 
 function checkPwd() {
-  const val = document.getElementById('pwd-input').value;
+  const val = document.getElementById('pwd-input').value.trim();
   if (val === PASSWORD) {
     document.getElementById('login-overlay').style.display = 'none';
+    document.getElementById('app-content').style.removeProperty('display');
     document.getElementById('app-content').style.display = 'flex';
     sessionStorage.setItem('fa_auth', '1');
   } else {
@@ -193,9 +194,9 @@ function checkPwd() {
   }
 }
 
-// Check session
 if (sessionStorage.getItem('fa_auth') === '1') {
   document.getElementById('login-overlay').style.display = 'none';
+  document.getElementById('app-content').style.removeProperty('display');
   document.getElementById('app-content').style.display = 'flex';
 }
 
