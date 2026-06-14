@@ -818,12 +818,11 @@ function dlPDF(){
   sidebar.style.display = 'none';
   preview.style.padding = '0';
   preview.style.background = '#fff';
+  preview.style.alignItems = 'stretch';
   el.style.maxWidth = '100%';
   el.style.width = '100%';
   el.style.borderRadius = '0';
   el.style.boxShadow = 'none';
-
-  const sidebarWidth = sidebar.offsetWidth;
 
   // Wait for all images
   const allImgs = el.querySelectorAll('img');
@@ -834,30 +833,22 @@ function dlPDF(){
 
   Promise.all(waitPromises).then(() => {
     setTimeout(() => {
-      // Calculate sidebar width in inches (96dpi)
-      const leftCropIn = sidebarWidth / 96;
       html2pdf().set({
-        margin: [0, 0, 0, -leftCropIn], filename,
+        margin: 0, filename,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-      }).from(document.body).save().then(() => {
+      }).from(el).save().then(() => {
         sidebar.style.display = '';
-        sidebar.style.visibility = '';
-        sidebar.style.width = '';
-        sidebar.style.minWidth = '';
-        sidebar.style.padding = '';
-        sidebar.style.overflow = '';
-        document.body.style.display = '';
         preview.style.padding = '';
         preview.style.background = '';
-        preview.style.display = '';
+        preview.style.alignItems = '';
         el.style.maxWidth = '';
         el.style.width = '';
         el.style.borderRadius = '';
         el.style.boxShadow = '';
       });
-    }, 300);
+    }, 200);
   });
 }
 
