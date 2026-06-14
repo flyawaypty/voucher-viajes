@@ -815,7 +815,6 @@ function dlPDF(){
   const sidebar = document.querySelector('.sidebar');
   const preview = document.querySelector('.preview');
 
-  // Hide sidebar, expand voucher
   sidebar.style.display = 'none';
   preview.style.padding = '0';
   preview.style.background = '#fff';
@@ -824,14 +823,55 @@ function dlPDF(){
   el.style.borderRadius = '0';
   el.style.boxShadow = 'none';
 
-  // Wait for images
-  const imgs = el.querySelectorAll('img');
-  const imagePromises = Array.from(imgs).map(img => {
+  // Convert all images with object-fit:cover to canvas to fix html2canvas rendering
+  const hotelImgs = el.querySelectorAll('img[style*="object-fit"]');
+  const convertPromises = Array.from(hotelImgs).map(img => {
+    return new Promise(resolve => {
+      const w = img.offsetWidth;
+      const h = img.offsetHeight;
+      if (!w || !h || !img.src) return resolve();
+      const tempImg = new Image();
+      tempImg.crossOrigin = 'anonymous';
+      tempImg.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        // Simulate object-fit: cover
+        const imgAR = tempImg.naturalWidth / tempImg.naturalHeight;
+        const boxAR = w / h;
+        let sw, sh, sx, sy;
+        if (imgAR > boxAR) {
+          sh = tempImg.naturalHeight;
+          sw = sh * boxAR;
+          sx = (tempImg.naturalWidth - sw) / 2;
+          sy = 0;
+        } else {
+          sw = tempImg.naturalWidth;
+          sh = sw / boxAR;
+          sx = 0;
+          sy = (tempImg.naturalHeight - sh) / 2;
+        }
+        ctx.drawImage(tempImg, sx, sy, sw, sh, 0, 0, w, h);
+        img.style.objectFit = 'unset';
+        img.style.width = w + 'px';
+        img.style.height = h + 'px';
+        img.src = canvas.toDataURL('image/jpeg', 0.95);
+        resolve();
+      };
+      tempImg.onerror = resolve;
+      tempImg.src = img.src;
+    });
+  });
+
+  // Also wait for logo and other images
+  const allImgs = el.querySelectorAll('img');
+  const waitPromises = Array.from(allImgs).map(img => {
     if (img.complete && img.naturalHeight > 0) return Promise.resolve();
     return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
   });
 
-  Promise.all(imagePromises).then(() => {
+  Promise.all([...convertPromises, ...waitPromises]).then(() => {
     setTimeout(() => {
       html2pdf().set({
         margin: 0, filename,
@@ -846,8 +886,10 @@ function dlPDF(){
         el.style.width = '';
         el.style.borderRadius = '';
         el.style.boxShadow = '';
+        // Re-render to restore original photo
+        renderHotel();
       });
-    }, 200);
+    }, 300);
   });
 }
 
