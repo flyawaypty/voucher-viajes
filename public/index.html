@@ -133,6 +133,7 @@ textarea { resize: vertical; line-height: 1.5; }
   <div class="prod-tabs">
     <div class="prod-tab" onclick="switchProduct('vuelos',this)">✈ Vuelos</div>
     <div class="prod-tab" onclick="switchProduct('hoteles',this)">🏨 Hoteles</div>
+    <div class="prod-tab" onclick="switchProduct('carros',this)">🚗 Carros</div>
     <div class="prod-tab" onclick="switchProduct('otros',this)">★ Otros</div>
   </div>
 
@@ -441,6 +442,28 @@ textarea { resize: vertical; line-height: 1.5; }
 
     <button class="btn-gen" onclick="renderHotel()">↻ Actualizar vista previa</button>
   </div><!-- end product-hoteles -->
+
+  <!-- ═══ CARROS SECTION ═══ -->
+  <div id="product-carros" style="display:none">
+    <div class="sec">Referencia interna</div>
+    <label>TKT#</label>
+    <input id="c-ref" value="" placeholder="4738" oninput="renderCarros()">
+    <div class="sec">Código de reservación</div>
+    <input id="c-confirmacion" value="" placeholder="17210442PA4" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase();renderCarros()">
+    <div class="sec">Nota al pie</div>
+    <input id="c-nota" value="Gracias por preferirnos. Cualquier consulta estamos a su disposición." oninput="renderCarros()">
+    <div class="sec">Voucher del proveedor</div>
+    <div style="display:flex;gap:6px;align-items:stretch;margin-top:4px">
+      <div id="c-photo-zone" tabindex="0" onpaste="pasteCarrosPhoto(event)" style="flex:1;background:#163050;border:1px solid #2d5070;border-radius:5px;padding:8px 10px;font-size:11px;color:#4a6a88;min-height:36px;display:flex;align-items:center;cursor:text;outline:none" onfocus="this.style.borderColor='#3d8fd1'" onblur="this.style.borderColor='#2d5070'">
+        <span id="c-photo-hint">📋 Pega imagen aquí (Ctrl+V)</span>
+        <img id="c-photo-img" style="display:none;max-height:28px;border-radius:3px;max-width:100%">
+      </div>
+      <button onclick="document.getElementById('c-photo-file').click()" style="flex-shrink:0;padding:8px 10px;background:#163050;border:1px solid #2d5070;border-radius:5px;color:#7fa8c8;font-size:11px;cursor:pointer;white-space:nowrap">📁 Subir</button>
+      <button id="c-photo-clear" onclick="clearCarrosPhoto()" style="display:none;flex-shrink:0;padding:8px 10px;background:#163050;border:1px solid #2d5070;border-radius:5px;color:#e05c5c;font-size:11px;cursor:pointer">✕</button>
+    </div>
+    <input type="file" id="c-photo-file" accept="image/*" style="display:none" onchange="uploadCarrosPhoto(this)">
+    <button class="btn-gen" onclick="renderCarros()">↻ Actualizar vista previa</button>
+  </div><!-- end product-carros -->
 
   <!-- ═══ OTROS SECTION ═══ -->
   <div id="product-otros" style="display:none">
@@ -824,12 +847,10 @@ function render(){
 function dlPDF(){
   const activeProduct = document.querySelector('.prod-tab.on')?.textContent?.trim();
   const isHotel = activeProduct?.includes('Hotel');
-  const ref = isHotel
-    ? (document.getElementById('h-ref')?.value?.trim()||'')
-    : (document.getElementById('ref')?.value?.trim()||'');
-  const conf = isHotel
-    ? (document.getElementById('h-confirmacion')?.value?.trim()||'hotel')
-    : (S.locs[0]?.value||'viaje');
+  const isCarros = activeProduct?.includes('Carros');
+  const isOtros = activeProduct?.includes('Otros');
+  const ref = (isHotel ? document.getElementById('h-ref') : isCarros ? document.getElementById('c-ref') : isOtros ? document.getElementById('o-ref') : document.getElementById('ref'))?.value?.trim()||'';
+  const conf = isHotel ? (document.getElementById('h-confirmacion')?.value?.trim()||'hotel') : isCarros ? (document.getElementById('c-confirmacion')?.value?.trim()||'carro') : isOtros ? (document.getElementById('o-confirmacion')?.value?.trim()||'otro') : (S.locs[0]?.value||'viaje');
   const filename = ref ? `TKT${ref}.pdf` : `voucher-${conf}.pdf`;
   const el = document.getElementById('voucher');
   const sidebar = document.querySelector('.sidebar');
@@ -876,11 +897,12 @@ function dlPDF(){
 function switchProduct(p, el) {
   document.querySelectorAll('.prod-tab').forEach(t => t.classList.remove('on'));
   el.classList.add('on');
-  ['vuelos','hoteles','otros'].forEach(x => {
+  ['vuelos','hoteles','carros','otros'].forEach(x => {
     document.getElementById('product-'+x).style.display = x===p ? 'block' : 'none';
   });
   if (p==='vuelos') render();
   if (p==='hoteles') renderHotel();
+  if (p==='carros') renderCarros();
   if (p==='otros') renderOtros();
 }
 
@@ -1269,6 +1291,111 @@ function renderHotel() {
       <div class="vfoot-note" style="margin-bottom:8px">${nota}</div>
       ${proveedor?`<div style="font-size:9px;color:#9ab0c0;margin-bottom:8px;border-bottom:1px solid #e0ecf7;padding-bottom:6px">Proveedor: ${proveedor}</div>`:''}
       <div style="font-size:9px;color:#9ab0c0;line-height:1.5;border-top:1px solid #e0ecf7;padding-top:8px;margin-top:4px">${disclaimer}</div>
+    </div>
+    <div class="vdiv"></div>`;
+}
+
+const CAR_DISCLAIMER = {
+  es: `<strong>Te recordamos que para el retiro del vehículo es INDISPENSABLE presentar:</strong><br>
+🪪 Su licencia <strong>FÍSICA</strong> de conducir vigente<br>
+💳 Una tarjeta de <strong>CRÉDITO</strong> física (no sirve del celular) a nombre del titular de la reserva<br>
+⛔ No somos responsables si el titular de la reserva falla en presentar esto al momento del retiro. Pueden aplicar penalidades para cancelar después de la hora de la retirada.<br>
+⚠️ Mucha atención cuando estés firmando el contrato para que el monto total a pagar quede en <strong>$0.00</strong> (si es que no quieres ningún servicio adicional).`,
+  en: `<strong>Please note that the following are MANDATORY at vehicle pickup:</strong><br>
+🪪 A valid <strong>PHYSICAL</strong> driver's license<br>
+💳 A physical <strong>CREDIT CARD</strong> (mobile/digital cards not accepted) in the name of the reservation holder<br>
+⛔ We are not responsible if the reservation holder fails to present these at pickup. Penalties may apply for cancellations after the scheduled pickup time.<br>
+⚠️ Please read your rental agreement carefully to ensure the total amount due is <strong>$0.00</strong> (if you do not wish to add any extra services).`,
+  pt: `<strong>Lembramos que para a retirada do veículo é INDISPENSÁVEL apresentar:</strong><br>
+🪪 Sua carteira de motorista <strong>FÍSICA</strong> válida<br>
+💳 Um cartão de <strong>CRÉDITO</strong> físico (não é aceito pelo celular) em nome do titular da reserva<br>
+⛔ Não nos responsabilizamos se o titular da reserva não apresentar esses documentos no momento da retirada. Podem ser aplicadas penalidades para cancelamentos após o horário de retirada.<br>
+⚠️ Preste muita atenção ao assinar o contrato para que o valor total a pagar seja de <strong>$0,00</strong> (caso não deseje nenhum serviço adicional).`,
+  he: `<strong>להזכירכם, בעת איסוף הרכב חובה להציג:</strong><br>
+🪪 רישיון נהיגה <strong>פיזי</strong> בתוקף<br>
+💳 כרטיס <strong>אשראי</strong> פיזי (לא מהטלפון) על שם בעל ההזמנה<br>
+⛔ איננו אחראים במקרה שבעל ההזמנה לא יציג את המסמכים הנדרשים בעת האיסוף. עלולים לחול קנסות על ביטול לאחר שעת האיסוף.<br>
+⚠️ שימו לב היטב בעת חתימת החוזה שסכום התשלום הכולל יהיה <strong>$0.00</strong> (אם אינכם מעוניינים בשירותים נוספים).`
+};
+
+const CS = { photoUrl: '' };
+
+function setCarrosPhoto(dataUrl) {
+  CS.photoUrl = dataUrl;
+  const hint = document.getElementById('c-photo-hint');
+  const img = document.getElementById('c-photo-img');
+  const clearBtn = document.getElementById('c-photo-clear');
+  const zone = document.getElementById('c-photo-zone');
+  if (hint) hint.style.display = 'none';
+  if (img) { img.src = dataUrl; img.style.display = 'block'; }
+  if (clearBtn) clearBtn.style.display = 'flex';
+  if (zone) zone.style.borderColor = '#3d8fd1';
+  renderCarros();
+}
+function clearCarrosPhoto() {
+  CS.photoUrl = '';
+  const hint = document.getElementById('c-photo-hint');
+  const img = document.getElementById('c-photo-img');
+  const clearBtn = document.getElementById('c-photo-clear');
+  const zone = document.getElementById('c-photo-zone');
+  if (hint) hint.style.display = 'inline';
+  if (img) { img.src = ''; img.style.display = 'none'; }
+  if (clearBtn) clearBtn.style.display = 'none';
+  if (zone) zone.style.borderColor = '#2d5070';
+  renderCarros();
+}
+function pasteCarrosPhoto(e) {
+  const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+  if (!items) return;
+  for (let item of items) {
+    if (item.type.startsWith('image/')) {
+      e.preventDefault();
+      const file = item.getAsFile();
+      const reader = new FileReader();
+      reader.onload = ev => setCarrosPhoto(ev.target.result);
+      reader.readAsDataURL(file);
+      return;
+    }
+  }
+}
+function uploadCarrosPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => setCarrosPhoto(ev.target.result);
+  reader.readAsDataURL(file);
+}
+function renderCarros() {
+  const ref = (document.getElementById('c-ref')?.value||'').trim();
+  const conf = document.getElementById('c-confirmacion')?.value||'';
+  const nota = document.getElementById('c-nota')?.value||'';
+  const lang = document.getElementById('lang-select')?.value||'es';
+  const disclaimer = CAR_DISCLAIMER[lang]||CAR_DISCLAIMER.es;
+  const locsH = conf ? `<div class="vloc"><div class="vh-lbl">CÓDIGO DE RESERVACIÓN</div><div class="vh-val big">${conf}</div></div>` : '';
+  document.getElementById('voucher').innerHTML = `
+    <div class="vdiv"></div>
+    <div class="vh">
+      <div class="vh-brand">
+        <img src="/logo.png" class="vh-logo-img" alt="Flyaway">
+        <div class="vh-contact">
+          <div class="vh-contact-item">${waIcon} ${BRAND.whatsapp}</div>
+          <div class="vh-contact-item">${emailIcon} ${BRAND.email}</div>
+        </div>
+        ${ref?`<div class="vh-ref">TKT# ${ref}</div>`:''}
+      </div>
+      <div class="vlocs">${locsH}</div>
+    </div>
+    <div class="vb">
+      ${CS.photoUrl ?
+        `<div class="vsec">Voucher del proveedor</div>
+        <div style="border:1px solid #e0ecf7;border-radius:6px;overflow:hidden">
+          <img src="${CS.photoUrl}" style="width:100%;display:block">
+        </div>` :
+        `<div style="color:#aaa;font-size:12px;padding:20px 0;text-align:center">Sube o pega la imagen del voucher del proveedor</div>`}
+    </div>
+    <div class="vfoot">
+      ${nota?`<div class="vfoot-note" style="margin-bottom:10px">${nota}</div>`:''}
+      <div style="font-size:10px;color:#5a7fa0;line-height:1.8;border-top:1px solid #e0ecf7;padding-top:10px">${disclaimer}</div>
     </div>
     <div class="vdiv"></div>`;
 }
