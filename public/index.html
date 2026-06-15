@@ -878,7 +878,7 @@ function dlPDF(){
         margin: 0, filename,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        jsPDF: { unit: 'in', format: isCarros ? [8, 12] : 'letter', orientation: 'portrait' }
       }).from(el).save().then(() => {
         sidebar.style.display = '';
         preview.style.padding = '';
