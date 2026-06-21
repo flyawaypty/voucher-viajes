@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
         system: `You are a flight itinerary parser specialized in airline reservation systems (GDS like Sabre, Amadeus, Galileo) and standard itinerary formats.
 
