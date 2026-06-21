@@ -965,29 +965,53 @@ function dlPDF(){
     return new Promise(resolve => { img.onload = resolve; img.onerror = resolve; });
   });
 
+  const restoreStyles = () => {
+    sidebar.style.display = '';
+    preview.style.padding = '';
+    preview.style.background = '';
+    preview.style.alignItems = '';
+    el.style.maxWidth = '';
+    el.style.width = '';
+    el.style.borderRadius = '';
+    el.style.boxShadow = '';
+  };
+
   Promise.all(waitPromises).then(() => {
-    setTimeout(() => {
-      const elW = el.offsetWidth;
-      const elH = el.offsetHeight;
-      const pxToIn = 96;
-      const dynamicFormat = [elW / pxToIn, elH / pxToIn];
-      html2pdf().set({
-        margin: 0, filename,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
-        jsPDF: { unit: 'in', format: isFlights ? dynamicFormat : (isCarros ? [8, 12] : 'letter'), orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all'] }
-      }).from(el).save().then(() => {
-        sidebar.style.display = '';
-        preview.style.padding = '';
-        preview.style.background = '';
-        preview.style.alignItems = '';
-        el.style.maxWidth = '';
-        el.style.width = '';
-        el.style.borderRadius = '';
-        el.style.boxShadow = '';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if (isFlights) {
+            // Direct html2canvas + jsPDF approach: capture exact pixel dimensions,
+            // bypassing html2pdf's internal pagination logic entirely.
+            void el.offsetHeight; // force reflow
+            const elW = el.scrollWidth;
+            const elH = el.scrollHeight;
+            html2canvas(el, {
+              scale: 2, useCORS: true, allowTaint: true,
+              scrollX: 0, scrollY: 0, width: elW, height: elH,
+              windowWidth: elW, windowHeight: elH
+            }).then(canvas => {
+              const imgData = canvas.toDataURL('image/jpeg', 0.98);
+              const pxToIn = 96;
+              const pdfW = elW / pxToIn;
+              const pdfH = elH / pxToIn;
+              const { jsPDF } = window.jspdf;
+              const pdf = new jsPDF({ unit: 'in', format: [pdfW, pdfH], orientation: 'portrait' });
+              pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH);
+              pdf.save(filename);
+              restoreStyles();
+            });
+          } else {
+            html2pdf().set({
+              margin: 0, filename,
+              image: { type: 'jpeg', quality: 0.98 },
+              html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
+              jsPDF: { unit: 'in', format: isCarros ? [8, 12] : 'letter', orientation: 'portrait' }
+            }).from(el).save().then(restoreStyles);
+          }
+        }, 200);
       });
-    }, 200);
+    });
   });
 }
 
