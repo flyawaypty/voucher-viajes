@@ -875,7 +875,7 @@ function render(){
       </div>`;
     } else {
       return `<div class="v-pax" ${L.dir==='rtl'?'style="direction:rtl;text-align:right"':''}>
-        <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
           <div class="pn">${p.apellido&&p.nombre?`${p.apellido} / ${p.nombre}`:p.apellido||p.nombre||'PASAJERO'}</div>
           <div style="display:flex;align-items:flex-start;gap:24px;flex-shrink:0;margin-left:16px">
             ${p.eticket?`<div style="text-align:left">
