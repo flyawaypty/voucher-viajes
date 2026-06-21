@@ -750,8 +750,8 @@ function buildPax(){
     c.innerHTML+=`<div class="fc">
       <div class="fc-head"><span>Pasajero ${i+1}</span><button class="btn-rm" onclick="removePax(${i})">✕</button></div>
       <div class="row2">
-        <div><label>Apellido</label><input value="${p.apellido.toUpperCase()}" style="text-transform:uppercase" oninput="S.passengers[${i}].apellido=this.value.toUpperCase();render()"></div>
         <div><label>Nombre</label><input value="${p.nombre.toUpperCase()}" style="text-transform:uppercase" oninput="S.passengers[${i}].nombre=this.value.toUpperCase();render()"></div>
+        <div><label>Apellido</label><input value="${p.apellido.toUpperCase()}" style="text-transform:uppercase" oninput="S.passengers[${i}].apellido=this.value.toUpperCase();render()"></div>
       </div>
       <label>E-TICKET</label><input value="${p.eticket.toUpperCase()}" style="text-transform:uppercase" oninput="S.passengers[${i}].eticket=this.value.toUpperCase();render()">
       ${p.eticket2!==undefined && p.eticket2!==null && p.showEticket2 ? `
