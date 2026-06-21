@@ -981,24 +981,35 @@ function dlPDF(){
       requestAnimationFrame(() => {
         setTimeout(() => {
           if (isFlights) {
-            // Direct html2canvas + jsPDF approach: capture exact pixel dimensions,
-            // bypassing html2pdf's internal pagination logic entirely.
-            void el.offsetHeight; // force reflow
+            void el.offsetHeight;
             const elW = el.scrollWidth;
             const elH = el.scrollHeight;
+            console.log('Flight PDF generation - dimensions:', elW, elH);
             html2canvas(el, {
               scale: 2, useCORS: true, allowTaint: true,
               scrollX: 0, scrollY: 0, width: elW, height: elH,
               windowWidth: elW, windowHeight: elH
             }).then(canvas => {
+              console.log('Canvas created:', canvas.width, canvas.height);
               const imgData = canvas.toDataURL('image/jpeg', 0.98);
               const pxToIn = 96;
               const pdfW = elW / pxToIn;
               const pdfH = elH / pxToIn;
-              const { jsPDF } = window.jspdf;
-              const pdf = new jsPDF({ unit: 'in', format: [pdfW, pdfH], orientation: 'portrait' });
+              console.log('jsPDF available?', typeof window.jspdf, typeof jsPDF);
+              const JsPDFClass = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+              if (!JsPDFClass) {
+                console.error('jsPDF not found on window object');
+                alert('Error: no se pudo cargar el generador de PDF. Intenta de nuevo.');
+                restoreStyles();
+                return;
+              }
+              const pdf = new JsPDFClass({ unit: 'in', format: [pdfW, pdfH], orientation: 'portrait' });
               pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH);
               pdf.save(filename);
+              restoreStyles();
+            }).catch(err => {
+              console.error('html2canvas error:', err);
+              alert('Error al generar el PDF: ' + err.message);
               restoreStyles();
             });
           } else {
