@@ -16,6 +16,7 @@ label { font-size: 11px; color: #b0cde6; display: block; margin-bottom: 2px; mar
 input, select, textarea { width: 100%; padding: 6px 9px; border-radius: 5px; border: 1px solid #2d5070; background: #163050; color: #e8f0f7; font-size: 12px; outline: none; }
 input:focus, select:focus, textarea:focus { border-color: #3d8fd1; }
 select option { background: #1e3a5c; }
+.lang-select-white option { background: #fff !important; color: #1e3a5c !important; }
 textarea { resize: vertical; line-height: 1.5; }
 .btn-add { display: block; width: 100%; margin-top: 8px; padding: 7px; background: #163050; border: 1px dashed #3d8fd1; color: #3d8fd1; border-radius: 5px; font-size: 11px; cursor: pointer; }
 .btn-add:hover { background: #1e4070; }
@@ -485,11 +486,11 @@ textarea { resize: vertical; line-height: 1.5; }
 
 <div class="preview">
   <div class="toolbar">
-    <select id="lang-select" onchange="render()" style="padding:7px 10px;border-radius:6px;border:1px solid #c0d0e0;font-size:12px;color:#1e3a5c;background:#fff;cursor:pointer">
-      <option value="es">🇪🇸 Español</option>
-      <option value="en">🇺🇸 English</option>
-      <option value="pt">🇧🇷 Português</option>
-      <option value="he">🇮🇱 עברית</option>
+    <select id="lang-select" class="lang-select-white" onchange="render()" style="padding:7px 10px;border-radius:6px;border:1px solid #c0d0e0;font-size:12px;color:#1e3a5c;background:#fff;cursor:pointer">
+      <option value="es" style="background:#fff;color:#1e3a5c">🇪🇸 Español</option>
+      <option value="en" style="background:#fff;color:#1e3a5c">🇺🇸 English</option>
+      <option value="pt" style="background:#fff;color:#1e3a5c">🇧🇷 Português</option>
+      <option value="he" style="background:#fff;color:#1e3a5c">🇮🇱 עברית</option>
     </select>
     <button class="btn-dl" onclick="dlPDF()">⬇ Descargar PDF</button>
   </div>
