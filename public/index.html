@@ -156,8 +156,6 @@ textarea { resize: vertical; line-height: 1.5; }
     <div class="sec">Referencia interna</div>
     <label>TKT#</label>
     <input id="ref" value="" placeholder="4700" oninput="render()">
-    <div class="sec">Nota al pie</div>
-    <input id="nota" value="Cada pasajero puede llevar una bolsa o mochila adicional como ítem personal." oninput="render()">
     <div class="sec">Localizadores</div>
     <div id="locs-list"></div>
     <button class="btn-add" onclick="addLoc()">+ Agregar localizador</button>
@@ -836,12 +834,19 @@ function renderSegments(flights,L){
   return html;
 }
 
+const FLIGHT_FOOTER_NOTE = {
+  es: 'Este documento de viaje está sujeto a los términos y condiciones de la aerolínea operadora. La franquicia de equipaje indicada es la estándar para la tarifa contratada y puede variar según el status del pasajero en el programa de viajero frecuente, la cabina o las políticas vigentes de la aerolínea. Recomendamos verificar los requisitos de entrada, visado y documentación necesarios para su destino antes de viajar, así como llegar al aeropuerto con la anticipación recomendada por la aerolínea.',
+  en: 'This travel document is subject to the terms and conditions of the operating airline. The baggage allowance shown is standard for the fare purchased and may vary depending on the passenger\'s frequent flyer status, cabin class, or current airline policies. We recommend verifying entry requirements, visas, and documentation needed for your destination before traveling, as well as arriving at the airport with the time recommended by the airline.',
+  pt: 'Este documento de viagem está sujeito aos termos e condições da companhia aérea operadora. A franquia de bagagem indicada é a padrão para a tarifa contratada e pode variar de acordo com o status do passageiro no programa de fidelidade, a classe da cabine ou as políticas vigentes da companhia aérea. Recomendamos verificar os requisitos de entrada, visto e documentação necessários para o seu destino antes de viajar, bem como chegar ao aeroporto com a antecedência recomendada pela companhia aérea.',
+  he: 'מסמך נסיעה זה כפוף לתנאים ולהגבלות של חברת התעופה המפעילה. כמות הכבודה המצוינת היא הסטנדרטית עבור התעריף שנרכש ועשויה להשתנות בהתאם למעמד הנוסע בתוכנית הנוסע המתמיד, מחלקת הטיסה או המדיניות העדכנית של חברת התעופה. אנו ממליצים לוודא את דרישות הכניסה, האשרה והמסמכים הנדרשים ליעד שלכם לפני הנסיעה, וכן להגיע לשדה התעופה בזמן המומלץ על ידי חברת התעופה.'
+};
+
 function render(){
-  const nota=document.getElementById('nota').value;
   const ref=document.getElementById('ref').value.trim();
   const L=getLang();
   const dlBtn=document.querySelector('.btn-dl');
   if(dlBtn) dlBtn.textContent=L.download;
+  const nota = FLIGHT_FOOTER_NOTE[document.getElementById('lang-select')?.value||'es'] || FLIGHT_FOOTER_NOTE.es;
   const paxH=S.passengers.map(p=>{
     const hasExtra = p.asiento || (p.ff_al&&p.ff_num) || p.meal;
     const isHe = L.dir==='rtl';
