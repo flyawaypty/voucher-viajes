@@ -163,20 +163,15 @@ textarea { resize: vertical; line-height: 1.5; }
   </div>
 
   <div id="tab-vuelos" style="display:none">
-    <div class="sec">Pegar itinerario</div>
-    <textarea id="itinerario" rows="6" placeholder="Pega aquí el texto del itinerario (aerolínea, GDS Sabre/Amadeus, email de confirmación...)"></textarea>
-    <button class="btn-parse" id="btn-parse" onclick="parseItinerary()">✨ Extraer vuelos automáticamente</button>
-    <div class="status" id="parse-status"></div>
-    <div id="vuelos-ida-section" style="margin-top:14px">
-      <div class="sec" id="label-ida">Vuelos de Ida</div>
-      <div id="list-ida"></div>
-      <button class="btn-add-manual" onclick="addFlight('ida')">+ Agregar tramo manualmente</button>
+    <div id="multi-controls" style="display:none;margin-bottom:10px">
+      <div class="sec">Número de tramos</div>
+      <div style="display:flex;gap:4px;align-items:center">
+        <button onclick="changeMultiCount(-1)" style="width:30px;padding:6px;background:#163050;border:1px solid #2d5070;border-radius:5px;color:#7fa8c8;cursor:pointer">−</button>
+        <div id="multi-count-display" style="flex:1;text-align:center;font-size:13px;font-weight:700;color:#fff">2</div>
+        <button onclick="changeMultiCount(1)" style="width:30px;padding:6px;background:#163050;border:1px solid #2d5070;border-radius:5px;color:#7fa8c8;cursor:pointer">+</button>
+      </div>
     </div>
-    <div id="vuelos-vuelta-section" style="display:none;margin-top:10px">
-      <div class="sec">Vuelos de Vuelta</div>
-      <div id="list-vuelta"></div>
-      <button class="btn-add-manual" onclick="addFlight('vuelta')">+ Agregar tramo manualmente</button>
-    </div>
+    <div id="itinerary-groups"></div>
   </div>
 
   <div id="tab-pax" style="display:none">
@@ -522,6 +517,7 @@ function getLang() { return LANGS[document.getElementById('lang-select')?.value|
 
 const S = {
   tipo:'ida', flightsIda:[], flightsVuelta:[], passengers:[],
+  groups:[], // [{label:'Ida', flights:[]}, {label:'Regreso', flights:[]}]
   locs:[{label:'CÓDIGO DE RESERVACIÓN', value:''}]
 };
 
@@ -570,10 +566,64 @@ function parseDurInput(v) {
 const waIcon=`<svg width="12" height="12" viewBox="0 0 24 24" fill="#ffffff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
 const emailIcon=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>`;
 
-async function parseItinerary() {
-  const texto=document.getElementById('itinerario').value.trim();
+// ── ITINERARY GROUPS (Ida/Vuelta/Multi tramos) ───────
+function initGroupsForType(t) {
+  if (t==='ida') {
+    S.groups = [{ key:'ida', label:'Vuelo', flights: S.flightsIda.length?S.flightsIda:[] }];
+  } else if (t==='idavuelta') {
+    S.groups = [
+      { key:'ida', label:'Ida', flights: S.flightsIda.length?S.flightsIda:[] },
+      { key:'vuelta', label:'Regreso', flights: S.flightsVuelta.length?S.flightsVuelta:[] }
+    ];
+  } else { // multi
+    const count = Math.max(S.groups.length || 2, 2);
+    S.groups = [];
+    for (let i=0;i<count;i++) S.groups.push({ key:'g'+i, label:`Tramo ${i+1}`, flights: [] });
+  }
+  // Ensure every group has at least one flight row for manual entry capability
+  S.groups.forEach(g => { if(!g.flights.length) g.flights.push(ef()); });
+  buildItineraryGroups();
+}
+
+function changeMultiCount(delta) {
+  const newCount = Math.max(2, S.groups.length + delta);
+  if (delta > 0) {
+    S.groups.push({ key:'g'+S.groups.length, label:`Tramo ${S.groups.length+1}`, flights:[ef()] });
+  } else if (S.groups.length > 2) {
+    S.groups.pop();
+  }
+  document.getElementById('multi-count-display').textContent = S.groups.length;
+  buildItineraryGroups();
+  render();
+}
+
+function buildItineraryGroups() {
+  const cont = document.getElementById('itinerary-groups');
+  cont.innerHTML = '';
+  S.groups.forEach((g, gi) => {
+    const groupDiv = document.createElement('div');
+    groupDiv.style.marginTop = gi>0 ? '18px' : '0';
+    groupDiv.innerHTML = `
+      <div class="sec" style="display:flex;justify-content:space-between;align-items:center">
+        <span>Pegar itinerario — ${g.label}</span>
+      </div>
+      <textarea id="itinerario-${gi}" rows="5" placeholder="Pega aquí el texto del itinerario de ${g.label.toLowerCase()}..."></textarea>
+      <button class="btn-parse" id="btn-parse-${gi}" onclick="parseItineraryGroup(${gi})">✨ Extraer automáticamente</button>
+      <div class="status" id="parse-status-${gi}"></div>
+      <div style="margin-top:10px">
+        <div class="sec" id="label-group-${gi}">Tramos de ${g.label}</div>
+        <div id="list-group-${gi}"></div>
+        <button class="btn-add-manual" onclick="addFlightToGroup(${gi})">+ Agregar tramo manualmente</button>
+      </div>`;
+    cont.appendChild(groupDiv);
+  });
+  S.groups.forEach((g, gi) => buildGroupFlightList(gi));
+}
+
+async function parseItineraryGroup(gi) {
+  const texto = document.getElementById(`itinerario-${gi}`).value.trim();
   if(!texto){alert('Pega el texto del itinerario primero.');return;}
-  const sEl=document.getElementById('parse-status'),btn=document.getElementById('btn-parse');
+  const sEl = document.getElementById(`parse-status-${gi}`), btn = document.getElementById(`btn-parse-${gi}`);
   sEl.className='status loading';sEl.textContent='✨ Extrayendo información de los vuelos...';
   btn.disabled=true;
   try {
@@ -582,25 +632,97 @@ async function parseItinerary() {
     if(!json.ok) throw new Error(json.error);
     const flights=json.flights;
     if(!flights||!flights.length) throw new Error('No se encontraron vuelos en el texto');
-    S.flightsIda=flights.map(f=>({...ef(),...f,found:true}));
-    S.flightsVuelta=[];
-    buildList('ida');buildList('vuelta');
+    S.groups[gi].flights = flights.map(f=>({...ef(),...f,found:true}));
+    buildGroupFlightList(gi);
     sEl.className='status ok';
     sEl.textContent=`✓ ${flights.length} vuelo${flights.length>1?'s':''} extraído${flights.length>1?'s':''}. Revisa y corrige si es necesario.`;
+    syncGroupsToLegacy();
     render();
   } catch(err) {
     sEl.className='status err';sEl.textContent='✗ '+(err.message||'No se pudo procesar el itinerario');
   } finally {btn.disabled=false;}
 }
 
+function addFlightToGroup(gi){ S.groups[gi].flights.push(ef()); buildGroupFlightList(gi); syncGroupsToLegacy(); render(); }
+function removeFlightFromGroup(gi,i){ S.groups[gi].flights.splice(i,1); buildGroupFlightList(gi); syncGroupsToLegacy(); render(); }
+function setGroupField(gi,i,key,val){
+  const f = S.groups[gi].flights[i];
+  f[key] = (key==='duracion_min'||key==='layover_override') ? parseDurInput(val) : val;
+  syncGroupsToLegacy();
+  render();
+}
+
+function buildGroupFlightList(gi) {
+  const g = S.groups[gi];
+  const cont = document.getElementById(`list-group-${gi}`);
+  if (!cont) return;
+  cont.innerHTML='';
+  g.flights.forEach((f,i)=>{
+    const div=document.createElement('div');div.className='fc';
+    div.innerHTML=`
+      <div class="fc-head"><span>Tramo ${i+1}${f.found?' ✓':''}</span><button class="btn-rm" onclick="removeFlightFromGroup(${gi},${i})">✕</button></div>
+      <div class="edit-block">
+        <span class="elabel">Información del vuelo</span>
+        <div class="row2">
+          <div><label>N° vuelo</label><input value="${f.num}" placeholder="CM444" oninput="setGroupField(${gi},${i},'num',this.value)"></div>
+          <div><label>Clase</label>
+            <select onchange="setGroupField(${gi},${i},'cab',this.value)">
+              <option value="Economy" ${f.cab==='Economy'?'selected':''}>Economy</option>
+              <option value="Premium" ${f.cab==='Premium'?'selected':''}>Premium</option>
+              <option value="Business" ${f.cab==='Business'?'selected':''}>Business</option>
+              <option value="First" ${f.cab==='First'?'selected':''}>First</option>
+            </select>
+          </div>
+        </div>
+        <div class="row2">
+          <div><label>Código origen</label><input value="${f.origen}" placeholder="PTY" oninput="setGroupField(${gi},${i},'origen',this.value)"></div>
+          <div><label>Código destino</label><input value="${f.destino}" placeholder="MAD" oninput="setGroupField(${gi},${i},'destino',this.value)"></div>
+        </div>
+        <label>Aeropuerto origen</label><input value="${f.aorig}" placeholder="Tocumen International Airport" oninput="setGroupField(${gi},${i},'aorig',this.value)">
+        <label>Aeropuerto destino</label><input value="${f.adest}" placeholder="Barajas Airport" oninput="setGroupField(${gi},${i},'adest',this.value)">
+        <div class="row2">
+          <div><label>Salida (HH:MM)</label><input value="${f.sh}" placeholder="21:05" oninput="setGroupField(${gi},${i},'sh',this.value)"></div>
+          <div><label>Fecha salida</label><input value="${f.fecha}" placeholder="10/08/2026" oninput="setGroupField(${gi},${i},'fecha',this.value)"></div>
+        </div>
+        <div class="row2">
+          <div><label>Llegada (HH:MM)</label><input value="${f.lh}" placeholder="14:10" oninput="setGroupField(${gi},${i},'lh',this.value)"></div>
+          <div><label>Fecha llegada</label><input value="${f.lf}" placeholder="11/08/2026" oninput="setGroupField(${gi},${i},'lf',this.value)"></div>
+        </div>
+        <label>Aerolínea</label><input value="${f.al}" placeholder="Copa Airlines" oninput="setGroupField(${gi},${i},'al',this.value)">
+        <div class="row2">
+          <div><label>Duración vuelo</label><input value="${fmtDur(f.duracion_min)||''}" placeholder="4h47min" onchange="setGroupField(${gi},${i},'duracion_min',this.value)"></div>
+          <div><label>Modelo avión</label><input value="${f.avion||''}" placeholder="Boeing 737-800" oninput="setGroupField(${gi},${i},'avion',this.value)"></div>
+        </div>
+        ${i<g.flights.length-1?`<label>Tiempo de escala después de este vuelo</label><input value="${fmtDur(f.layover_override)||''}" placeholder="Automático" onchange="setGroupField(${gi},${i},'layover_override',this.value)">`:''}</div>`;
+    cont.appendChild(div);
+  });
+}
+
+// Keep S.flightsIda / S.flightsVuelta in sync for backward compatibility with render()
+function syncGroupsToLegacy() {
+  if (S.tipo==='ida') {
+    S.flightsIda = S.groups[0] ? S.groups[0].flights : [];
+    S.flightsVuelta = [];
+  } else if (S.tipo==='idavuelta') {
+    S.flightsIda = S.groups[0] ? S.groups[0].flights : [];
+    S.flightsVuelta = S.groups[1] ? S.groups[1].flights : [];
+  } else {
+    // multi: concatenate all groups into flightsIda for single-section rendering
+    S.flightsIda = [];
+    S.groups.forEach(g => { S.flightsIda = S.flightsIda.concat(g.flights); });
+    S.flightsVuelta = [];
+  }
+}
+
 function setType(t,el) {
   S.tipo=t;
   document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
-  const vs=document.getElementById('vuelos-vuelta-section'),li=document.getElementById('label-ida');
-  if(t==='ida'){vs.style.display='none';li.textContent='Vuelos de Ida';}
-  else if(t==='idavuelta'){vs.style.display='block';li.textContent='Vuelos de Ida';}
-  else{vs.style.display='none';li.textContent='Tramos';}
+  const multiControls = document.getElementById('multi-controls');
+  multiControls.style.display = t==='multi' ? 'block' : 'none';
+  if (t==='multi') document.getElementById('multi-count-display').textContent = Math.max(S.groups.length,2);
+  initGroupsForType(t);
+  syncGroupsToLegacy();
   render();
 }
 
@@ -616,57 +738,6 @@ function buildLocs(){
     </div>`;
   });
 }
-
-function addFlight(dir){(dir==='ida'?S.flightsIda:S.flightsVuelta).push(ef());buildList(dir);render();}
-function removeFlight(dir,i){(dir==='ida'?S.flightsIda:S.flightsVuelta).splice(i,1);buildList(dir);render();}
-function setField(dir,i,key,val){
-  const list=dir==='ida'?S.flightsIda:S.flightsVuelta;
-  list[i][key]=(key==='duracion_min'||key==='layover_override')?parseDurInput(val):val;
-  render();
-}
-function buildList(dir){
-  const list=dir==='ida'?S.flightsIda:S.flightsVuelta;
-  const cont=document.getElementById('list-'+dir);cont.innerHTML='';
-  const label=S.tipo==='multi'?'Tramo':(dir==='ida'?'Tramo ida':'Tramo vuelta');
-  list.forEach((f,i)=>{
-    const div=document.createElement('div');div.className='fc';
-    div.innerHTML=`
-      <div class="fc-head"><span>${label} ${i+1}${f.found?' ✓':''}</span><button class="btn-rm" onclick="removeFlight('${dir}',${i})">✕</button></div>
-      <div class="edit-block">
-        <span class="elabel">Información del vuelo</span>
-        <div class="row2">
-          <div><label>N° vuelo</label><input value="${f.num}" placeholder="CM444" oninput="setField('${dir}',${i},'num',this.value)"></div>
-          <div><label>Clase</label>
-            <select onchange="setField('${dir}',${i},'cab',this.value)">
-              <option value="Economy" ${f.cab==='Economy'?'selected':''}>Economy</option>
-              <option value="Premium" ${f.cab==='Premium'?'selected':''}>Premium</option>
-              <option value="Business" ${f.cab==='Business'?'selected':''}>Business</option>
-              <option value="First" ${f.cab==='First'?'selected':''}>First</option>
-            </select>
-          </div>
-        </div>
-        <div class="row2">
-          <div><label>Código origen</label><input value="${f.origen}" placeholder="PTY" oninput="setField('${dir}',${i},'origen',this.value)"></div>
-          <div><label>Código destino</label><input value="${f.destino}" placeholder="MAD" oninput="setField('${dir}',${i},'destino',this.value)"></div>
-        </div>
-        <label>Aeropuerto origen</label><input value="${f.aorig}" placeholder="Tocumen International Airport" oninput="setField('${dir}',${i},'aorig',this.value)">
-        <label>Aeropuerto destino</label><input value="${f.adest}" placeholder="Barajas Airport" oninput="setField('${dir}',${i},'adest',this.value)">
-        <div class="row2">
-          <div><label>Salida (HH:MM)</label><input value="${f.sh}" placeholder="21:05" oninput="setField('${dir}',${i},'sh',this.value)"></div>
-          <div><label>Fecha salida</label><input value="${f.fecha}" placeholder="10/08/2026" oninput="setField('${dir}',${i},'fecha',this.value)"></div>
-        </div>
-        <div class="row2">
-          <div><label>Llegada (HH:MM)</label><input value="${f.lh}" placeholder="14:10" oninput="setField('${dir}',${i},'lh',this.value)"></div>
-          <div><label>Fecha llegada</label><input value="${f.lf}" placeholder="11/08/2026" oninput="setField('${dir}',${i},'lf',this.value)"></div>
-        </div>
-        <label>Aerolínea</label><input value="${f.al}" placeholder="Copa Airlines" oninput="setField('${dir}',${i},'al',this.value)">
-        <div class="row2">
-          <div><label>Duración vuelo</label><input value="${fmtDur(f.duracion_min)||''}" placeholder="4h47min" onchange="setField('${dir}',${i},'duracion_min',this.value)"></div>
-          <div><label>Modelo avión</label><input value="${f.avion||''}" placeholder="Boeing 737-800" oninput="setField('${dir}',${i},'avion',this.value)"></div>
-        </div>
-        ${i<list.length-1?`<label>Tiempo de escala después de este vuelo</label><input value="${fmtDur(f.layover_override)||''}" placeholder="Automático" onchange="setField('${dir}',${i},'layover_override',this.value)">`:''}</div>`;
-    cont.appendChild(div);
-  });
 }
 
 function addPax(){
@@ -821,7 +892,10 @@ function render(){
   let sections='';
   if(S.tipo==='ida') sections=S.flightsIda.length?buildSection(S.flightsIda,L.itinerary):`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
   else if(S.tipo==='idavuelta'){sections=buildSection(S.flightsIda,L.outbound)+buildSection(S.flightsVuelta,L.inbound);if(!sections)sections=`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;}
-  else sections=S.flightsIda.length?buildSection(S.flightsIda,L.itinerary):`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
+  else {
+    sections = S.groups.map((g,gi) => buildSection(g.flights, `${L.itinerary} ${gi+1}`)).join('');
+    if(!sections) sections=`<div style="color:#aaa;font-size:12px;padding:10px 0">Pega el itinerario en la pestaña Vuelos</div>`;
+  }
   const vd=L.dir==='rtl'?'direction:rtl':'';
   document.getElementById('voucher').innerHTML=`
     <div class="vdiv"></div>
@@ -1485,7 +1559,7 @@ function renderOtros() {
 
 buildHotelPax();
 S.passengers.push({apellido:'',nombre:'',eticket:'',asiento:'',ff_num:'',ff_al:'',meal:'',bagI:'1 x 50 LB',bagV:'1 x 50 LB'});
-buildLocs();buildList('ida');buildList('vuelta');buildPax();render();
+buildLocs();initGroupsForType('ida');syncGroupsToLegacy();buildPax();render();
 document.querySelector('.prod-tab').classList.add('on');
 </script>
 </body>
