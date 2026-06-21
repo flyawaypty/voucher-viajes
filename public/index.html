@@ -941,6 +941,7 @@ function dlPDF(){
   const isHotel = activeProduct?.includes('Hotel');
   const isCarros = activeProduct?.includes('Carros');
   const isOtros = activeProduct?.includes('Otros');
+  const isFlights = !isHotel && !isCarros && !isOtros;
   const ref = (isHotel ? document.getElementById('h-ref') : isCarros ? document.getElementById('c-ref') : isOtros ? document.getElementById('o-ref') : document.getElementById('ref'))?.value?.trim()||'';
   const conf = isHotel ? (document.getElementById('h-confirmacion')?.value?.trim()||'hotel') : isCarros ? (document.getElementById('c-confirmacion')?.value?.trim()||'carro') : isOtros ? (document.getElementById('o-confirmacion')?.value?.trim()||'otro') : (S.locs[0]?.value||'viaje');
   const filename = ref ? `TKT${ref}.pdf` : `voucher-${conf}.pdf`;
@@ -966,11 +967,15 @@ function dlPDF(){
 
   Promise.all(waitPromises).then(() => {
     setTimeout(() => {
+      const elW = el.offsetWidth;
+      const elH = el.offsetHeight;
+      const pxToIn = 96; // standard CSS px-per-inch
+      const dynamicFormat = [elW / pxToIn, elH / pxToIn];
       html2pdf().set({
         margin: 0, filename,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, allowTaint: true, scrollX: 0, scrollY: 0 },
-        jsPDF: { unit: 'in', format: isCarros ? [8, 12] : 'letter', orientation: 'portrait' }
+        jsPDF: { unit: 'in', format: isFlights ? dynamicFormat : (isCarros ? [8, 12] : 'letter'), orientation: 'portrait' }
       }).from(el).save().then(() => {
         sidebar.style.display = '';
         preview.style.padding = '';
